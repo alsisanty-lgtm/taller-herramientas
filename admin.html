@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Taller</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">
+        <h1>👨‍🔧 PANEL ADMINISTRADOR</h1>
+        <p>Gestiona el inventario y revisa reportes</p>
+    </div>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-link">👷 Vista Trabajador</a>
+        <a href="admin.html" class="nav-link active">👨‍💼 Panel Admin</a>
+    </div>
+
+    <div class="container">
+        <div class="admin-section">
+            <h2>➕ AÑADIR HERRAMIENTA</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="toolName" placeholder="Ej: Llave mixta 440.10">
+                </div>
+                <div class="form-group">
+                    <label>Código</label>
+                    <input type="text" id="toolCode" placeholder="Ej: 440.10">
+                </div>
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input type="number" id="toolQty" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="toolState">
+                        <option value="bueno">Bueno</option>
+                        <option value="reparacion">En reparación</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="agregarNuevaHerramienta()">Guardar</button>
+        </div>
+
+        <div class="admin-section">
+            <h2>⚠️ ALERTAS</h2>
+            <div id="alertasContainer"></div>
+        </div>
+
+        <div class="admin-section">
+            <h2>📋 INVENTARIO</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Herramienta</th>
+                            <th>Código</th>
+                            <th>Cant</th>
+                            <th>Estado</th>
+                            <th>Presente</th>
+                            <th>Reporte</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function cargarInventario() {
+            const herramientas = window.toolFunctions.getHerramientas();
+            const tbody = document.getElementById('inventoryTable');
+            const alertasContainer = document.getElementById('alertasContainer');
+            
+            const herramientasProblema = herramientas.filter(h => 
+                h.estado === 'roto' || h.estado === 'reparacion'
+            );
+
+            if (herramientasProblema.length > 0) {
+                alertasContainer.innerHTML = herramientasProblema.map(h => `
+                    <div style="background: #fff3cd; border-left: 5px solid #e74c3c; padding: 15px; margin-bottom: 10px; border-radius: 8px;">
+                        <strong>⚠️ ${h.nombre}</strong>
+                        <p>${h.reporte || 'Herramienta dañada'}</p>
+                        <button class="btn" style="background: #27ae60;" onclick="marcarReparado('${h.id}')">
+                            ✅ Marcar reparado
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                alertasContainer.innerHTML = '<div style="color: #27ae60;">✅ Sin problemas</div>';
+            }
+
+            tbody.innerHTML = herramientas.map(h => {
+                return `
+                    <tr class="${h.estado === 'roto' ? 'roto-row' : ''}">
+                        <td><strong>${h.nombre}</strong></td>
+                        <td>${h.codigo || '-'}</td>
+                        <td>${h.cantidad}</td>
+                        <td><span class="status-badge status-${h.estado}">${h.estado}</span></td>
+                        <td>${h.presente ? '✅ Sí' : '❌ No'}</td>
+                        <td>${h.reporte ? `<span class="alert-badge">⚠️ ${h.reporte}</span>` : '-'}</td>
+                        <td>
+                            <button class="btn btn-edit" onclick="solicitarRepuesto('${h.id}')">🔧 Repuesto</button>
+                            <button class="btn btn-delete" onclick="eliminarHerramienta('${h.id}')">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.agregarNuevaHerramienta = function() {
+            const nombre = document.getElementById('toolName').value;
+            const codigo = document.getElementById('toolCode').value;
+            const cantidad = parseInt(document.getElementById('toolQty').value);
+            const estado = document.getElementById('toolState').value;
+
+            if (!nombre) {
+                alert('El nombre es obligatorio');
+                return;
+            }
+
+            window.toolFunctions.agregarHerramienta({
+                nombre, codigo, cantidad, estado,
+                reporte: null, necesitaRepuesto: false
+            });
+
+            document.getElementById('toolName').value = '';
+            document.getElementById('toolCode').value = '';
+            document.getElementById('toolQty').value = '1';
+            document.getElementById('toolState').value = 'bueno';
+
+            cargarInventario();
+            alert('✅ Herramienta añadida');
+        };
+
+        window.marcarReparado = function(id) {
+            window.toolFunctions.actualizarHerramienta(id, {
+                estado: 'bueno', reporte: null, necesitaRepuesto: false
+            });
+            cargarInventario();
+        };
+
+        window.solicitarRepuesto = function(id) {
+            window.toolFunctions.actualizarHerramienta(id, {
+                necesitaRepuesto: true, estado: 'reparacion'
+            });
+            alert('✅ Repuesto solicitado');
+            cargarInventario();
+        };
+
+        window.eliminarHerramienta = function(id) {
+            if (confirm('¿Eliminar?')) {
+                window.toolFunctions.eliminarHerramienta(id);
+                cargarInventario();
+            }
+        };
+
+        cargarInventario();
+    </script>
+</body>
+</html>

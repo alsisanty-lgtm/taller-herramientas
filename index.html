@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Taller - Control Herramientas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 INVENTARIO TALLER</h1>
+        <p>Marca las herramientas que tienes o reporta daños</p>
+    </div>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-link active">👷 Vista Trabajador</a>
+        <a href="admin.html" class="nav-link">👨‍💼 Panel Admin</a>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid" id="statsContainer"></div>
+
+        <div style="margin: 20px 0;">
+            <input type="text" id="buscador" placeholder="🔍 Buscar herramienta..." style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 12px;">
+        </div>
+
+        <div class="tools-grid" id="toolsContainer"></div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function cargarHerramientas(filtro = '') {
+            const herramientas = window.toolFunctions.getHerramientas();
+            const container = document.getElementById('toolsContainer');
+            const statsContainer = document.getElementById('statsContainer');
+            
+            const stats = window.toolFunctions.getEstadisticas();
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <h3>Total herramientas</h3>
+                    <div class="stat-number">${stats.total}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Presentes</h3>
+                    <div class="stat-number" style="color: #27ae60;">${stats.presentes}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>En mal estado</h3>
+                    <div class="stat-number" style="color: #e74c3c;">${stats.rotas + stats.reparacion}</div>
+                </div>
+            `;
+
+            const herramientasFiltradas = herramientas.filter(h => 
+                h.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+                h.codigo.toLowerCase().includes(filtro.toLowerCase())
+            );
+
+            container.innerHTML = '';
+            herramientasFiltradas.forEach(herramienta => {
+                const cardClass = `tool-card ${herramienta.estado === 'roto' ? 'roto' : herramienta.estado === 'reparacion' ? 'reparacion' : ''}`;
+                
+                container.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="tool-info">
+                            <div class="tool-name">${herramienta.nombre}</div>
+                            <div class="tool-code">Código: ${herramienta.codigo}</div>
+                            <span class="tool-qty">Cant: ${herramienta.cantidad}</span>
+                            <span class="status-badge status-${herramienta.estado}">${herramienta.estado.toUpperCase()}</span>
+                            ${herramienta.reporte ? `<div style="color: #e74c3c; font-size: 0.85em; margin-top: 5px;">⚠️ ${herramienta.reporte}</div>` : ''}
+                        </div>
+                        <div class="tool-actions">
+                            <label class="checkbox-container">
+                                <input type="checkbox" 
+                                    ${herramienta.presente ? 'checked' : ''} 
+                                    onchange="togglePresente('${herramienta.id}', this.checked)">
+                                <span class="checkbox-label">Presente</span>
+                            </label>
+                            <button class="btn btn-report" onclick="reportarProblema('${herramienta.id}')">
+                                ⚠️ Reportar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.togglePresente = function(id, presente) {
+            window.toolFunctions.marcarPresente(id, presente);
+            cargarHerramientas(document.getElementById('buscador').value);
+        };
+
+        window.reportarProblema = function(id) {
+            const motivo = prompt("Describe el problema:");
+            if (motivo && motivo.trim() !== '') {
+                window.toolFunctions.reportarRota(id, motivo);
+                cargarHerramientas(document.getElementById('buscador').value);
+                alert("✅ Reporte enviado");
+            }
+        };
+
+        document.getElementById('buscador').addEventListener('input', (e) => {
+            cargarHerramientas(e.target.value);
+        });
+
+        cargarHerramientas();
+    </script>
+</body>
+</html>
