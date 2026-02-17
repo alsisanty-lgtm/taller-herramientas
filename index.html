@@ -60,11 +60,6 @@
             background: #219a52;
         }
         
-        .btn-info {
-            background: #f39c12;
-            color: white;
-        }
-        
         .container {
             max-width: 1200px;
             margin: 20px auto;
@@ -284,7 +279,7 @@
         import { db, collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs } from './firebase-config.js';
 
         // ============================================
-        // DATOS DE HERRAMIENTAS
+        // DATOS DE HERRAMIENTAS (TU LISTADO)
         // ============================================
         
         const herramientasData = [
@@ -370,6 +365,7 @@
                     });
                 }
                 console.log("Datos iniciales cargados");
+                mostrarToast('📦 Herramientas cargadas');
             }
         }
 
@@ -422,6 +418,8 @@
         // ============================================
         
         function actualizarVista() {
+            if (!trabajadorActual) return;
+            
             actualizarEstadisticas();
             
             const container = document.getElementById('toolsContainer');
@@ -438,39 +436,46 @@
             container.innerHTML = '';
             filtradas.forEach(h => {
                 const miReporte = h.reportes?.find(r => r.trabajadorId === trabajadorActual?.id);
+                const ultimoReporte = h.reportes?.length ? h.reportes[h.reportes.length-1] : null;
                 
-                container.innerHTML += `
-                    <div class="tool-card ${h.estado}">
-                        <div>
-                            <div class="tool-header">
+                const card = document.createElement('div');
+                card.className = `tool-card ${h.estado}`;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="tool-header">
+                            <div>
                                 <span class="tool-name">${h.nombre}</span>
-                                <span class="status-badge status-${h.estado}">${h.estado}</span>
+                                ${miReporte ? '<span class="user-tag">Tú reportaste</span>' : ''}
                             </div>
-                            <div class="tool-code">Código: ${h.codigo || '-'}</div>
+                            <span class="status-badge status-${h.estado}">${h.estado}</span>
+                        </div>
+                        <div class="tool-code">Código: ${h.codigo || '-'}</div>
+                        
+                        ${ultimoReporte ? `
+                            <div class="report-info">
+                                <strong>⚠️ ${ultimoReporte.detalle}</strong><br>
+                                <small>Por: ${ultimoReporte.trabajadorNombre}</small>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="tool-actions">
+                            <label class="checkbox-label">
+                                <input type="checkbox" ${h.presente ? 'checked' : ''} 
+                                    onchange="togglePresente('${h.id}', this.checked)">
+                                Presente
+                            </label>
                             
-                            ${h.reportes?.length ? `
-                                <div class="report-info">
-                                    ⚠️ ${h.reportes[h.reportes.length-1].detalle}<br>
-                                    <small>Por: ${h.reportes[h.reportes.length-1].trabajadorNombre}</small>
-                                </div>
+                            ${!miReporte ? `
+                                <button class="report-btn" onclick="reportar('${h.id}')">
+                                    ⚠️ Reportar
+                                </button>
                             ` : ''}
-                            
-                            <div class="tool-actions">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" ${h.presente ? 'checked' : ''} 
-                                        onchange="togglePresente('${h.id}', this.checked)">
-                                    Presente
-                                </label>
-                                
-                                ${!miReporte ? `
-                                    <button class="report-btn" onclick="reportar('${h.id}')">
-                                        ⚠️ Reportar
-                                    </button>
-                                ` : ''}
-                            </div>
                         </div>
                     </div>
                 `;
+                
+                container.appendChild(card);
             });
         }
 
@@ -480,9 +485,18 @@
             const problemas = herramientas.filter(h => h.estado === 'roto').length;
             
             document.getElementById('statsContainer').innerHTML = `
-                <div class="stat-card"><div class="stat-number">${total}</div><div>Total</div></div>
-                <div class="stat-card"><div class="stat-number" style="color:#27ae60;">${presentes}</div><div>Presentes</div></div>
-                <div class="stat-card"><div class="stat-number" style="color:#e74c3c;">${problemas}</div><div>Dañadas</div></div>
+                <div class="stat-card">
+                    <div class="stat-number">${total}</div>
+                    <div>Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color:#27ae60;">${presentes}</div>
+                    <div>Presentes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color:#e74c3c;">${problemas}</div>
+                    <div>Dañadas</div>
+                </div>
             `;
         }
 
@@ -491,7 +505,10 @@
         // ============================================
         
         window.togglePresente = async function(id, presente) {
-            await updateDoc(doc(db, "herramientas", id), { presente });
+            await updateDoc(doc(db, "herramientas", id), { 
+                presente,
+                ultimaModificacion: new Date().toISOString()
+            });
         };
 
         window.reportar = async function(id) {
@@ -522,5 +539,6 @@
     </script>
 </body>
 </html>
+
 
 
