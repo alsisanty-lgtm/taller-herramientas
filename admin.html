@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Taller con Identificación</title>
+    <title>Admin - Taller</title>
     <style>
         * {
             margin: 0;
@@ -21,62 +21,6 @@
             color: white;
             padding: 20px;
             text-align: center;
-        }
-        
-        .admin-info {
-            background: white;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .token-input {
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            width: 200px;
-            font-size: 16px;
-        }
-        
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background: #27ae60;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #219a52;
-        }
-        
-        .btn-secondary {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #2980b9;
-        }
-        
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .btn-warning {
-            background: #f39c12;
-            color: white;
         }
         
         .container {
@@ -126,7 +70,6 @@
             color: white;
             padding: 5px 12px;
             border-radius: 20px;
-            font-size: 14px;
         }
         
         .alert-card {
@@ -137,31 +80,11 @@
             border-radius: 5px;
         }
         
-        .alert-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
         .worker-tag {
             background: #3498db;
             color: white;
             padding: 3px 8px;
             border-radius: 12px;
-            font-size: 12px;
-        }
-        
-        .report-detail {
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            font-size: 14px;
-        }
-        
-        .timestamp {
-            color: #7f8c8d;
             font-size: 12px;
         }
         
@@ -182,50 +105,26 @@
             border-bottom: 1px solid #ecf0f1;
         }
         
-        tr:hover {
-            background: #f8f9fa;
-        }
-        
         .status-badge {
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 12px;
-            font-weight: bold;
             display: inline-block;
         }
         
-        .status-bueno {
-            background: #d4edda;
-            color: #155724;
+        .status-bueno { background: #d4edda; color: #155724; }
+        .status-roto { background: #f8d7da; color: #721c24; }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 2px;
         }
         
-        .status-roto {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .status-reparacion {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .history-log {
-            max-height: 400px;
-            overflow-y: auto;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        
-        .history-item {
-            padding: 10px;
-            border-bottom: 1px solid #dee2e6;
-            font-size: 13px;
-        }
-        
-        .history-item:last-child {
-            border-bottom: none;
-        }
+        .btn-primary { background: #27ae60; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
         
         .sync-status {
             text-align: center;
@@ -233,40 +132,9 @@
             padding: 15px;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .connected {
-            color: #27ae60;
-            font-weight: bold;
-        }
-        
-        .buscador {
-            width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #27ae60;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+        .connected { color: #27ae60; font-weight: bold; }
         
         .form-grid {
             display: grid;
@@ -275,220 +143,87 @@
             margin-bottom: 20px;
         }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
         .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             border: 2px solid #e9ecef;
             border-radius: 5px;
-            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>👨‍🔧 PANEL ADMINISTRADOR</h1>
-        <p>Seguimiento por trabajador - Sabrás quién reporta cada cosa</p>
-    </div>
-
-    <div class="admin-info">
-        <input type="text" id="tokenInput" class="token-input" placeholder="🔑 Token del taller" value="TALLER001">
-        <button class="btn btn-primary" onclick="conectarAdmin()">🔌 Conectar</button>
-        <button class="btn btn-secondary" onclick="generarToken()">🔄 Nuevo Token</button>
-        <span id="adminStatus" style="font-weight: bold;">No conectado</span>
+        <p>Tiempo real - Todos los dispositivos sincronizados</p>
     </div>
 
     <div class="container">
-        <!-- Estadísticas -->
         <div class="stats-grid" id="statsContainer">
-            <div class="stat-card">Esperando conexión...</div>
+            <div class="stat-card">Cargando...</div>
         </div>
 
-        <!-- Formulario para añadir herramientas -->
         <div class="admin-section">
-            <h2>➕ AÑADIR NUEVA HERRAMIENTA</h2>
+            <h2>➕ AÑADIR HERRAMIENTA</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Nombre *</label>
-                    <input type="text" id="toolName" placeholder="Ej: Llave mixta 440.10">
+                    <input type="text" id="toolName" placeholder="Nombre">
                 </div>
                 <div class="form-group">
-                    <label>Código</label>
-                    <input type="text" id="toolCode" placeholder="Ej: 440.10">
+                    <input type="text" id="toolCode" placeholder="Código">
                 </div>
                 <div class="form-group">
-                    <label>Cantidad</label>
                     <input type="number" id="toolQty" value="1" min="1">
                 </div>
-                <div class="form-group">
-                    <label>Estado inicial</label>
-                    <select id="toolState">
-                        <option value="bueno">Bueno</option>
-                        <option value="reparacion">En reparación</option>
-                    </select>
-                </div>
             </div>
-            <button class="btn btn-primary" onclick="agregarHerramienta()">Guardar herramienta</button>
+            <button class="btn btn-primary" onclick="agregarHerramienta()">Guardar</button>
         </div>
 
-        <!-- Panel de reportes por trabajador -->
         <div class="admin-section">
             <div class="section-title">
-                <h2>⚠️ REPORTES ACTIVOS POR TRABAJADOR</h2>
+                <h2>⚠️ REPORTES ACTIVOS</h2>
                 <span class="badge" id="reportesCount">0</span>
             </div>
-            <div id="reportesContainer">
-                <p>Conecta un token para ver reportes</p>
-            </div>
+            <div id="reportesContainer"></div>
         </div>
 
-        <!-- Historial de acciones -->
         <div class="admin-section">
-            <div class="section-title">
-                <h2>📋 HISTORIAL DE ACCIONES</h2>
-                <button class="btn btn-secondary" onclick="toggleHistorial()">Ver/Ocultar</button>
-            </div>
-            <div id="historialContainer" style="display: none;">
-                <div class="history-log" id="historialLog">
-                    Cargando...
-                </div>
-            </div>
-        </div>
-
-        <!-- Inventario completo -->
-        <div class="admin-section">
-            <h2>📦 INVENTARIO COMPLETO</h2>
-            <input type="text" id="adminBuscador" class="buscador" placeholder="🔍 Buscar por nombre o código...">
+            <h2>📦 INVENTARIO</h2>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
                             <th>Herramienta</th>
-                            <th>Código</th>
-                            <th>Cant</th>
                             <th>Estado</th>
                             <th>Presente</th>
                             <th>Reportes</th>
-                            <th>Último reporte por</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="inventoryTable">
-                        <tr><td colspan="8" style="text-align: center;">Conecta un token</td></tr>
-                    </tbody>
+                    <tbody id="inventoryTable"></tbody>
                 </table>
             </div>
         </div>
 
-        <div class="sync-status" id="syncStatus">
-            <span class="disconnected">⚫ Desconectado</span>
+        <div class="sync-status">
+            <span class="connected">🟢 Sincronizado en tiempo real</span>
         </div>
     </div>
 
-    <div id="toast" style="display: none;" class="toast"></div>
+    <script type="module">
+        import { db, collection, query, onSnapshot, addDoc, updateDoc, doc } from './firebase-config.js';
 
-    <script>
-        // ============================================
-        // VARIABLES GLOBALES
-        // ============================================
-        
-        let tokenActual = '';
         let herramientas = [];
-        let historialGlobal = [];
-        let filtro = '';
-        let intervaloSync = null;
-        const dispositivoId = 'admin_' + Math.random().toString(36).substr(2, 9);
 
-        // ============================================
-        // FUNCIONES DE NOTIFICACIÓN
-        // ============================================
-        
-        function mostrarToast(mensaje, tipo = 'exito') {
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            toast.style.background = tipo === 'exito' ? '#27ae60' : '#e74c3c';
-            toast.textContent = mensaje;
-            
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
-        // ============================================
-        // CONEXIÓN
-        // ============================================
-        
-        function conectarAdmin() {
-            const token = document.getElementById('tokenInput').value.trim();
-            if (!token) {
-                alert('Introduce un token');
-                return;
-            }
-            
-            tokenActual = token;
-            localStorage.setItem('adminToken', token);
-            document.getElementById('adminStatus').textContent = `✅ Conectado a: ${token}`;
-            
-            cargarDatos();
-            iniciarSincronizacion();
-            mostrarToast(`🔌 Conectado al token: ${token}`);
-        }
-
-        function generarToken() {
-            const nuevoToken = 'TALLER_' + Math.random().toString(36).substr(2, 8).toUpperCase();
-            document.getElementById('tokenInput').value = nuevoToken;
-            conectarAdmin();
-        }
-
-        function cargarDatos() {
-            const datos = localStorage.getItem(`herramientas_${tokenActual}`);
-            if (datos) {
-                herramientas = JSON.parse(datos);
-            }
-            
-            const historial = localStorage.getItem(`historial_global_${tokenActual}`);
-            if (historial) {
-                historialGlobal = JSON.parse(historial);
-            }
-            
-            actualizarTodo();
-        }
-
-        function iniciarSincronizacion() {
-            if (intervaloSync) clearInterval(intervaloSync);
-            
-            intervaloSync = setInterval(() => {
-                if (!tokenActual) return;
-                
-                const syncTokenStr = localStorage.getItem(`sync_${tokenActual}`);
-                if (syncTokenStr) {
-                    const syncToken = JSON.parse(syncTokenStr);
-                    if (syncToken.dispositivo !== dispositivoId) {
-                        cargarDatos();
-                        mostrarToast(`🔄 Actualizado por ${syncToken.usuario || 'trabajador'}`);
-                    }
-                }
-            }, 2000);
-            
-            window.addEventListener('storage', (e) => {
-                if (e.key === `sync_${tokenActual}` || e.key === 'ultimoCambio') {
-                    setTimeout(cargarDatos, 100);
-                }
+        // Escuchar cambios
+        const q = query(collection(db, "herramientas"));
+        onSnapshot(q, (snapshot) => {
+            herramientas = [];
+            snapshot.forEach((doc) => {
+                herramientas.push({ id: doc.id, ...doc.data() });
             });
-            
-            document.getElementById('syncStatus').innerHTML = `<span class="connected">🟢 Conectado en tiempo real - Token: ${tokenActual}</span>`;
-        }
+            actualizarTodo();
+        });
 
-        // ============================================
-        // ACTUALIZAR VISTAS
-        // ============================================
-        
         function actualizarTodo() {
             actualizarEstadisticas();
             actualizarReportes();
@@ -500,259 +235,81 @@
             const presentes = herramientas.filter(h => h.presente).length;
             const rotas = herramientas.filter(h => h.estado === 'roto').length;
             
-            // Contar trabajadores que han reportado
-            const trabajadoresActivos = new Set();
-            herramientas.forEach(h => {
-                if (h.reportes) {
-                    h.reportes.forEach(r => trabajadoresActivos.add(r.trabajadorId));
-                }
-            });
-            
             document.getElementById('statsContainer').innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${total}</div>
-                    <div>Total herramientas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color: #27ae60;">${presentes}</div>
-                    <div>Presentes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color: #e74c3c;">${rotas}</div>
-                    <div>Dañadas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color: #3498db;">${trabajadoresActivos.size}</div>
-                    <div>Trabajadores activos</div>
-                </div>
+                <div class="stat-card"><div class="stat-number">${total}</div><div>Total</div></div>
+                <div class="stat-card"><div class="stat-number" style="color:#27ae60;">${presentes}</div><div>Presentes</div></div>
+                <div class="stat-card"><div class="stat-number" style="color:#e74c3c;">${rotas}</div><div>Dañadas</div></div>
             `;
         }
 
         function actualizarReportes() {
-            // Recopilar todos los reportes activos
-            const reportesActivos = [];
-            
+            const reportes = [];
             herramientas.forEach(h => {
-                if (h.reportes && h.reportes.length > 0 && h.estado === 'roto') {
-                    const ultimoReporte = h.reportes[h.reportes.length - 1];
-                    reportesActivos.push({
-                        herramientaId: h.id,
-                        herramienta: h.nombre,
-                        codigo: h.codigo,
-                        ...ultimoReporte
-                    });
+                if (h.reportes?.length && h.estado === 'roto') {
+                    const ultimo = h.reportes[h.reportes.length-1];
+                    reportes.push({ herramienta: h.nombre, ...ultimo, id: h.id });
                 }
             });
             
-            document.getElementById('reportesCount').textContent = reportesActivos.length;
+            document.getElementById('reportesCount').textContent = reportes.length;
             
             const container = document.getElementById('reportesContainer');
-            
-            if (reportesActivos.length === 0) {
-                container.innerHTML = '<p style="color: #27ae60; padding: 20px; text-align: center;">✅ No hay reportes activos</p>';
+            if (reportes.length === 0) {
+                container.innerHTML = '<p>✅ No hay reportes</p>';
                 return;
             }
             
-            // Agrupar por trabajador
-            const porTrabajador = {};
-            reportesActivos.forEach(r => {
-                if (!porTrabajador[r.trabajadorId]) {
-                    porTrabajador[r.trabajadorId] = {
-                        nombre: r.trabajadorNombre,
-                        reportes: []
-                    };
-                }
-                porTrabajador[r.trabajadorId].reportes.push(r);
-            });
-            
-            container.innerHTML = Object.values(porTrabajador).map(t => `
+            container.innerHTML = reportes.map(r => `
                 <div class="alert-card">
-                    <div class="alert-header">
-                        <strong>👤 ${t.nombre}</strong>
-                        <span class="worker-tag">${t.reportes.length} reporte${t.reportes.length !== 1 ? 's' : ''}</span>
-                    </div>
-                    ${t.reportes.map(r => `
-                        <div class="report-detail">
-                            <strong>🔧 ${r.herramienta}</strong>
-                            <p>${r.detalle}</p>
-                            <div class="timestamp">📅 ${new Date(r.timestamp).toLocaleString()}</div>
-                        </div>
-                    `).join('')}
-                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="marcarRevisado('${t.reportes[0].herramientaId}')">
-                        ✅ Marcar como revisado
-                    </button>
+                    <strong>👤 ${r.trabajadorNombre}</strong> - ${r.herramienta}<br>
+                    <small>${r.detalle}</small><br>
+                    <small>📅 ${r.timestamp}</small>
+                    <button class="btn btn-primary" onclick="marcarReparado('${r.id}')">✅ Revisado</button>
                 </div>
             `).join('');
         }
 
         function actualizarTabla() {
             const tbody = document.getElementById('inventoryTable');
-            
-            const filtradas = herramientas.filter(h => 
-                h.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-                (h.codigo && h.codigo.toLowerCase().includes(filtro.toLowerCase()))
-            );
-
-            if (filtradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay resultados</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = filtradas.map(h => {
-                const ultimoReporte = h.reportes && h.reportes.length > 0 ? 
-                    h.reportes[h.reportes.length - 1] : null;
-                
-                const reportesCount = h.reportes ? h.reportes.length : 0;
-                
-                return `
-                    <tr ${h.estado === 'roto' ? 'style="background: #fff5f5;"' : ''}>
-                        <td><strong>${h.nombre}</strong></td>
-                        <td>${h.codigo || '-'}</td>
-                        <td>${h.cantidad}</td>
-                        <td><span class="status-badge status-${h.estado}">${h.estado}</span></td>
-                        <td>${h.presente ? '✅' : '❌'}</td>
-                        <td>
-                            ${reportesCount > 0 ? `
-                                <span class="worker-tag">${reportesCount} reporte${reportesCount !== 1 ? 's' : ''}</span>
-                            ` : '-'}
-                        </td>
-                        <td>
-                            ${ultimoReporte ? `
-                                <strong>${ultimoReporte.trabajadorNombre}</strong><br>
-                                <small>${new Date(ultimoReporte.timestamp).toLocaleString()}</small>
-                            ` : '-'}
-                        </td>
-                        <td>
-                            <button class="btn btn-secondary" style="padding: 5px 10px;" onclick="verReportes('${h.id}')">📋 Ver</button>
-                            <button class="btn btn-warning" style="padding: 5px 10px;" onclick="cambiarEstado('${h.id}')">📝 Estado</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            tbody.innerHTML = herramientas.map(h => `
+                <tr>
+                    <td><strong>${h.nombre}</strong><br><small>${h.codigo || ''}</small></td>
+                    <td><span class="status-badge status-${h.estado}">${h.estado}</span></td>
+                    <td>${h.presente ? '✅' : '❌'}</td>
+                    <td>${h.reportes?.length || 0}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="cambiarEstado('${h.id}')">📝 Estado</button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        // ============================================
-        // ACCIONES DE ADMIN
-        // ============================================
-        
-        window.agregarHerramienta = function() {
-            const nombre = document.getElementById('toolName').value.trim();
-            if (!nombre) {
-                alert('El nombre es obligatorio');
-                return;
-            }
+        window.agregarHerramienta = async function() {
+            const nombre = document.getElementById('toolName').value;
+            if (!nombre) return alert('Nombre requerido');
             
-            const nuevaHerramienta = {
-                id: 'tool_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-                nombre: nombre,
-                codigo: document.getElementById('toolCode').value.trim(),
+            await addDoc(collection(db, "herramientas"), {
+                nombre,
+                codigo: document.getElementById('toolCode').value,
                 cantidad: parseInt(document.getElementById('toolQty').value),
-                estado: document.getElementById('toolState').value,
                 presente: true,
-                reportes: [],
-                ultimoReporte: null
-            };
+                estado: 'bueno',
+                reportes: []
+            });
             
-            herramientas.push(nuevaHerramienta);
-            guardarDatos();
-            actualizarTodo();
-            
-            // Limpiar formulario
             document.getElementById('toolName').value = '';
             document.getElementById('toolCode').value = '';
-            document.getElementById('toolQty').value = '1';
-            document.getElementById('toolState').value = 'bueno';
-            
-            mostrarToast('✅ Herramienta añadida correctamente');
         };
 
-        window.marcarRevisado = function(herramientaId) {
-            const index = herramientas.findIndex(h => h.id === herramientaId);
-            if (index !== -1) {
-                herramientas[index].estado = 'reparacion';
-                guardarDatos();
-                actualizarTodo();
-                mostrarToast('✅ Marcado como en reparación');
-            }
+        window.marcarReparado = async function(id) {
+            await updateDoc(doc(db, "herramientas", id), { estado: 'bueno' });
         };
 
-        window.verReportes = function(id) {
-            const herramienta = herramientas.find(h => h.id === id);
-            if (herramienta && herramienta.reportes && herramienta.reportes.length > 0) {
-                let msg = `📋 REPORTES DE: ${herramienta.nombre}\n\n`;
-                herramienta.reportes.forEach((r, i) => {
-                    msg += `${i+1}. ${r.trabajadorNombre} - ${new Date(r.timestamp).toLocaleString()}\n`;
-                    msg += `   "${r.detalle}"\n\n`;
-                });
-                alert(msg);
-            } else {
-                alert('No hay reportes para esta herramienta');
-            }
+        window.cambiarEstado = async function(id) {
+            const estado = prompt('Estado (bueno/roto):');
+            if (estado) await updateDoc(doc(db, "herramientas", id), { estado });
         };
-
-        window.cambiarEstado = function(id) {
-            const estado = prompt('Nuevo estado (bueno/reparacion/roto):');
-            if (estado && ['bueno', 'roto', 'reparacion'].includes(estado)) {
-                const index = herramientas.findIndex(h => h.id === id);
-                if (index !== -1) {
-                    herramientas[index].estado = estado;
-                    guardarDatos();
-                    actualizarTodo();
-                    mostrarToast('✅ Estado actualizado');
-                }
-            }
-        };
-
-        function guardarDatos() {
-            if (!tokenActual) return;
-            localStorage.setItem(`herramientas_${tokenActual}`, JSON.stringify(herramientas));
-            
-            const syncToken = {
-                token: tokenActual,
-                timestamp: Date.now(),
-                dispositivo: dispositivoId,
-                usuario: 'Administrador'
-            };
-            localStorage.setItem(`sync_${tokenActual}`, JSON.stringify(syncToken));
-            localStorage.setItem('ultimoCambio', Date.now().toString());
-        }
-
-        function toggleHistorial() {
-            const container = document.getElementById('historialContainer');
-            const log = document.getElementById('historialLog');
-            
-            if (container.style.display === 'none') {
-                container.style.display = 'block';
-                
-                if (historialGlobal.length === 0) {
-                    log.innerHTML = '<div class="history-item">No hay historial</div>';
-                } else {
-                    log.innerHTML = historialGlobal.slice(0, 50).map(a => `
-                        <div class="history-item">
-                            <strong>${a.fechaLegible}</strong><br>
-                            👤 <span style="color: #3498db;">${a.trabajadorNombre}</span><br>
-                            ${a.tipo}: ${a.detalle}
-                            ${a.herramientaNombre ? `<br><small>🔧 ${a.herramientaNombre}</small>` : ''}
-                        </div>
-                    `).join('');
-                }
-            } else {
-                container.style.display = 'none';
-            }
-        }
-
-        // Buscador
-        document.getElementById('adminBuscador').addEventListener('input', (e) => {
-            filtro = e.target.value;
-            actualizarTabla();
-        });
-
-        // Auto-conectar si hay token guardado
-        const tokenGuardado = localStorage.getItem('adminToken');
-        if (tokenGuardado) {
-            document.getElementById('tokenInput').value = tokenGuardado;
-            conectarAdmin();
-        }
     </script>
 </body>
 </html>
+
