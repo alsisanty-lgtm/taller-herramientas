@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, query, onSnapshot, addDoc, updateDoc, doc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 🔴 REEMPLAZA ESTO CON LOS DATOS QUE COPIASTE DE FIREBASE
+// 🔴 REEMPLAZA ESTO CON TUS DATOS DE FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyB...",  // ← PON EL TUYO
   authDomain: "taller-herramientas.firebaseapp.com",  // ← PON EL TUYO
