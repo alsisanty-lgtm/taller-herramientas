@@ -2,108 +2,831 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taller - Control Herramientas</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .user-section {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .user-input, .token-input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            width: 250px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #219a52;
+        }
+        
+        .btn-info {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #e67e22;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .welcome-message {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .tool-card.roto {
+            border-left-color: #e74c3c;
+            background: #fff5f5;
+        }
+        
+        .tool-card.reparacion {
+            border-left-color: #f39c12;
+            background: #fff9e6;
+        }
+        
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .tool-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .tool-code {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-bueno {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-roto {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-reparacion {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .tool-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .checkbox-label input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .report-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .report-info {
+            font-size: 12px;
+            color: #e74c3c;
+            margin-top: 5px;
+            padding: 5px;
+            background: #fee;
+            border-radius: 5px;
+        }
+        
+        .user-tag {
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        
+        .sync-status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .connected {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .disconnected {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .buscador {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .history-section {
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .history-log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 13px;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <div class="header">
-        <h1>🔧 INVENTARIO TALLER</h1>
-        <p>Marca las herramientas que tienes o reporta daños</p>
+        <h1>🔧 CONTROL HERRAMIENTAS</h1>
+        <p>Identifícate con tu nombre</p>
     </div>
 
-    <div class="nav-bar">
-        <a href="index.html" class="nav-link active">👷 Vista Trabajador</a>
-        <a href="admin.html" class="nav-link">👨‍💼 Panel Admin</a>
+    <div class="user-section">
+        <input type="text" id="userNameInput" class="user-input" placeholder="👤 Tu nombre (ej: Juan Pérez)" value="">
+        <input type="text" id="tokenInput" class="token-input" placeholder="🔑 Token del taller" value="TALLER001">
+        <button class="btn btn-primary" onclick="registrarTrabajador()">✅ Entrar al Taller</button>
+        <button class="btn btn-info" onclick="verMiHistorial()">📋 Mi Historial</button>
     </div>
 
     <div class="container">
-        <div class="stats-grid" id="statsContainer"></div>
-
-        <div style="margin: 20px 0;">
-            <input type="text" id="buscador" placeholder="🔍 Buscar herramienta..." style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 12px;">
+        <div id="welcomeSection" style="display: none;" class="welcome-message">
+            <span>👋 Bienvenido, <strong id="displayName"></strong></span>
+            <span>🆔 ID: <span id="displayId"></span></span>
         </div>
 
-        <div class="tools-grid" id="toolsContainer"></div>
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat-card">Esperando identificación...</div>
+        </div>
+
+        <input type="text" id="buscador" class="buscador" placeholder="🔍 Buscar herramienta (nombre o código)...">
+
+        <div class="tools-grid" id="toolsContainer">
+            <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                Identifícate con tu nombre para comenzar
+            </div>
+        </div>
+
+        <div class="sync-status" id="syncStatus">
+            <span class="disconnected">⚫ Desconectado - Identifícate</span>
+        </div>
+
+        <div id="historySection" style="display: none;" class="history-section">
+            <h3>📜 Mi historial de acciones</h3>
+            <div class="history-log" id="historyLog">
+                Cargando...
+            </div>
+        </div>
     </div>
 
-    <script src="data.js"></script>
-    <script src="script.js"></script>
-    <script>
-        function cargarHerramientas(filtro = '') {
-            const herramientas = window.toolFunctions.getHerramientas();
-            const container = document.getElementById('toolsContainer');
-            const statsContainer = document.getElementById('statsContainer');
-            
-            const stats = window.toolFunctions.getEstadisticas();
-            statsContainer.innerHTML = `
-                <div class="stat-card">
-                    <h3>Total herramientas</h3>
-                    <div class="stat-number">${stats.total}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Presentes</h3>
-                    <div class="stat-number" style="color: #27ae60;">${stats.presentes}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>En mal estado</h3>
-                    <div class="stat-number" style="color: #e74c3c;">${stats.rotas + stats.reparacion}</div>
-                </div>
-            `;
+    <div id="toast" style="display: none;" class="toast"></div>
 
+    <script>
+        // ============================================
+        // DATOS DE HERRAMIENTAS (TU LISTADO COMPLETO)
+        // ============================================
+        
+        const herramientasData = [
+            // Juego de carracas y caja
+            { nombre: "Juego de carracas", codigo: "JC-001", cantidad: 1 },
+            { nombre: "Caja de herramientas BT.11A", codigo: "BT-11A", cantidad: 1 },
+            
+            // Llaves con trinquete
+            { nombre: "Llave con trinquete 467B.10", codigo: "467B.10", cantidad: 1 },
+            { nombre: "Llave trinquete 467B.13", codigo: "467B.13", cantidad: 1 },
+            { nombre: "Llave trinquete 467B.17", codigo: "467B.17", cantidad: 1 },
+            { nombre: "Llave trinquete 467B.19", codigo: "467B.19", cantidad: 1 },
+            
+            // Llaves mixtas
+            { nombre: "Llave mixta 440.10", codigo: "440.10", cantidad: 1 },
+            { nombre: "Llave mixta 440.13", codigo: "440.13", cantidad: 1 },
+            { nombre: "Llave mixta 440.17", codigo: "440.17", cantidad: 1 },
+            { nombre: "Llave mixta 440.19", codigo: "440.19", cantidad: 1 },
+            { nombre: "Llave mixta 440.20", codigo: "440.20", cantidad: 1 },
+            { nombre: "Llave mixta 440.22", codigo: "440.22", cantidad: 1 },
+            { nombre: "Llave mixta 440.24", codigo: "440.24", cantidad: 1 },
+            { nombre: "Llave mixta 440.36", codigo: "440.36", cantidad: 1 },
+            
+            // Llaves de pipa
+            { nombre: "Llave de pipa 75.10", codigo: "75.10", cantidad: 1 },
+            { nombre: "Llave de pipa 75.13", codigo: "75.13", cantidad: 1 },
+            { nombre: "Llave de pipa 75.17", codigo: "75.17", cantidad: 1 },
+            { nombre: "Llave de pipa 75.19", codigo: "75.19", cantidad: 1 },
+            
+            // Llaves de vaso
+            { nombre: "Llave de vaso con mango 74A.7", codigo: "74A.7", cantidad: 1 },
+            { nombre: "Llave de vaso con mango 74A.8", codigo: "74A.8", cantidad: 1 },
+            
+            // Otras llaves
+            { nombre: "Llave inglesa 101.10", codigo: "101.10", cantidad: 1 },
+            
+            // Destornilladores y Allen
+            { nombre: "Destornilladores juego ATP.J6", codigo: "ATP.J6", cantidad: 6 },
+            { nombre: "Llaves Allen con mango 84TZA", codigo: "84TZA", cantidad: 4 },
+            { nombre: "Juego llaves de Allen 83H.JP9A", codigo: "83H.JP9A", cantidad: 9 },
+            
+            // Alicates y pinzas
+            { nombre: "Alicates de corte 192A.18CPE", codigo: "192A.18", cantidad: 1 },
+            { nombre: "Alicates de punta 185A.20CPE", codigo: "185A.20", cantidad: 1 },
+            { nombre: "Alicates universales 187A.18CPE", codigo: "187A.18", cantidad: 1 },
+            { nombre: "Picoloro 181A.25CPE", codigo: "181A.25", cantidad: 1 },
+            { nombre: "Alicates para arandela 179A.9", codigo: "179A.9", cantidad: 1 },
+            { nombre: "Mordaza de presión 580.10", codigo: "580.10", cantidad: 1 },
+            
+            // Medición y marcado
+            { nombre: "Calibre 805.2", codigo: "805.2", cantidad: 1 },
+            { nombre: "Escuadra DELA.1223.03", codigo: "DELA.1223", cantidad: 1 },
+            { nombre: "Metro 893B.825", codigo: "893B.825", cantidad: 1 },
+            { nombre: "Nivel 3078.40", codigo: "3078.40", cantidad: 1 },
+            { nombre: "Tiralíneas DELA.13299.15", codigo: "DELA.13299", cantidad: 1 },
+            
+            // Herramientas de golpe y corte
+            { nombre: "Maza 1262H.125", codigo: "1262H.125", cantidad: 1 },
+            { nombre: "Cincel 263.25", codigo: "263.25", cantidad: 1 },
+            
+            // Eléctricas y especiales
+            { nombre: "Alargadera 50m", codigo: "AL-50", cantidad: 1 },
+            { nombre: "Combo Makita DGA504 + DHP486 + SAMP", codigo: "MK-COMBO", cantidad: 1 },
+            { nombre: "Taladro Makita DTW285Z", codigo: "MK-DTW285", cantidad: 1 },
+            { nombre: "Taladro Makita percutor HP2071", codigo: "MK-HP2071", cantidad: 1 },
+            { nombre: "Máquina de soldar", codigo: "SLD-001", cantidad: 1 },
+            { nombre: "Carro transporte herramientas", codigo: "CARRO-01", cantidad: 1 }
+        ];
+
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
+        
+        let trabajadorActual = null;
+        let tokenActual = '';
+        let herramientas = [];
+        let filtro = '';
+        let intervaloSync = null;
+        let historialAcciones = [];
+
+        const dispositivoId = 'trab_' + Math.random().toString(36).substr(2, 9);
+
+        // ============================================
+        // FUNCIONES DE NOTIFICACIÓN
+        // ============================================
+        
+        function mostrarToast(mensaje, tipo = 'exito') {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            toast.style.background = tipo === 'exito' ? '#27ae60' : '#e74c3c';
+            toast.textContent = mensaje;
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============================================
+        // REGISTRO DE TRABAJADOR
+        // ============================================
+        
+        function registrarTrabajador() {
+            const nombre = document.getElementById('userNameInput').value.trim();
+            const token = document.getElementById('tokenInput').value.trim();
+            
+            if (!nombre) {
+                alert('Por favor, introduce tu nombre');
+                return;
+            }
+            
+            if (nombre.length < 3) {
+                alert('El nombre debe tener al menos 3 caracteres');
+                return;
+            }
+            
+            if (!token) {
+                alert('Introduce el token del taller');
+                return;
+            }
+            
+            // Crear ID único para el trabajador
+            const trabajadorId = 'usr_' + btoa(nombre).substr(0, 8) + '_' + Date.now().toString().substr(-4);
+            
+            trabajadorActual = {
+                id: trabajadorId,
+                nombre: nombre,
+                token: token,
+                fechaRegistro: new Date().toISOString()
+            };
+            
+            tokenActual = token;
+            
+            // Guardar en localStorage
+            localStorage.setItem('trabajadorActual', JSON.stringify(trabajadorActual));
+            localStorage.setItem('tallerToken', token);
+            
+            // Mostrar bienvenida
+            document.getElementById('welcomeSection').style.display = 'flex';
+            document.getElementById('displayName').textContent = nombre;
+            document.getElementById('displayId').textContent = trabajadorId;
+            
+            // Deshabilitar inputs
+            document.querySelector('.user-section').style.opacity = '0.7';
+            document.querySelectorAll('.user-section input, .user-section button').forEach(el => {
+                if (el.innerHTML !== '📋 Mi Historial') {
+                    el.disabled = true;
+                }
+            });
+            
+            // Cargar datos
+            cargarDatosToken();
+            iniciarSincronizacion();
+            
+            // Registrar entrada
+            registrarAccion('ENTRADA', 'Se conectó al sistema');
+            
+            mostrarToast(`✅ Bienvenido ${nombre}`);
+        }
+
+        function cargarDatosToken() {
+            const datosGuardados = localStorage.getItem(`herramientas_${tokenActual}`);
+            
+            if (datosGuardados) {
+                herramientas = JSON.parse(datosGuardados);
+            } else {
+                // Inicializar datos
+                herramientas = herramientasData.map((h, index) => ({
+                    id: `tool_${index}_${Date.now()}`,
+                    ...h,
+                    presente: true,
+                    estado: 'bueno',
+                    reportes: [],
+                    ultimoReporte: null
+                }));
+                guardarDatos();
+            }
+            
+            // Cargar historial del trabajador
+            const historialGuardado = localStorage.getItem(`historial_${trabajadorActual.id}`);
+            if (historialGuardado) {
+                historialAcciones = JSON.parse(historialGuardado);
+            }
+            
+            actualizarVista();
+        }
+
+        function guardarDatos() {
+            if (!tokenActual) return;
+            
+            localStorage.setItem(`herramientas_${tokenActual}`, JSON.stringify(herramientas));
+            
+            const syncToken = {
+                token: tokenActual,
+                timestamp: Date.now(),
+                dispositivo: dispositivoId,
+                usuario: trabajadorActual?.nombre || 'Anónimo'
+            };
+            
+            localStorage.setItem(`sync_${tokenActual}`, JSON.stringify(syncToken));
+            localStorage.setItem('ultimoCambio', Date.now().toString());
+        }
+
+        function registrarAccion(tipo, detalle, herramientaId = null, herramientaNombre = null) {
+            if (!trabajadorActual) return;
+            
+            const accion = {
+                id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                tipo: tipo,
+                detalle: detalle,
+                herramientaId: herramientaId,
+                herramientaNombre: herramientaNombre,
+                trabajadorId: trabajadorActual.id,
+                trabajadorNombre: trabajadorActual.nombre,
+                timestamp: new Date().toISOString(),
+                fechaLegible: new Date().toLocaleString()
+            };
+            
+            historialAcciones.unshift(accion);
+            
+            // Guardar historial del trabajador
+            localStorage.setItem(`historial_${trabajadorActual.id}`, JSON.stringify(historialAcciones));
+            
+            // Guardar en historial global
+            const historialGlobal = JSON.parse(localStorage.getItem(`historial_global_${tokenActual}`) || '[]');
+            historialGlobal.unshift(accion);
+            localStorage.setItem(`historial_global_${tokenActual}`, JSON.stringify(historialGlobal.slice(0, 500)));
+        }
+
+        function iniciarSincronizacion() {
+            if (intervaloSync) clearInterval(intervaloSync);
+            
+            intervaloSync = setInterval(() => {
+                if (!tokenActual || !trabajadorActual) return;
+                
+                const syncTokenStr = localStorage.getItem(`sync_${tokenActual}`);
+                
+                if (syncTokenStr) {
+                    const syncToken = JSON.parse(syncTokenStr);
+                    
+                    if (syncToken.dispositivo !== dispositivoId) {
+                        const datosActualizados = localStorage.getItem(`herramientas_${tokenActual}`);
+                        
+                        if (datosActualizados) {
+                            const nuevasHerramientas = JSON.parse(datosActualizados);
+                            
+                            if (JSON.stringify(herramientas) !== JSON.stringify(nuevasHerramientas)) {
+                                herramientas = nuevasHerramientas;
+                                actualizarVista();
+                                mostrarToast(`🔄 Actualizado por ${syncToken.usuario || 'otro usuario'}`);
+                            }
+                        }
+                    }
+                }
+            }, 2000);
+            
+            window.addEventListener('storage', (e) => {
+                if (e.key === `sync_${tokenActual}` || e.key === 'ultimoCambio') {
+                    setTimeout(() => {
+                        if (tokenActual && trabajadorActual) {
+                            const datos = localStorage.getItem(`herramientas_${tokenActual}`);
+                            if (datos) {
+                                herramientas = JSON.parse(datos);
+                                actualizarVista();
+                            }
+                        }
+                    }, 100);
+                }
+            });
+            
+            document.getElementById('syncStatus').innerHTML = `
+                <span class="connected">🟢 Conectado</span> - 
+                Token: ${tokenActual} | 
+                Trabajador: ${trabajadorActual.nombre}
+            `;
+        }
+
+        // ============================================
+        // VISTA DE HERRAMIENTAS
+        // ============================================
+        
+        function actualizarVista() {
+            if (!herramientas.length || !trabajadorActual) return;
+            
+            actualizarEstadisticas();
+            
+            const container = document.getElementById('toolsContainer');
             const herramientasFiltradas = herramientas.filter(h => 
                 h.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-                h.codigo.toLowerCase().includes(filtro.toLowerCase())
+                (h.codigo && h.codigo.toLowerCase().includes(filtro.toLowerCase()))
             );
+
+            if (herramientasFiltradas.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">🔍 No se encontraron herramientas</div>';
+                return;
+            }
 
             container.innerHTML = '';
             herramientasFiltradas.forEach(herramienta => {
-                const cardClass = `tool-card ${herramienta.estado === 'roto' ? 'roto' : herramienta.estado === 'reparacion' ? 'reparacion' : ''}`;
+                const card = document.createElement('div');
+                card.className = `tool-card ${herramienta.estado}`;
                 
-                container.innerHTML += `
-                    <div class="${cardClass}">
-                        <div class="tool-info">
-                            <div class="tool-name">${herramienta.nombre}</div>
-                            <div class="tool-code">Código: ${herramienta.codigo}</div>
-                            <span class="tool-qty">Cant: ${herramienta.cantidad}</span>
-                            <span class="status-badge status-${herramienta.estado}">${herramienta.estado.toUpperCase()}</span>
-                            ${herramienta.reporte ? `<div style="color: #e74c3c; font-size: 0.85em; margin-top: 5px;">⚠️ ${herramienta.reporte}</div>` : ''}
+                const miReporte = herramienta.reportes ? 
+                    herramienta.reportes.find(r => r.trabajadorId === trabajadorActual.id) : null;
+                
+                const ultimoReporte = herramienta.reportes && herramienta.reportes.length > 0 ? 
+                    herramienta.reportes[herramienta.reportes.length - 1] : null;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="tool-header">
+                            <div>
+                                <span class="tool-name">${herramienta.nombre}</span>
+                                ${miReporte ? '<span class="user-tag">Tú reportaste</span>' : ''}
+                            </div>
+                            <span class="status-badge status-${herramienta.estado}">${herramienta.estado}</span>
                         </div>
+                        <div class="tool-code">Código: ${herramienta.codigo || '-'}</div>
+                        
+                        ${ultimoReporte ? `
+                            <div class="report-info">
+                                <strong>⚠️ Último reporte:</strong> ${ultimoReporte.detalle}<br>
+                                <small>Por: ${ultimoReporte.trabajadorNombre} - ${new Date(ultimoReporte.timestamp).toLocaleString()}</small>
+                            </div>
+                        ` : ''}
+                        
                         <div class="tool-actions">
-                            <label class="checkbox-container">
+                            <label class="checkbox-label">
                                 <input type="checkbox" 
                                     ${herramienta.presente ? 'checked' : ''} 
                                     onchange="togglePresente('${herramienta.id}', this.checked)">
-                                <span class="checkbox-label">Presente</span>
+                                Presente
                             </label>
-                            <button class="btn btn-report" onclick="reportarProblema('${herramienta.id}')">
-                                ⚠️ Reportar
-                            </button>
+                            
+                            ${!miReporte ? `
+                                <button class="report-btn" onclick="reportarProblema('${herramienta.id}')">
+                                    ⚠️ Reportar
+                                </button>
+                            ` : `
+                                <button class="report-btn" style="background: #95a5a6;" onclick="verMiReporte('${herramienta.id}')">
+                                    👁️ Ver reporte
+                                </button>
+                            `}
                         </div>
                     </div>
                 `;
+                
+                container.appendChild(card);
             });
         }
 
-        window.togglePresente = function(id, presente) {
-            window.toolFunctions.marcarPresente(id, presente);
-            cargarHerramientas(document.getElementById('buscador').value);
-        };
+        function actualizarEstadisticas() {
+            const total = herramientas.length;
+            const presentes = herramientas.filter(h => h.presente).length;
+            const problemas = herramientas.filter(h => h.estado === 'roto' || h.estado === 'reparacion').length;
+            
+            const misReportes = herramientas.filter(h => 
+                h.reportes && h.reportes.some(r => r.trabajadorId === trabajadorActual.id)
+            ).length;
+            
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${total}</div>
+                    <div>Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #27ae60;">${presentes}</div>
+                    <div>Presentes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #e74c3c;">${problemas}</div>
+                    <div>Problemas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #f39c12;">${misReportes}</div>
+                    <div>Mis reportes</div>
+                </div>
+            `;
+        }
 
-        window.reportarProblema = function(id) {
-            const motivo = prompt("Describe el problema:");
-            if (motivo && motivo.trim() !== '') {
-                window.toolFunctions.reportarRota(id, motivo);
-                cargarHerramientas(document.getElementById('buscador').value);
-                alert("✅ Reporte enviado");
+        // ============================================
+        // ACCIONES DE TRABAJADOR
+        // ============================================
+        
+        window.togglePresente = function(id, presente) {
+            const index = herramientas.findIndex(h => h.id === id);
+            if (index !== -1) {
+                herramientas[index].presente = presente;
+                
+                registrarAccion(
+                    presente ? 'MARCAR_PRESENTE' : 'MARCAR_AUSENTE',
+                    `Cambió estado a: ${presente ? 'Presente' : 'Ausente'}`,
+                    id,
+                    herramientas[index].nombre
+                );
+                
+                guardarDatos();
+                actualizarVista();
+                mostrarToast(presente ? '✅ Marcada como presente' : '❌ Marcada como ausente');
             }
         };
 
+        window.reportarProblema = function(id) {
+            const motivo = prompt("Describe el problema de la herramienta:");
+            
+            if (motivo && motivo.trim() !== '') {
+                const index = herramientas.findIndex(h => h.id === id);
+                if (index !== -1) {
+                    const herramienta = herramientas[index];
+                    
+                    const reporte = {
+                        id: 'rep_' + Date.now(),
+                        trabajadorId: trabajadorActual.id,
+                        trabajadorNombre: trabajadorActual.nombre,
+                        detalle: motivo,
+                        timestamp: new Date().toISOString(),
+                        fechaLegible: new Date().toLocaleString()
+                    };
+                    
+                    if (!herramienta.reportes) herramienta.reportes = [];
+                    herramienta.reportes.push(reporte);
+                    
+                    herramienta.estado = 'roto';
+                    herramienta.ultimoReporte = reporte;
+                    
+                    registrarAccion(
+                        'REPORTAR_PROBLEMA',
+                        `Reportó: ${motivo}`,
+                        id,
+                        herramienta.nombre
+                    );
+                    
+                    guardarDatos();
+                    actualizarVista();
+                    
+                    mostrarToast('✅ Reporte enviado al administrador');
+                }
+            }
+        };
+
+        window.verMiReporte = function(id) {
+            const herramienta = herramientas.find(h => h.id === id);
+            if (herramienta && herramienta.reportes) {
+                const miReporte = herramienta.reportes.find(r => r.trabajadorId === trabajadorActual.id);
+                if (miReporte) {
+                    alert(`📅 ${new Date(miReporte.timestamp).toLocaleString()}\n\n${miReporte.detalle}`);
+                }
+            }
+        };
+
+        window.verMiHistorial = function() {
+            const section = document.getElementById('historySection');
+            const log = document.getElementById('historyLog');
+            
+            if (section.style.display === 'none' || section.style.display === '') {
+                section.style.display = 'block';
+                
+                if (historialAcciones.length === 0) {
+                    log.innerHTML = '<div class="history-item">No hay acciones registradas</div>';
+                } else {
+                    log.innerHTML = historialAcciones.slice(0, 20).map(a => `
+                        <div class="history-item">
+                            <strong>${a.fechaLegible}</strong><br>
+                            <span style="color: #3498db;">${a.tipo}</span>: ${a.detalle}
+                            ${a.herramientaNombre ? `<br><small>🔧 ${a.herramientaNombre}</small>` : ''}
+                        </div>
+                    `).join('');
+                }
+            } else {
+                section.style.display = 'none';
+            }
+        };
+
+        // Buscador
         document.getElementById('buscador').addEventListener('input', (e) => {
-            cargarHerramientas(e.target.value);
+            filtro = e.target.value;
+            actualizarVista();
         });
 
-        cargarHerramientas();
+        // Auto-registro si ya existe
+        const trabajadorGuardado = localStorage.getItem('trabajadorActual');
+        if (trabajadorGuardado) {
+            const t = JSON.parse(trabajadorGuardado);
+            document.getElementById('userNameInput').value = t.nombre;
+            document.getElementById('tokenInput').value = t.token;
+            registrarTrabajador();
+        }
     </script>
 </body>
 </html>
