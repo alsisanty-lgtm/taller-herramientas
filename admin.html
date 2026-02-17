@@ -70,6 +70,7 @@
             color: white;
             padding: 5px 12px;
             border-radius: 20px;
+            font-size: 14px;
         }
         
         .alert-card {
@@ -109,6 +110,7 @@
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 12px;
+            font-weight: bold;
             display: inline-block;
         }
         
@@ -120,21 +122,12 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-weight: bold;
             margin: 2px;
         }
         
         .btn-primary { background: #27ae60; color: white; }
         .btn-warning { background: #f39c12; color: white; }
-        
-        .sync-status {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-        }
-        
-        .connected { color: #27ae60; font-weight: bold; }
         
         .form-grid {
             display: grid;
@@ -148,6 +141,24 @@
             padding: 10px;
             border: 2px solid #e9ecef;
             border-radius: 5px;
+        }
+        
+        .sync-status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .connected { color: #27ae60; font-weight: bold; }
+        
+        .buscador {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -166,7 +177,7 @@
             <h2>➕ AÑADIR HERRAMIENTA</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <input type="text" id="toolName" placeholder="Nombre">
+                    <input type="text" id="toolName" placeholder="Nombre de la herramienta">
                 </div>
                 <div class="form-group">
                     <input type="text" id="toolCode" placeholder="Código">
@@ -175,7 +186,7 @@
                     <input type="number" id="toolQty" value="1" min="1">
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="agregarHerramienta()">Guardar</button>
+            <button class="btn btn-primary" onclick="agregarHerramienta()">Guardar herramienta</button>
         </div>
 
         <div class="admin-section">
@@ -183,23 +194,30 @@
                 <h2>⚠️ REPORTES ACTIVOS</h2>
                 <span class="badge" id="reportesCount">0</span>
             </div>
-            <div id="reportesContainer"></div>
+            <div id="reportesContainer">
+                <p>Cargando reportes...</p>
+            </div>
         </div>
 
         <div class="admin-section">
-            <h2>📦 INVENTARIO</h2>
+            <h2>📦 INVENTARIO COMPLETO</h2>
+            <input type="text" id="buscadorAdmin" class="buscador" placeholder="🔍 Buscar herramienta...">
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
                             <th>Herramienta</th>
+                            <th>Código</th>
                             <th>Estado</th>
                             <th>Presente</th>
                             <th>Reportes</th>
+                            <th>Último reporte</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="inventoryTable"></tbody>
+                    <tbody id="inventoryTable">
+                        <tr><td colspan="7">Cargando...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -213,13 +231,17 @@
         import { db, collection, query, onSnapshot, addDoc, updateDoc, doc } from './firebase-config.js';
 
         let herramientas = [];
+        let filtro = '';
 
-        // Escuchar cambios
+        // Escuchar cambios en tiempo real
         const q = query(collection(db, "herramientas"));
         onSnapshot(q, (snapshot) => {
             herramientas = [];
             snapshot.forEach((doc) => {
-                herramientas.push({ id: doc.id, ...doc.data() });
+                herramientas.push({ 
+                    id: doc.id, 
+                    ...doc.data() 
+                });
             });
             actualizarTodo();
         });
@@ -236,80 +258,142 @@
             const rotas = herramientas.filter(h => h.estado === 'roto').length;
             
             document.getElementById('statsContainer').innerHTML = `
-                <div class="stat-card"><div class="stat-number">${total}</div><div>Total</div></div>
-                <div class="stat-card"><div class="stat-number" style="color:#27ae60;">${presentes}</div><div>Presentes</div></div>
-                <div class="stat-card"><div class="stat-number" style="color:#e74c3c;">${rotas}</div><div>Dañadas</div></div>
+                <div class="stat-card">
+                    <div class="stat-number">${total}</div>
+                    <div>Total herramientas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color:#27ae60;">${presentes}</div>
+                    <div>Presentes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color:#e74c3c;">${rotas}</div>
+                    <div>Dañadas</div>
+                </div>
             `;
         }
 
         function actualizarReportes() {
-            const reportes = [];
+            const reportesActivos = [];
+            
             herramientas.forEach(h => {
                 if (h.reportes?.length && h.estado === 'roto') {
                     const ultimo = h.reportes[h.reportes.length-1];
-                    reportes.push({ herramienta: h.nombre, ...ultimo, id: h.id });
+                    reportesActivos.push({
+                        herramientaId: h.id,
+                        herramienta: h.nombre,
+                        ...ultimo
+                    });
                 }
             });
             
-            document.getElementById('reportesCount').textContent = reportes.length;
+            document.getElementById('reportesCount').textContent = reportesActivos.length;
             
             const container = document.getElementById('reportesContainer');
-            if (reportes.length === 0) {
-                container.innerHTML = '<p>✅ No hay reportes</p>';
+            if (reportesActivos.length === 0) {
+                container.innerHTML = '<p style="color:#27ae60; padding:20px;">✅ No hay reportes activos</p>';
                 return;
             }
             
-            container.innerHTML = reportes.map(r => `
+            container.innerHTML = reportesActivos.map(r => `
                 <div class="alert-card">
                     <strong>👤 ${r.trabajadorNombre}</strong> - ${r.herramienta}<br>
-                    <small>${r.detalle}</small><br>
+                    <p style="margin:5px 0;">${r.detalle}</p>
                     <small>📅 ${r.timestamp}</small>
-                    <button class="btn btn-primary" onclick="marcarReparado('${r.id}')">✅ Revisado</button>
+                    <div style="margin-top:10px;">
+                        <button class="btn btn-primary" onclick="marcarReparado('${r.herramientaId}')">
+                            ✅ Marcar reparado
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
 
         function actualizarTabla() {
             const tbody = document.getElementById('inventoryTable');
-            tbody.innerHTML = herramientas.map(h => `
-                <tr>
-                    <td><strong>${h.nombre}</strong><br><small>${h.codigo || ''}</small></td>
-                    <td><span class="status-badge status-${h.estado}">${h.estado}</span></td>
-                    <td>${h.presente ? '✅' : '❌'}</td>
-                    <td>${h.reportes?.length || 0}</td>
-                    <td>
-                        <button class="btn btn-warning" onclick="cambiarEstado('${h.id}')">📝 Estado</button>
-                    </td>
-                </tr>
-            `).join('');
+            
+            const filtradas = herramientas.filter(h => 
+                h.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+                (h.codigo && h.codigo.toLowerCase().includes(filtro.toLowerCase()))
+            );
+
+            if (filtradas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7">No hay resultados</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtradas.map(h => {
+                const ultimoReporte = h.reportes?.length ? h.reportes[h.reportes.length-1] : null;
+                const reportesCount = h.reportes?.length || 0;
+                
+                return `
+                    <tr ${h.estado === 'roto' ? 'style="background:#fff5f5;"' : ''}>
+                        <td><strong>${h.nombre}</strong></td>
+                        <td>${h.codigo || '-'}</td>
+                        <td><span class="status-badge status-${h.estado}">${h.estado}</span></td>
+                        <td>${h.presente ? '✅' : '❌'}</td>
+                        <td>${reportesCount}</td>
+                        <td>
+                            ${ultimoReporte ? `
+                                <strong>${ultimoReporte.trabajadorNombre}</strong><br>
+                                <small>${ultimoReporte.timestamp}</small>
+                            ` : '-'}
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" onclick="cambiarEstado('${h.id}')">
+                                📝 Estado
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         window.agregarHerramienta = async function() {
-            const nombre = document.getElementById('toolName').value;
-            if (!nombre) return alert('Nombre requerido');
+            const nombre = document.getElementById('toolName').value.trim();
+            if (!nombre) {
+                alert('El nombre es obligatorio');
+                return;
+            }
             
             await addDoc(collection(db, "herramientas"), {
-                nombre,
-                codigo: document.getElementById('toolCode').value,
+                nombre: nombre,
+                codigo: document.getElementById('toolCode').value.trim(),
                 cantidad: parseInt(document.getElementById('toolQty').value),
                 presente: true,
                 estado: 'bueno',
-                reportes: []
+                reportes: [],
+                fechaCreacion: new Date().toISOString()
             });
             
+            // Limpiar formulario
             document.getElementById('toolName').value = '';
             document.getElementById('toolCode').value = '';
+            document.getElementById('toolQty').value = '1';
         };
 
         window.marcarReparado = async function(id) {
-            await updateDoc(doc(db, "herramientas", id), { estado: 'bueno' });
+            await updateDoc(doc(db, "herramientas", id), { 
+                estado: 'bueno'
+            });
         };
 
         window.cambiarEstado = async function(id) {
-            const estado = prompt('Estado (bueno/roto):');
-            if (estado) await updateDoc(doc(db, "herramientas", id), { estado });
+            const nuevoEstado = prompt('Nuevo estado (bueno/roto):');
+            if (nuevoEstado && ['bueno', 'roto'].includes(nuevoEstado)) {
+                await updateDoc(doc(db, "herramientas", id), { 
+                    estado: nuevoEstado
+                });
+            }
         };
+
+        // Buscador en admin
+        document.getElementById('buscadorAdmin').addEventListener('input', (e) => {
+            filtro = e.target.value;
+            actualizarTabla();
+        });
     </script>
 </body>
 </html>
+
 
