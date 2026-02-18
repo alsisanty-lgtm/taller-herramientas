@@ -1017,7 +1017,87 @@
                     nombre: nombre,
                     codigo: document.getElementById('toolCode').value.trim(),
                     cantidad: parseInt(document.getElementById('toolQty').value),
-                    estado
+                    estado: document.getElementById('toolState').value,
+                    presente: true,
+                    reportes: [],
+                    fechaCreacion: new Date().toISOString()
+                });
+                
+                document.getElementById('toolName').value = '';
+                document.getElementById('toolCode').value = '';
+                document.getElementById('toolQty').value = '1';
+                document.getElementById('toolState').value = 'bueno';
+                
+                mostrarToast('✅ Herramienta añadida correctamente');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al añadir', 'error');
+            }
+        };
+
+        window.marcarReparado = async function(id) {
+            try {
+                await updateDoc(doc(db, "herramientas", id), { 
+                    estado: 'bueno'
+                });
+                mostrarToast('✅ Marcada como reparada');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        window.cambiarEstado = async function(id) {
+            const nuevoEstado = prompt('Nuevo estado (bueno/roto/reparacion):');
+            if (nuevoEstado && ['bueno', 'roto', 'reparacion'].includes(nuevoEstado)) {
+                try {
+                    await updateDoc(doc(db, "herramientas", id), { 
+                        estado: nuevoEstado
+                    });
+                    mostrarToast('✅ Estado actualizado');
+                } catch (error) {
+                    console.error("Error:", error);
+                    mostrarToast('❌ Error', 'error');
+                }
+            }
+        };
+
+        window.verReportes = function(id) {
+            const herramienta = herramientas.find(h => h.id === id);
+            if (herramienta?.reportes?.length) {
+                let mensaje = `📋 REPORTES DE: ${herramienta.nombre}\n\n`;
+                herramienta.reportes.forEach((r, i) => {
+                    mensaje += `${i+1}. ${r.trabajadorNombre}\n`;
+                    mensaje += `   "${r.detalle}"\n`;
+                    mensaje += `   📅 ${r.timestamp}\n\n`;
+                });
+                alert(mensaje);
+            } else {
+                alert('No hay reportes para esta herramienta');
+            }
+        };
+
+        // Buscador en admin
+        document.getElementById('buscadorAdmin').addEventListener('input', (e) => {
+            filtro = e.target.value;
+            actualizarTabla();
+        });
+
+        // Inicializar notificaciones
+        actualizarBadgeNotificaciones();
+
+        // Cerrar panel de notificaciones al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('notificationPanel');
+            const bell = document.querySelector('.notification-bell');
+            if (!panel.contains(event.target) && !bell.contains(event.target)) {
+                panel.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+
 
 
 
