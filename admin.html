@@ -48,6 +48,7 @@
             font-size: 2.5em;
             font-weight: bold;
             color: #2c3e50;
+            margin-bottom: 5px;
         }
         
         .admin-section {
@@ -72,6 +73,7 @@
             color: white;
             padding: 5px 15px;
             border-radius: 30px;
+            font-size: 14px;
         }
         
         .trabajador-tabs {
@@ -82,11 +84,12 @@
         }
         
         .tab {
-            padding: 10px 20px;
+            padding: 12px 25px;
             background: #ecf0f1;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s;
+            font-weight: 500;
         }
         
         .tab.active {
@@ -96,6 +99,7 @@
         
         .tab:hover {
             transform: translateY(-2px);
+            background: #bdc3c7;
         }
         
         table {
@@ -115,11 +119,16 @@
             border-bottom: 1px solid #ecf0f1;
         }
         
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
         .status-badge {
             padding: 4px 12px;
             border-radius: 30px;
             font-size: 12px;
             display: inline-block;
+            font-weight: 600;
         }
         
         .status-bueno {
@@ -138,6 +147,8 @@
             border-radius: 8px;
             cursor: pointer;
             margin: 2px;
+            font-weight: 500;
+            transition: all 0.3s;
         }
         
         .btn-primary {
@@ -145,18 +156,30 @@
             color: white;
         }
         
+        .btn-primary:hover {
+            background: #219a52;
+        }
+        
         .btn-warning {
             background: #f39c12;
             color: white;
         }
         
-        .btn-info {
-            background: #3498db;
-            color: white;
+        .btn-warning:hover {
+            background: #e67e22;
         }
         
         .btn-danger {
             background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-info {
+            background: #3498db;
             color: white;
         }
         
@@ -168,33 +191,80 @@
             color: white;
             padding: 15px 25px;
             border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0%); opacity: 1; }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .solicitud-card {
+            background: #fff3cd;
+            border-left: 6px solid #f39c12;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+        }
+        
+        .reporte-card {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>👨‍🔧 ADMIN - CONTROL POR TRABAJADOR</h1>
-        <p>Cada trabajador tiene sus propias herramientas</p>
+        <p>Cada trabajador tiene su propio inventario</p>
     </div>
 
     <div class="container">
         <!-- Estadísticas globales -->
         <div class="stats-grid" id="statsContainer">
-            <div class="stat-card">Cargando...</div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div>Trabajadores</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div>Herramientas totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div>Presentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div>Dañadas</div>
+            </div>
         </div>
 
-        <!-- Lista de trabajadores -->
+        <!-- Trabajadores -->
         <div class="admin-section">
             <div class="section-title">
-                <h2>👥 TRABAJADORES ACTIVOS</h2>
+                <h2>👥 TRABAJADORES</h2>
                 <span class="badge" id="trabajadoresCount">0</span>
             </div>
-            <div class="trabajador-tabs" id="trabajadoresTabs"></div>
+            <div class="trabajador-tabs" id="trabajadoresTabs">
+                <div class="loading">Cargando trabajadores...</div>
+            </div>
         </div>
 
         <!-- Herramientas del trabajador seleccionado -->
-        <div class="admin-section" id="herramientasTrabajador">
+        <div class="admin-section" id="herramientasSection" style="display: none;">
             <h2 id="tituloTrabajador">Selecciona un trabajador</h2>
             <div style="overflow-x: auto;">
                 <table>
@@ -209,44 +279,47 @@
                         </tr>
                     </thead>
                     <tbody id="herramientasTable">
-                        <tr><td colspan="6">Selecciona un trabajador</td></tr>
+                        <tr><td colspan="6" class="loading">Selecciona un trabajador</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Solicitudes de herramientas -->
+        <!-- Solicitudes -->
         <div class="admin-section">
             <div class="section-title">
-                <h2>📝 SOLICITUDES DE HERRAMIENTAS</h2>
+                <h2>📝 SOLICITUDES PENDIENTES</h2>
                 <span class="badge" id="solicitudesCount">0</span>
             </div>
-            <div id="solicitudesContainer"></div>
+            <div id="solicitudesContainer">
+                <div class="loading">Cargando solicitudes...</div>
+            </div>
         </div>
 
-        <!-- Reportes globales -->
+        <!-- Reportes recientes -->
         <div class="admin-section">
             <div class="section-title">
-                <h2>⚠️ REPORTES DE TODOS LOS TRABAJADORES</h2>
-                <button class="btn btn-info" onclick="exportarReportes()">📊 Exportar a Excel</button>
+                <h2>⚠️ REPORTES RECIENTES</h2>
+                <button class="btn btn-info" onclick="exportarExcel()">📊 Exportar a Excel</button>
             </div>
-            <div id="reportesContainer"></div>
+            <div id="reportesContainer">
+                <div class="loading">Cargando reportes...</div>
+            </div>
         </div>
     </div>
 
     <div id="toast" class="toast"></div>
 
     <script type="module">
-        import { db, collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs } from './firebase-config.js';
+        import { db, collection, query, onSnapshot, updateDoc, doc, getDocs } from './firebase-config.js';
 
         // ============================================
         // VARIABLES GLOBALES
         // ============================================
         
-        let herramientasPorUsuario = {};
-        let trabajadores = [];
-        let trabajadorSeleccionado = null;
+        let trabajadores = {};
         let solicitudes = [];
+        let todosReportes = [];
 
         // ============================================
         // FUNCIONES AUXILIARES
@@ -260,55 +333,64 @@
         }
 
         // ============================================
-        // ESCUCHAR HERRAMIENTAS DE TODOS LOS USUARIOS
+        // CARGAR HERRAMIENTAS DE USUARIOS
         // ============================================
         
-        const q = query(collection(db, "herramientas_usuarios"));
-        onSnapshot(q, (snapshot) => {
-            herramientasPorUsuario = {};
-            const trabajadoresSet = new Set();
+        const qHerramientas = query(collection(db, "herramientas_usuarios"));
+        onSnapshot(qHerramientas, (snapshot) => {
+            trabajadores = {};
+            todosReportes = [];
             
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 const trabajadorId = data.trabajadorId;
                 const trabajadorNombre = data.trabajadorNombre;
                 
-                if (!herramientasPorUsuario[trabajadorId]) {
-                    herramientasPorUsuario[trabajadorId] = {
+                if (!trabajadores[trabajadorId]) {
+                    trabajadores[trabajadorId] = {
                         id: trabajadorId,
                         nombre: trabajadorNombre,
                         herramientas: []
                     };
-                    trabajadoresSet.add(trabajadorId);
                 }
                 
-                herramientasPorUsuario[trabajadorId].herramientas.push({
+                trabajadores[trabajadorId].herramientas.push({
                     id: doc.id,
                     ...data
                 });
+                
+                // Recopilar reportes
+                if (data.reportes && data.reportes.length > 0) {
+                    data.reportes.forEach(r => {
+                        todosReportes.push({
+                            ...r,
+                            herramienta: data.nombre,
+                            codigo: data.codigo
+                        });
+                    });
+                }
             });
             
-            trabajadores = Object.values(herramientasPorUsuario);
             actualizarEstadisticas();
             actualizarTabs();
-            
-            if (trabajadorSeleccionado) {
-                mostrarHerramientasTrabajador(trabajadorSeleccionado);
-            }
+            actualizarReportes();
         });
 
         // ============================================
-        // ESCUCHAR SOLICITUDES
+        // CARGAR SOLICITUDES
         // ============================================
         
         const qSolicitudes = query(collection(db, "solicitudes_herramientas"));
         onSnapshot(qSolicitudes, (snapshot) => {
             solicitudes = [];
             snapshot.forEach((doc) => {
-                solicitudes.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
+                const data = doc.data();
+                if (data.estado === 'pendiente') {
+                    solicitudes.push({
+                        id: doc.id,
+                        ...data
+                    });
+                }
             });
             actualizarSolicitudes();
         });
@@ -318,11 +400,12 @@
         // ============================================
         
         function actualizarEstadisticas() {
+            const totalTrabajadores = Object.keys(trabajadores).length;
             let totalHerramientas = 0;
             let totalPresentes = 0;
             let totalRotas = 0;
             
-            trabajadores.forEach(t => {
+            Object.values(trabajadores).forEach(t => {
                 totalHerramientas += t.herramientas.length;
                 totalPresentes += t.herramientas.filter(h => h.presente).length;
                 totalRotas += t.herramientas.filter(h => h.estado === 'roto').length;
@@ -330,12 +413,12 @@
             
             document.getElementById('statsContainer').innerHTML = `
                 <div class="stat-card">
-                    <div class="stat-number">${trabajadores.length}</div>
+                    <div class="stat-number">${totalTrabajadores}</div>
                     <div>Trabajadores</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">${totalHerramientas}</div>
-                    <div>Total herramientas</div>
+                    <div>Herramientas totales</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" style="color:#27ae60;">${totalPresentes}</div>
@@ -347,35 +430,30 @@
                 </div>
             `;
             
-            document.getElementById('trabajadoresCount').textContent = trabajadores.length;
+            document.getElementById('trabajadoresCount').textContent = totalTrabajadores;
         }
 
         function actualizarTabs() {
             const tabsContainer = document.getElementById('trabajadoresTabs');
+            const trabajadoresArray = Object.values(trabajadores);
             
-            if (trabajadores.length === 0) {
-                tabsContainer.innerHTML = '<p>No hay trabajadores registrados</p>';
+            if (trabajadoresArray.length === 0) {
+                tabsContainer.innerHTML = '<div class="loading">No hay trabajadores registrados</div>';
                 return;
             }
             
-            tabsContainer.innerHTML = trabajadores.map(t => `
-                <div class="tab ${trabajadorSeleccionado === t.id ? 'active' : ''}" 
-                     onclick="seleccionarTrabajador('${t.id}')">
+            tabsContainer.innerHTML = trabajadoresArray.map(t => `
+                <div class="tab" onclick="verTrabajador('${t.id}')">
                     👤 ${t.nombre} (${t.herramientas.length})
                 </div>
             `).join('');
         }
 
-        window.seleccionarTrabajador = function(trabajadorId) {
-            trabajadorSeleccionado = trabajadorId;
-            mostrarHerramientasTrabajador(trabajadorId);
-            actualizarTabs();
-        };
-
-        function mostrarHerramientasTrabajador(trabajadorId) {
-            const trabajador = herramientasPorUsuario[trabajadorId];
+        window.verTrabajador = function(trabajadorId) {
+            const trabajador = trabajadores[trabajadorId];
             if (!trabajador) return;
             
+            document.getElementById('herramientasSection').style.display = 'block';
             document.getElementById('tituloTrabajador').innerHTML = `🔧 Herramientas de <strong style="color: #3498db;">${trabajador.nombre}</strong>`;
             
             const tbody = document.getElementById('herramientasTable');
@@ -390,34 +468,32 @@
                     <td><strong>${h.nombre}</strong></td>
                     <td>${h.codigo || '-'}</td>
                     <td><span class="status-badge status-${h.estado}">${h.estado}</span></td>
-                    <td>${h.presente ? '✅' : '❌'}</td>
+                    <td>${h.presente ? '✅ Sí' : '❌ No'}</td>
                     <td>${h.reportes?.length || 0}</td>
                     <td>
-                        <button class="btn btn-warning" onclick="cambiarEstado('${h.id}')">📝 Estado</button>
-                        <button class="btn btn-danger" onclick="verReportes('${h.id}')">📋 Ver</button>
+                        <button class="btn btn-warning" onclick="cambiarEstado('${h.id}')">📝 Cambiar estado</button>
+                        <button class="btn btn-info" onclick="verReportes('${h.id}')">📋 Ver reportes</button>
                     </td>
                 </tr>
             `).join('');
-        }
+        };
 
         function actualizarSolicitudes() {
-            const pendientes = solicitudes.filter(s => s.estado === 'pendiente');
-            document.getElementById('solicitudesCount').textContent = pendientes.length;
-            
             const container = document.getElementById('solicitudesContainer');
+            document.getElementById('solicitudesCount').textContent = solicitudes.length;
             
-            if (pendientes.length === 0) {
-                container.innerHTML = '<p style="color: #27ae60;">No hay solicitudes pendientes</p>';
+            if (solicitudes.length === 0) {
+                container.innerHTML = '<div class="loading">No hay solicitudes pendientes</div>';
                 return;
             }
             
-            container.innerHTML = pendientes.map(s => `
-                <div style="background: #fff3cd; border-left: 6px solid #f39c12; padding: 15px; margin-bottom: 10px; border-radius: 8px;">
+            container.innerHTML = solicitudes.map(s => `
+                <div class="solicitud-card">
                     <div style="display: flex; justify-content: space-between; align-items: start;">
                         <div>
-                            <strong>👤 ${s.trabajadorNombre}</strong><br>
-                            <strong style="font-size: 1.1em;">🔧 ${s.nombre}</strong>
-                            ${s.codigo ? `<span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 12px;">${s.codigo}</span>` : ''}
+                            <strong style="font-size: 1.1em;">👤 ${s.trabajadorNombre}</strong><br>
+                            <strong>🔧 ${s.nombre}</strong>
+                            ${s.codigo ? `<span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 12px; margin-left: 10px;">${s.codigo}</span>` : ''}
                             ${s.motivo ? `<p style="margin: 10px 0;">"${s.motivo}"</p>` : ''}
                             <small>📅 ${s.fechaLegible}</small>
                         </div>
@@ -428,35 +504,25 @@
                     </div>
                 </div>
             `).join('');
-            
-            // También mostrar reportes globales
-            const reportesContainer = document.getElementById('reportesContainer');
-            const todosReportes = [];
-            
-            trabajadores.forEach(t => {
-                t.herramientas.forEach(h => {
-                    if (h.reportes) {
-                        h.reportes.forEach(r => {
-                            todosReportes.push({
-                                trabajador: t.nombre,
-                                herramienta: h.nombre,
-                                ...r
-                            });
-                        });
-                    }
-                });
-            });
+        }
+
+        function actualizarReportes() {
+            const container = document.getElementById('reportesContainer');
             
             if (todosReportes.length === 0) {
-                reportesContainer.innerHTML = '<p>No hay reportes</p>';
+                container.innerHTML = '<div class="loading">No hay reportes</div>';
                 return;
             }
             
-            reportesContainer.innerHTML = todosReportes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 20).map(r => `
-                <div style="background: #f8f9fa; padding: 12px; margin-bottom: 8px; border-radius: 8px; border-left: 4px solid #e74c3c;">
-                    <strong>👤 ${r.trabajador}</strong> - 🔧 ${r.herramienta}<br>
-                    <span>"${r.detalle}"</span><br>
-                    <small>📅 ${r.timestamp}</small>
+            // Ordenar por fecha (más reciente primero)
+            todosReportes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            container.innerHTML = todosReportes.slice(0, 20).map(r => `
+                <div class="reporte-card">
+                    <strong>👤 ${r.trabajadorNombre}</strong><br>
+                    <strong>🔧 ${r.herramienta}</strong> ${r.codigo ? `<span style="color: #7f8c8d;">(${r.codigo})</span>` : ''}<br>
+                    <span style="color: #e74c3c;">"${r.detalle}"</span><br>
+                    <small style="color: #7f8c8d;">📅 ${r.timestamp}</small>
                 </div>
             `).join('');
         }
@@ -467,75 +533,81 @@
         
         window.cambiarEstado = async function(id) {
             const nuevoEstado = prompt('Nuevo estado (bueno/roto):');
-            if (nuevoEstado) {
-                await updateDoc(doc(db, "herramientas_usuarios", id), { 
-                    estado: nuevoEstado
-                });
-                mostrarToast('✅ Estado actualizado');
+            if (nuevoEstado && ['bueno', 'roto'].includes(nuevoEstado)) {
+                try {
+                    await updateDoc(doc(db, "herramientas_usuarios", id), { 
+                        estado: nuevoEstado
+                    });
+                    mostrarToast('✅ Estado actualizado');
+                } catch (error) {
+                    console.error("Error:", error);
+                    mostrarToast('❌ Error', 'error');
+                }
             }
         };
 
         window.verReportes = function(id) {
             // Buscar la herramienta en todos los trabajadores
-            for (const t of trabajadores) {
+            for (const t of Object.values(trabajadores)) {
                 const h = t.herramientas.find(h => h.id === id);
-                if (h && h.reportes) {
-                    let msg = `📋 Reportes de ${h.nombre}\n\n`;
+                if (h && h.reportes && h.reportes.length > 0) {
+                    let mensaje = `📋 Reportes de ${h.nombre}\n\n`;
                     h.reportes.forEach((r, i) => {
-                        msg += `${i+1}. ${r.trabajadorNombre}\n   "${r.detalle}"\n   📅 ${r.timestamp}\n\n`;
+                        mensaje += `${i+1}. ${r.trabajadorNombre}\n   "${r.detalle}"\n   📅 ${r.timestamp}\n\n`;
                     });
-                    alert(msg);
+                    alert(mensaje);
                     return;
                 }
             }
-            alert('No hay reportes');
+            alert('No hay reportes para esta herramienta');
         };
 
         window.aprobarSolicitud = async function(id) {
-            // Aquí podrías crear la herramienta automáticamente
-            await updateDoc(doc(db, "solicitudes_herramientas", id), { 
-                estado: 'aprobada'
-            });
-            mostrarToast('✅ Solicitud aprobada');
+            try {
+                await updateDoc(doc(db, "solicitudes_herramientas", id), { 
+                    estado: 'aprobada'
+                });
+                mostrarToast('✅ Solicitud aprobada');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
         };
 
         window.rechazarSolicitud = async function(id) {
-            await updateDoc(doc(db, "solicitudes_herramientas", id), { 
-                estado: 'rechazada'
-            });
-            mostrarToast('❌ Solicitud rechazada');
+            try {
+                await updateDoc(doc(db, "solicitudes_herramientas", id), { 
+                    estado: 'rechazada'
+                });
+                mostrarToast('❌ Solicitud rechazada');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
         };
 
-        window.exportarReportes = function() {
-            const todosReportes = [];
-            
-            trabajadores.forEach(t => {
-                t.herramientas.forEach(h => {
-                    if (h.reportes) {
-                        h.reportes.forEach(r => {
-                            todosReportes.push({
-                                'Fecha': r.timestamp,
-                                'Trabajador': r.trabajadorNombre,
-                                'Herramienta': h.nombre,
-                                'Código': h.codigo || '-',
-                                'Problema': r.detalle,
-                                'Estado': h.estado
-                            });
-                        });
-                    }
-                });
-            });
-            
+        window.exportarExcel = function() {
             if (todosReportes.length === 0) {
                 alert('No hay reportes para exportar');
                 return;
             }
             
-            const headers = Object.keys(todosReportes[0]).join(',');
-            const rows = todosReportes.map(r => Object.values(r).map(v => `"${v}"`).join(',')).join('\n');
-            const csv = headers + '\n' + rows;
+            // Crear CSV
+            const headers = ['Fecha', 'Trabajador', 'Herramienta', 'Código', 'Problema'];
+            const rows = todosReportes.map(r => [
+                r.timestamp,
+                r.trabajadorNombre,
+                r.herramienta,
+                r.codigo || '-',
+                r.detalle
+            ]);
             
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `reportes_${new Date().toLocaleDateString()}.csv`;
@@ -546,6 +618,7 @@
     </script>
 </body>
 </html>
+
 
 
 
