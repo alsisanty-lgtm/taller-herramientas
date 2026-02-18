@@ -3,7 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ======================================== -->
+    <!-- NUEVO: Iconos y manifest para PWA -->
+    <!-- ======================================== -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- Meta tags para móvil -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#27ae60">
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- ======================================== -->
+    
     <title>Acceso - Taller</title>
+    
+    <!-- RESTO DE TU CSS ORIGINAL SIN CAMBIOS -->
     <style>
         * {
             margin: 0;
@@ -127,6 +146,14 @@
     </style>
 </head>
 <body>
+    <!-- ======================================== -->
+    <!-- NUEVO: Botón de instalación (opcional) -->
+    <!-- ======================================== -->
+    <button id="installButton" style="position: fixed; bottom: 20px; right: 20px; background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 1000;">
+        📲 Instalar App
+    </button>
+    <!-- ======================================== -->
+
     <div class="login-container">
         <div class="logo">
             <h1>🔧 TALLER MECÁNICO</h1>
@@ -211,8 +238,45 @@
             }
         };
     </script>
+
+    <!-- ======================================== -->
+    <!-- NUEVO: Script para Service Worker y PWA -->
+    <!-- ======================================== -->
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado correctamente');
+                    })
+                    .catch(error => {
+                        console.log('Error registrando ServiceWorker:', error);
+                    });
+            });
+        }
+
+        // Botón de instalación
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installButton').style.display = 'block';
+        });
+
+        document.getElementById('installButton').addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Resultado instalación: ${outcome}`);
+            deferredPrompt = null;
+            document.getElementById('installButton').style.display = 'none';
+        });
+    </script>
+    <!-- ======================================== -->
 </body>
 </html>
+
 
 
 
