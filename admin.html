@@ -609,10 +609,20 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>👨‍🔧 ADMIN - TALLER MECÁNICO</h1>
-        <p>Gestión completa de usuarios, herramientas e incidencias</p>
+    <div class="header" style="position: relative;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 10px;">
+        <img src="icon-192x192.png" alt="Logo Taller" style="width: 80px; height: 80px; border-radius: 20px; box-shadow: 0 6px 15px rgba(0,0,0,0.2); border: 3px solid white;">
+        <div>
+            <h1 style="margin: 0; font-size: 2em;">👨‍🔧 ADMIN - TALLER MECÁNICO</h1>
+            <p style="margin: 5px 0 0; opacity: 0.9;">Gestión completa de usuarios, herramientas e incidencias</p>
+        </div>
     </div>
+    
+    <!-- Botón de instalación -->
+    <button id="installButton" style="position: absolute; top: 20px; right: 20px; background: white; color: #27ae60; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; display: none;">
+        📲 Instalar App
+    </button>
+</div>
 
     <div class="container">
         <!-- Estadísticas -->
@@ -1603,9 +1613,40 @@
         document.getElementById('buscarCatalogo').addEventListener('input', actualizarCatalogo);
         document.getElementById('buscarHerramientasAñadir').addEventListener('input', mostrarHerramientasParaAñadir);
         document.getElementById('buscarHistorial').addEventListener('input', actualizarHistorial);
-    </script>
+    <script>
+    // Registrar Service Worker (el mismo código de index.html)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => {
+                    console.log('ServiceWorker registrado:', registration);
+                })
+                .catch(error => {
+                    console.log('Error registrando ServiceWorker:', error);
+                });
+        });
+    }
+
+    // Botón de instalación
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installButton').style.display = 'block';
+    });
+
+    document.getElementById('installButton').addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        deferredPrompt = null;
+        document.getElementById('installButton').style.display = 'none';
+    });
+</script>
 </body>
 </html>
+
 
 
 
