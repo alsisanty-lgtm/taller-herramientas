@@ -124,7 +124,7 @@
             color: white;
         }
         
-        /* Formulario de usuario */
+        /* Formularios */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -143,7 +143,7 @@
             color: #2c3e50;
         }
         
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e9ecef;
@@ -152,7 +152,7 @@
             transition: border-color 0.3s;
         }
         
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: #27ae60;
         }
@@ -222,7 +222,7 @@
         /* Tarjetas de usuario */
         .usuarios-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
@@ -250,6 +250,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .usuario-nombre {
@@ -281,6 +283,7 @@
             gap: 15px;
             margin: 15px 0;
             font-size: 0.9em;
+            flex-wrap: wrap;
         }
         
         .usuario-acciones {
@@ -288,6 +291,63 @@
             gap: 10px;
             margin-top: 15px;
             flex-wrap: wrap;
+        }
+        
+        /* Lista de herramientas en el modal */
+        .herramientas-lista {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .herramienta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .herramienta-item:last-child {
+            border-bottom: none;
+        }
+        
+        .herramienta-info {
+            flex: 1;
+        }
+        
+        .herramienta-nombre {
+            font-weight: 600;
+        }
+        
+        .herramienta-codigo {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .herramienta-estado {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        
+        .estado-bueno {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .estado-roto {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .herramienta-acciones {
+            display: flex;
+            gap: 5px;
         }
         
         /* Tarjetas de incidencias */
@@ -364,7 +424,7 @@
         .modal-content {
             background: white;
             width: 90%;
-            max-width: 600px;
+            max-width: 800px;
             max-height: 80vh;
             overflow-y: auto;
             border-radius: 20px;
@@ -376,6 +436,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
         }
         
         .close-btn {
@@ -448,6 +510,13 @@
             border-radius: 30px;
         }
         
+        .badge-success {
+            background: #27ae60;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+        }
+        
         .estado-tag {
             display: inline-block;
             padding: 4px 12px;
@@ -469,6 +538,39 @@
         .estado-reparado {
             background: #d4edda;
             color: #155724;
+        }
+        
+        /* Buscador */
+        .buscador {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        
+        /* Grid de herramientas para añadir */
+        .herramientas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .herramienta-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .herramienta-check input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -502,12 +604,15 @@
         <!-- Pestañas -->
         <div class="tabs">
             <div class="tab active" onclick="cambiarTab('usuarios')">👥 Usuarios</div>
+            <div class="tab" onclick="cambiarTab('inventario')">📦 Inventario Global</div>
             <div class="tab" onclick="cambiarTab('incidencias')">⚠️ Incidencias</div>
             <div class="tab" onclick="cambiarTab('reparacion')">🔧 En reparación</div>
             <div class="tab" onclick="cambiarTab('historial')">📋 Historial</div>
         </div>
 
+        <!-- ======================================== -->
         <!-- PANEL DE USUARIOS -->
+        <!-- ======================================== -->
         <div id="panelUsuarios">
             <!-- Formulario crear usuario -->
             <div class="admin-section">
@@ -533,13 +638,47 @@
                     <h2>👥 LISTA DE USUARIOS</h2>
                     <span class="badge" id="usuariosCount">0</span>
                 </div>
+                <input type="text" id="buscarUsuarios" class="buscador" placeholder="🔍 Buscar usuario...">
                 <div class="usuarios-grid" id="usuariosContainer">
                     <div class="loading">Cargando usuarios...</div>
                 </div>
             </div>
         </div>
 
+        <!-- ======================================== -->
+        <!-- PANEL DE INVENTARIO GLOBAL -->
+        <!-- ======================================== -->
+        <div id="panelInventario" style="display: none;">
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>📦 INVENTARIO GLOBAL DE HERRAMIENTAS</h2>
+                    <button class="btn btn-info" onclick="exportarInventario()">📊 Exportar Excel</button>
+                </div>
+                
+                <!-- Lista maestra de herramientas -->
+                <h3 style="margin: 20px 0 10px;">➕ Añadir nueva herramienta al catálogo</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre de la herramienta</label>
+                        <input type="text" id="nuevaHerramientaNombre" placeholder="Ej: Llave mixta 440.10">
+                    </div>
+                    <div class="form-group">
+                        <label>Código</label>
+                        <input type="text" id="nuevaHerramientaCodigo" placeholder="Ej: 440.10">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="añadirHerramientaCatalogo()">➕ Añadir al catálogo</button>
+                
+                <!-- Catálogo de herramientas disponibles -->
+                <h3 style="margin: 30px 0 10px;">📋 Catálogo de herramientas</h3>
+                <input type="text" id="buscarCatalogo" class="buscador" placeholder="🔍 Buscar en catálogo...">
+                <div id="catalogoContainer" class="loading">Cargando catálogo...</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
         <!-- PANEL DE INCIDENCIAS PENDIENTES -->
+        <!-- ======================================== -->
         <div id="panelIncidencias" style="display: none;">
             <div class="admin-section">
                 <div class="section-title">
@@ -552,7 +691,9 @@
             </div>
         </div>
 
+        <!-- ======================================== -->
         <!-- PANEL DE EN REPARACIÓN -->
+        <!-- ======================================== -->
         <div id="panelReparacion" style="display: none;">
             <div class="admin-section">
                 <div class="section-title">
@@ -565,13 +706,16 @@
             </div>
         </div>
 
+        <!-- ======================================== -->
         <!-- PANEL DE HISTORIAL -->
+        <!-- ======================================== -->
         <div id="panelHistorial" style="display: none;">
             <div class="admin-section">
                 <div class="section-title">
                     <h2>📋 HISTORIAL DE INCIDENCIAS</h2>
-                    <button class="btn btn-info" onclick="exportarExcel()">📊 Exportar Excel</button>
+                    <button class="btn btn-info" onclick="exportarIncidencias()">📊 Exportar Excel</button>
                 </div>
+                <input type="text" id="buscarHistorial" class="buscador" placeholder="🔍 Buscar en historial...">
                 <div id="historialContainer" class="loading">
                     Cargando historial...
                 </div>
@@ -579,14 +723,33 @@
         </div>
     </div>
 
-    <!-- Modal para ver historial de herramienta -->
-    <div id="modalHistorial" class="modal">
+    <!-- ======================================== -->
+    <!-- MODALES -->
+    <!-- ======================================== -->
+    
+    <!-- Modal para ver herramientas del usuario -->
+    <div id="modalHerramientas" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitulo">Historial de herramienta</h2>
-                <button class="close-btn" onclick="cerrarModal()">&times;</button>
+                <h2 id="modalTitulo">Herramientas del usuario</h2>
+                <button class="close-btn" onclick="cerrarModal('modalHerramientas')">&times;</button>
             </div>
-            <div id="modalContenido"></div>
+            <div id="modalHerramientasContenido"></div>
+        </div>
+    </div>
+
+    <!-- Modal para añadir herramientas a usuario -->
+    <div id="modalAñadirHerramientas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Añadir herramientas a <span id="usuarioSeleccionadoNombre"></span></h2>
+                <button class="close-btn" onclick="cerrarModal('modalAñadirHerramientas')">&times;</button>
+            </div>
+            <input type="text" id="buscarHerramientasAñadir" class="buscador" placeholder="🔍 Buscar herramientas...">
+            <div id="herramientasAñadirLista" class="herramientas-lista" style="margin: 20px 0;">
+                Cargando...
+            </div>
+            <button class="btn btn-primary" onclick="guardarHerramientasSeleccionadas()" style="width: 100%;">✅ Añadir seleccionadas</button>
         </div>
     </div>
 
@@ -601,7 +764,32 @@
         
         let usuarios = [];
         let herramientas = [];
+        let catalogoHerramientas = [];
         let todasLasIncidencias = [];
+        let usuarioSeleccionadoId = null;
+
+        // Lista inicial de herramientas por defecto
+        const herramientasPorDefecto = [
+            "Juego de carracas", "Caja de herramientas BT.11A",
+            "Llave con trinquete 467B.10", "Llave trinquete 467B.13",
+            "Llave trinquete 467B.17", "Llave trinquete 467B.19",
+            "Llave mixta 440.10", "Llave mixta 440.13", "Llave mixta 440.17",
+            "Llave mixta 440.19", "Llave mixta 440.20", "Llave mixta 440.22",
+            "Llave mixta 440.24", "Llave mixta 440.36", "Llave de pipa 75.10",
+            "Llave de pipa 75.13", "Llave de pipa 75.17", "Llave de pipa 75.19",
+            "Llave de vaso con mango 74A.7", "Llave de vaso con mango 74A.8",
+            "Llave inglesa 101.10", "Destornilladores juego ATP.J6",
+            "Llaves Allen con mango 84TZA", "Juego llaves de Allen 83H.JP9A",
+            "Alicates de corte 192A.18CPE", "Alicates de punta 185A.20CPE",
+            "Alicates universales 187A.18CPE", "Picoloro 181A.25CPE",
+            "Alicates para arandela 179A.9", "Mordaza de presión 580.10",
+            "Calibre 805.2", "Escuadra DELA.1223.03", "Metro 893B.825",
+            "Nivel 3078.40", "Tiralíneas DELA.13299.15", "Maza 1262H.125",
+            "Cincel 263.25", "Alargadera 50m",
+            "Combo Makita DGA504 + DHP486 + SAMP", "Taladro Makita DTW285Z",
+            "Taladro Makita percutor HP2071", "Máquina de soldar",
+            "Carro transporte herramientas"
+        ];
 
         // ============================================
         // FUNCIONES AUXILIARES
@@ -615,8 +803,8 @@
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        window.cerrarModal = function() {
-            document.getElementById('modalHistorial').style.display = 'none';
+        window.cerrarModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'none';
         };
 
         window.cambiarTab = function(tab) {
@@ -624,6 +812,7 @@
             event.target.classList.add('active');
             
             document.getElementById('panelUsuarios').style.display = tab === 'usuarios' ? 'block' : 'none';
+            document.getElementById('panelInventario').style.display = tab === 'inventario' ? 'block' : 'none';
             document.getElementById('panelIncidencias').style.display = tab === 'incidencias' ? 'block' : 'none';
             document.getElementById('panelReparacion').style.display = tab === 'reparacion' ? 'block' : 'none';
             document.getElementById('panelHistorial').style.display = tab === 'historial' ? 'block' : 'none';
@@ -682,6 +871,44 @@
             actualizarHistorial();
         });
 
+        // Cargar catálogo de herramientas
+        async function cargarCatalogo() {
+            const qCatalogo = query(collection(db, "catalogo_herramientas"));
+            const snapshot = await getDocs(qCatalogo);
+            
+            if (snapshot.empty) {
+                // Crear catálogo inicial
+                for (const nombre of herramientasPorDefecto) {
+                    await addDoc(collection(db, "catalogo_herramientas"), {
+                        nombre: nombre,
+                        codigo: "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                        activo: true
+                    });
+                }
+                // Recargar
+                const nuevoSnapshot = await getDocs(qCatalogo);
+                catalogoHerramientas = [];
+                nuevoSnapshot.forEach((doc) => {
+                    catalogoHerramientas.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+            } else {
+                catalogoHerramientas = [];
+                snapshot.forEach((doc) => {
+                    catalogoHerramientas.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+            }
+            
+            actualizarCatalogo();
+        }
+        
+        cargarCatalogo();
+
         // ============================================
         // ACTUALIZAR ESTADÍSTICAS
         // ============================================
@@ -722,13 +949,22 @@
         
         function actualizarUsuarios() {
             const container = document.getElementById('usuariosContainer');
+            const busqueda = document.getElementById('buscarUsuarios').value.toLowerCase();
             
-            if (usuarios.length === 0) {
-                container.innerHTML = '<div class="loading">No hay usuarios creados</div>';
+            let usuariosFiltrados = usuarios;
+            if (busqueda) {
+                usuariosFiltrados = usuarios.filter(u => 
+                    u.nombre.toLowerCase().includes(busqueda) ||
+                    (u.rol && u.rol.toLowerCase().includes(busqueda))
+                );
+            }
+            
+            if (usuariosFiltrados.length === 0) {
+                container.innerHTML = '<div class="loading">No hay usuarios</div>';
                 return;
             }
             
-            container.innerHTML = usuarios.map(u => {
+            container.innerHTML = usuariosFiltrados.map(u => {
                 // Contar herramientas de este usuario
                 const herramientasUsuario = herramientas.filter(h => h.trabajadorId === u.id);
                 const herramientasRojas = herramientasUsuario.filter(h => h.estado === 'roto').length;
@@ -750,6 +986,7 @@
                         </div>
                         <div class="usuario-acciones">
                             <button class="btn btn-info" onclick="verHerramientas('${u.id}')">🔍 Ver herramientas</button>
+                            <button class="btn btn-success" onclick="abrirAñadirHerramientas('${u.id}', '${u.nombre}')">➕ Añadir</button>
                             <button class="btn btn-warning" onclick="toggleUsuario('${u.id}', ${u.activo !== false})">
                                 ${u.activo !== false ? '❌ Desactivar' : '✅ Activar'}
                             </button>
@@ -784,21 +1021,13 @@
                     fechaCreacion: new Date().toISOString()
                 });
                 
-                // Lista de herramientas básicas para nuevo usuario
-                const herramientasBasicas = [
-                    "Juego de carracas", "Caja de herramientas BT.11A",
-                    "Llave con trinquete 467B.10", "Llave trinquete 467B.13",
-                    "Llave mixta 440.10", "Llave mixta 440.13",
-                    "Destornilladores juego ATP.J6", "Alicates universales 187A.18CPE",
-                    "Metro 893B.825", "Calibre 805.2"
-                ];
-                
-                // Asignar herramientas básicas
-                for (const nombre of herramientasBasicas) {
+                // Asignar herramientas básicas (10 herramientas)
+                const herramientasBasicas = herramientasPorDefecto.slice(0, 10);
+                for (const nombreHerramienta of herramientasBasicas) {
                     await addDoc(collection(db, "herramientas_usuarios"), {
                         trabajadorId: usuarioRef.id,
                         trabajadorNombre: nombre,
-                        nombre: nombre,
+                        nombre: nombreHerramienta,
                         codigo: "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
                         cantidad: 1,
                         presente: true,
@@ -854,34 +1083,191 @@
             const usuario = usuarios.find(u => u.id === usuarioId);
             const herramientasUsuario = herramientas.filter(h => h.trabajadorId === usuarioId);
             
-            let contenido = `<h3 style="margin-bottom: 15px;">Herramientas de ${usuario ? usuario.nombre : 'Usuario'}</h3>`;
+            let contenido = `
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-success" onclick="abrirAñadirHerramientas('${usuarioId}', '${usuario.nombre}')">
+                        ➕ Añadir herramientas
+                    </button>
+                </div>
+            `;
             
             if (herramientasUsuario.length === 0) {
                 contenido += '<p>No tiene herramientas asignadas</p>';
             } else {
-                contenido += '<div style="max-height: 400px; overflow-y: auto;">';
+                contenido += '<div class="herramientas-lista">';
                 herramientasUsuario.forEach(h => {
                     contenido += `
-                        <div style="padding: 10px; border-bottom: 1px solid #ecf0f1;">
-                            <strong>${h.nombre}</strong><br>
-                            <span style="color: #7f8c8d;">Código: ${h.codigo || '-'}</span><br>
-                            <span style="display: inline-block; padding: 2px 8px; background: ${h.estado === 'bueno' ? '#d4edda' : '#f8d7da'}; border-radius: 12px; font-size: 12px;">
-                                ${h.estado}
-                            </span>
-                            ${h.presente ? ' ✅ Presente' : ' ❌ Ausente'}
+                        <div class="herramienta-item">
+                            <div class="herramienta-info">
+                                <span class="herramienta-nombre">${h.nombre}</span>
+                                <span class="herramienta-codigo">${h.codigo || ''}</span>
+                                <span class="herramienta-estado estado-${h.estado === 'bueno' ? 'bueno' : 'roto'}">${h.estado}</span>
+                            </div>
+                            <div class="herramienta-acciones">
+                                <button class="btn btn-danger btn-small" onclick="quitarHerramienta('${h.id}')">🗑️</button>
+                            </div>
                         </div>
                     `;
                 });
                 contenido += '</div>';
             }
             
-            document.getElementById('modalTitulo').innerHTML = 'Herramientas del usuario';
-            document.getElementById('modalContenido').innerHTML = contenido;
-            document.getElementById('modalHistorial').style.display = 'flex';
+            document.getElementById('modalTitulo').innerHTML = `Herramientas de ${usuario.nombre}`;
+            document.getElementById('modalHerramientasContenido').innerHTML = contenido;
+            document.getElementById('modalHerramientas').style.display = 'flex';
+        };
+
+        window.quitarHerramienta = async function(herramientaId) {
+            if (!confirm('¿Quitar esta herramienta del usuario?')) return;
+            
+            try {
+                await deleteDoc(doc(db, "herramientas_usuarios", herramientaId));
+                mostrarToast('✅ Herramienta eliminada');
+                // Cerrar y reabrir el modal para actualizar
+                document.getElementById('modalHerramientas').style.display = 'none';
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
         };
 
         // ============================================
-        // GESTIÓN DE INCIDENCIAS
+        // GESTIÓN DE HERRAMIENTAS
+        // ============================================
+        
+        window.abrirAñadirHerramientas = function(usuarioId, usuarioNombre) {
+            usuarioSeleccionadoId = usuarioId;
+            document.getElementById('usuarioSeleccionadoNombre').textContent = usuarioNombre;
+            document.getElementById('modalAñadirHerramientas').style.display = 'flex';
+            mostrarHerramientasParaAñadir();
+        };
+
+        function mostrarHerramientasParaAñadir() {
+            const container = document.getElementById('herramientasAñadirLista');
+            const busqueda = document.getElementById('buscarHerramientasAñadir').value.toLowerCase();
+            
+            // Herramientas que ya tiene el usuario
+            const herramientasUsuario = herramientas
+                .filter(h => h.trabajadorId === usuarioSeleccionadoId)
+                .map(h => h.nombre);
+            
+            // Filtrar catálogo
+            let catalogoFiltrado = catalogoHerramientas;
+            if (busqueda) {
+                catalogoFiltrado = catalogoHerramientas.filter(h => 
+                    h.nombre.toLowerCase().includes(busqueda)
+                );
+            }
+            
+            if (catalogoFiltrado.length === 0) {
+                container.innerHTML = '<p>No hay herramientas disponibles</p>';
+                return;
+            }
+            
+            container.innerHTML = catalogoFiltrado.map(h => {
+                const yaTiene = herramientasUsuario.includes(h.nombre);
+                return `
+                    <div class="herramienta-check">
+                        <input type="checkbox" value="${h.nombre}" data-codigo="${h.codigo || ''}" ${yaTiene ? 'disabled' : ''}>
+                        <span style="flex: 1;">${h.nombre} ${h.codigo ? `(${h.codigo})` : ''}</span>
+                        ${yaTiene ? '<span style="color: #27ae60;">✓ Ya asignada</span>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.guardarHerramientasSeleccionadas = async function() {
+            const checkboxes = document.querySelectorAll('#herramientasAñadirLista input[type="checkbox"]:checked');
+            
+            if (checkboxes.length === 0) {
+                alert('Selecciona al menos una herramienta');
+                return;
+            }
+            
+            try {
+                for (const cb of checkboxes) {
+                    await addDoc(collection(db, "herramientas_usuarios"), {
+                        trabajadorId: usuarioSeleccionadoId,
+                        trabajadorNombre: document.getElementById('usuarioSeleccionadoNombre').textContent,
+                        nombre: cb.value,
+                        codigo: cb.dataset.codigo || "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                        cantidad: 1,
+                        presente: true,
+                        estado: 'bueno',
+                        reportes: [],
+                        fechaAsignacion: new Date().toISOString()
+                    });
+                }
+                
+                document.getElementById('modalAñadirHerramientas').style.display = 'none';
+                mostrarToast(`✅ ${checkboxes.length} herramientas añadidas`);
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        // ============================================
+        // CATÁLOGO DE HERRAMIENTAS
+        // ============================================
+        
+        function actualizarCatalogo() {
+            const container = document.getElementById('catalogoContainer');
+            const busqueda = document.getElementById('buscarCatalogo').value.toLowerCase();
+            
+            let catalogoFiltrado = catalogoHerramientas;
+            if (busqueda) {
+                catalogoFiltrado = catalogoHerramientas.filter(h => 
+                    h.nombre.toLowerCase().includes(busqueda)
+                );
+            }
+            
+            if (catalogoFiltrado.length === 0) {
+                container.innerHTML = '<p>No hay herramientas en el catálogo</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;">
+                    ${catalogoFiltrado.map(h => `
+                        <div style="background: #f8f9fa; padding: 10px; border-radius: 8px;">
+                            <strong>${h.nombre}</strong><br>
+                            <small>${h.codigo || 'Sin código'}</small>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.añadirHerramientaCatalogo = async function() {
+            const nombre = document.getElementById('nuevaHerramientaNombre').value.trim();
+            const codigo = document.getElementById('nuevaHerramientaCodigo').value.trim();
+            
+            if (!nombre) {
+                alert('El nombre es obligatorio');
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, "catalogo_herramientas"), {
+                    nombre: nombre,
+                    codigo: codigo || "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                    activo: true
+                });
+                
+                document.getElementById('nuevaHerramientaNombre').value = '';
+                document.getElementById('nuevaHerramientaCodigo').value = '';
+                
+                mostrarToast('✅ Herramienta añadida al catálogo');
+                cargarCatalogo(); // Recargar catálogo
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        // ============================================
+        // INCIDENCIAS
         // ============================================
         
         function actualizarIncidencias() {
@@ -911,9 +1297,6 @@
                         <button class="btn btn-success" onclick="marcarReparado('${i.herramientaId}', '${i.timestamp}')">
                             ✅ Marcar reparado
                         </button>
-                        <button class="btn btn-info" onclick="verHistorialHerramienta('${i.herramientaId}')">
-                            📋 Ver historial
-                        </button>
                     </div>
                 </div>
             `).join('');
@@ -942,9 +1325,6 @@
                         <button class="btn btn-success" onclick="marcarReparado('${i.herramientaId}', '${i.timestamp}')">
                             ✅ Marcar reparado
                         </button>
-                        <button class="btn btn-info" onclick="verHistorialHerramienta('${i.herramientaId}')">
-                            📋 Ver historial
-                        </button>
                     </div>
                 </div>
             `).join('');
@@ -952,7 +1332,17 @@
 
         function actualizarHistorial() {
             const container = document.getElementById('historialContainer');
-            const historial = todasLasIncidencias.filter(i => i.estado === 'reparado' || i.estado === 'sustituido');
+            const busqueda = document.getElementById('buscarHistorial').value.toLowerCase();
+            
+            let historial = todasLasIncidencias.filter(i => i.estado === 'reparado' || i.estado === 'sustituido');
+            
+            if (busqueda) {
+                historial = historial.filter(i => 
+                    i.herramienta.toLowerCase().includes(busqueda) ||
+                    i.trabajadorNombre.toLowerCase().includes(busqueda) ||
+                    i.detalle.toLowerCase().includes(busqueda)
+                );
+            }
             
             // Ordenar por fecha (más reciente primero)
             historial.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -977,10 +1367,6 @@
             `).join('');
         }
 
-        // ============================================
-        // ACCIONES SOBRE INCIDENCIAS
-        // ============================================
-        
         window.marcarReparacion = async function(herramientaId, timestamp) {
             try {
                 const herramienta = herramientas.find(h => h.id === herramientaId);
@@ -1038,37 +1424,49 @@
             }
         };
 
-        window.verHistorialHerramienta = function(herramientaId) {
-            const herramienta = herramientas.find(h => h.id === herramientaId);
-            if (!herramienta) return;
+        // ============================================
+        // EXPORTAR
+        // ============================================
+        
+        window.exportarInventario = function() {
+            // Agrupar herramientas por nombre
+            const inventario = {};
+            herramientas.forEach(h => {
+                if (!inventario[h.nombre]) {
+                    inventario[h.nombre] = {
+                        total: 0,
+                        presentes: 0,
+                        rotas: 0
+                    };
+                }
+                inventario[h.nombre].total++;
+                if (h.presente) inventario[h.nombre].presentes++;
+                if (h.estado === 'roto') inventario[h.nombre].rotas++;
+            });
             
-            const incidencias = todasLasIncidencias.filter(i => i.herramientaId === herramientaId);
+            const headers = ['Herramienta', 'Total', 'Presentes', 'Dañadas'];
+            const rows = Object.entries(inventario).map(([nombre, stats]) => [
+                nombre,
+                stats.total,
+                stats.presentes,
+                stats.rotas
+            ]);
             
-            let contenido = `<h3 style="margin-bottom: 15px;">Historial de ${herramienta.nombre}</h3>`;
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
             
-            if (incidencias.length === 0) {
-                contenido += '<p>No hay incidencias registradas</p>';
-            } else {
-                incidencias.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                incidencias.forEach(i => {
-                    contenido += `
-                        <div class="historial-item">
-                            <div class="fecha-historial">📅 ${i.timestamp}</div>
-                            <div><strong>👤 ${i.trabajadorNombre}</strong></div>
-                            <div>Problema: "${i.detalle}"</div>
-                            <div>Estado: <span class="estado-tag estado-${i.estado || 'pendiente'}">${i.estado || 'pendiente'}</span></div>
-                            ${i.fechaResolucion ? `<div style="color: #27ae60;">✅ Resuelto: ${i.fechaResolucion}</div>` : ''}
-                        </div>
-                    `;
-                });
-            }
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `inventario_${new Date().toLocaleDateString()}.csv`;
+            link.click();
             
-            document.getElementById('modalTitulo').innerHTML = 'Historial de herramienta';
-            document.getElementById('modalContenido').innerHTML = contenido;
-            document.getElementById('modalHistorial').style.display = 'flex';
+            mostrarToast('✅ Inventario exportado');
         };
 
-        window.exportarExcel = function() {
+        window.exportarIncidencias = function() {
             if (todasLasIncidencias.length === 0) {
                 alert('No hay datos para exportar');
                 return;
@@ -1099,9 +1497,16 @@
             
             mostrarToast(`✅ Exportadas ${todasLasIncidencias.length} incidencias`);
         };
+
+        // Event listeners para búsquedas
+        document.getElementById('buscarUsuarios').addEventListener('input', actualizarUsuarios);
+        document.getElementById('buscarCatalogo').addEventListener('input', actualizarCatalogo);
+        document.getElementById('buscarHerramientasAñadir').addEventListener('input', mostrarHerramientasParaAñadir);
+        document.getElementById('buscarHistorial').addEventListener('input', actualizarHistorial);
     </script>
 </body>
 </html>
+
 
 
 
