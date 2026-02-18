@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Actualizar Herramientas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #27ae60;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .success { color: #27ae60; }
+        .error { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 ACTUALIZAR HERRAMIENTAS</h1>
+        <p>Añade todas las herramientas a los trabajadores existentes</p>
+        
+        <button class="btn" onclick="actualizarTodo()">ACTUALIZAR TODOS LOS TRABAJADORES</button>
+        <div id="resultado"></div>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, addDoc } from './firebase-config.js';
+
+        const herramientasCompletas = [
+            "Juego de carracas", "Caja de herramientas BT.11A",
+            "Llave con trinquete 467B.10", "Llave trinquete 467B.13",
+            "Llave trinquete 467B.17", "Llave trinquete 467B.19",
+            "Llave mixta 440.10", "Llave mixta 440.13", "Llave mixta 440.17",
+            "Llave mixta 440.19", "Llave mixta 440.20", "Llave mixta 440.22",
+            "Llave mixta 440.24", "Llave mixta 440.36", "Llave de pipa 75.10",
+            "Llave de pipa 75.13", "Llave de pipa 75.17", "Llave de pipa 75.19",
+            "Llave de vaso con mango 74A.7", "Llave de vaso con mango 74A.8",
+            "Llave inglesa 101.10", "Destornilladores juego ATP.J6",
+            "Llaves Allen con mango 84TZA", "Juego llaves de Allen 83H.JP9A",
+            "Alicates de corte 192A.18CPE", "Alicates de punta 185A.20CPE",
+            "Alicates universales 187A.18CPE", "Picoloro 181A.25CPE",
+            "Alicates para arandela 179A.9", "Mordaza de presión 580.10",
+            "Calibre 805.2", "Escuadra DELA.1223.03", "Metro 893B.825",
+            "Nivel 3078.40", "Tiralíneas DELA.13299.15", "Maza 1262H.125",
+            "Cincel 263.25", "Alargadera 50m",
+            "Combo Makita DGA504 + DHP486 + SAMP", "Taladro Makita DTW285Z",
+            "Taladro Makita percutor HP2071", "Máquina de soldar",
+            "Carro transporte herramientas"
+        ];
+
+        window.actualizarTodo = async function() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = 'Procesando...';
+            
+            try {
+                // Obtener todos los trabajadores
+                const q = query(collection(db, "herramientas_usuarios"));
+                const snapshot = await getDocs(q);
+                
+                // Agrupar por trabajador
+                const trabajadores = {};
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (!trabajadores[data.trabajadorId]) {
+                        trabajadores[data.trabajadorId] = {
+                            id: data.trabajadorId,
+                            nombre: data.trabajadorNombre,
+                            herramientas: []
+                        };
+                    }
+                    trabajadores[data.trabajadorId].herramientas.push(data.nombre);
+                });
+                
+                let totalAñadidas = 0;
+                
+                // Para cada trabajador, añadir herramientas faltantes
+                for (const t of Object.values(trabajadores)) {
+                    for (const h of herramientasCompletas) {
+                        if (!t.herramientas.includes(h)) {
+                            await addDoc(collection(db, "herramientas_usuarios"), {
+                                trabajadorId: t.id,
+                                trabajadorNombre: t.nombre,
+                                nombre: h,
+                                codigo: "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                                cantidad: 1,
+                                presente: true,
+                                estado: 'bueno',
+                                reportes: [],
+                                fechaAsignacion: new Date().toISOString()
+                            });
+                            totalAñadidas++;
+                        }
+                    }
+                }
+                
+                resultado.innerHTML = `<div class="success">✅ Actualización completada. Se añadieron ${totalAñadidas} herramientas.</div>`;
+            } catch (error) {
+                resultado.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+    </script>
+</body>
+</html>
