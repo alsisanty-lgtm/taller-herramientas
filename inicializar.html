@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inicializar Base de Datos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; }
+        .btn {
+            background: #27ae60;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .btn:hover {
+            background: #219a52;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .tool-list {
+            column-count: 3;
+            margin: 20px 0;
+        }
+        .tool-item {
+            margin: 5px 0;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 INICIALIZAR BASE DE DATOS</h1>
+        <p>Este proceso cargará TODAS las herramientas en Firebase.</p>
+        
+        <div id="status"></div>
+        
+        <button class="btn" onclick="inicializar()">🚀 CARGAR HERRAMIENTAS</button>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, addDoc } from './firebase-config.js';
+
+        const herramientasData = [
+            "Juego de carracas",
+            "Caja de herramientas BT.11A",
+            "Llave con trinquete 467B.10",
+            "Llave trinquete 467B.13",
+            "Llave trinquete 467B.17",
+            "Llave trinquete 467B.19",
+            "Llave mixta 440.10",
+            "Llave mixta 440.13",
+            "Llave mixta 440.17",
+            "Llave mixta 440.19",
+            "Llave mixta 440.20",
+            "Llave mixta 440.22",
+            "Llave mixta 440.24",
+            "Llave mixta 440.36",
+            "Llave de pipa 75.10",
+            "Llave de pipa 75.13",
+            "Llave de pipa 75.17",
+            "Llave de pipa 75.19",
+            "Llave de vaso con mango 74A.7",
+            "Llave de vaso con mango 74A.8",
+            "Llave inglesa 101.10",
+            "Destornilladores juego ATP.J6",
+            "Llaves Allen con mango 84TZA",
+            "Juego llaves de Allen 83H.JP9A",
+            "Alicates de corte 192A.18CPE",
+            "Alicates de punta 185A.20CPE",
+            "Alicates universales 187A.18CPE",
+            "Picoloro 181A.25CPE",
+            "Alicates para arandela 179A.9",
+            "Mordaza de presión 580.10",
+            "Calibre 805.2",
+            "Escuadra DELA.1223.03",
+            "Metro 893B.825",
+            "Nivel 3078.40",
+            "Tiralíneas DELA.13299.15",
+            "Maza 1262H.125",
+            "Cincel 263.25",
+            "Alargadera 50m",
+            "Combo Makita DGA504 + DHP486 + SAMP",
+            "Taladro Makita DTW285Z",
+            "Taladro Makita percutor HP2071",
+            "Máquina de soldar",
+            "Carro transporte herramientas"
+        ];
+
+        window.inicializar = async function() {
+            const status = document.getElementById('status');
+            const resultado = document.getElementById('resultado');
+            
+            status.innerHTML = '<div class="error">⏳ Cargando herramientas...</div>';
+            
+            try {
+                // Verificar si ya hay datos
+                const querySnapshot = await getDocs(collection(db, "herramientas"));
+                
+                if (!querySnapshot.empty) {
+                    status.innerHTML = '<div class="error">⚠️ Ya hay herramientas en la base de datos. ¿Quieres borrarlas y volver a cargar?</div>';
+                    resultado.innerHTML = `
+                        <button class="btn" onclick="borrarYCargar()">🗑️ BORRAR Y RECARGAR</button>
+                    `;
+                    return;
+                }
+                
+                // Cargar herramientas
+                status.innerHTML = '<div class="error">⏳ Cargando ' + herramientasData.length + ' herramientas...</div>';
+                
+                let count = 0;
+                for (const nombre of herramientasData) {
+                    await addDoc(collection(db, "herramientas"), {
+                        nombre: nombre,
+                        codigo: "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                        cantidad: 1,
+                        presente: true,
+                        estado: "bueno",
+                        reportes: [],
+                        fechaCreacion: new Date().toISOString()
+                    });
+                    count++;
+                    if (count % 10 === 0) {
+                        status.innerHTML = `<div class="error">⏳ Cargadas ${count} herramientas...</div>`;
+                    }
+                }
+                
+                status.innerHTML = '<div class="success">✅ ¡TODAS LAS HERRAMIENTAS CARGADAS CORRECTAMENTE!</div>';
+                
+                // Mostrar lista
+                let lista = '<h3>Herramientas cargadas:</h3><div class="tool-list">';
+                herramientasData.forEach(h => {
+                    lista += `<div class="tool-item">🔧 ${h}</div>`;
+                });
+                lista += '</div>';
+                resultado.innerHTML = lista;
+                
+            } catch (error) {
+                status.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+
+        window.borrarYCargar = async function() {
+            const status = document.getElementById('status');
+            const resultado = document.getElementById('resultado');
+            
+            try {
+                // Borrar todas las herramientas
+                const querySnapshot = await getDocs(collection(db, "herramientas"));
+                
+                status.innerHTML = '<div class="error">⏳ Borrando herramientas antiguas...</div>';
+                
+                for (const doc of querySnapshot.docs) {
+                    await import('./firebase-config.js').then(({ deleteDoc }) => {
+                        deleteDoc(doc.ref);
+                    });
+                }
+                
+                status.innerHTML = '<div class="success">✅ Herramientas antiguas borradas. Ahora cargando nuevas...</div>';
+                
+                // Cargar nuevas
+                let count = 0;
+                for (const nombre of herramientasData) {
+                    await addDoc(collection(db, "herramientas"), {
+                        nombre: nombre,
+                        codigo: "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                        cantidad: 1,
+                        presente: true,
+                        estado: "bueno",
+                        reportes: [],
+                        fechaCreacion: new Date().toISOString()
+                    });
+                    count++;
+                }
+                
+                status.innerHTML = '<div class="success">✅ ¡BASE DE DATOS INICIALIZADA CORRECTAMENTE!</div>';
+                
+                let lista = '<h3>Herramientas cargadas:</h3><div class="tool-list">';
+                herramientasData.forEach(h => {
+                    lista += `<div class="tool-item">🔧 ${h}</div>`;
+                });
+                lista += '</div>';
+                resultado.innerHTML = lista;
+                
+            } catch (error) {
+                status.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+    </script>
+</body>
+</html>
