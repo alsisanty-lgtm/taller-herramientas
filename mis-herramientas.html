@@ -224,10 +224,16 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🔧 MIS HERRAMIENTAS</h1>
-        <button class="logout-btn" onclick="salir()">Salir</button>
+    <div class="header" style="position: relative;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 10px;">
+        <img src="icon-192x192.png" alt="Logo Taller" style="width: 70px; height: 70px; border-radius: 20px; box-shadow: 0 6px 15px rgba(0,0,0,0.2); border: 3px solid white;">
+        <div>
+            <h1 style="margin: 0;">🔧 MIS HERRAMIENTAS</h1>
+            <p style="margin: 5px 0 0;">Trabajador: <span id="userNameDisplay"></span></p>
+        </div>
     </div>
+    <button class="logout-btn" onclick="salir()">Salir</button>
+</div>
 
     <div class="user-info" id="userInfo">
         Cargando...
