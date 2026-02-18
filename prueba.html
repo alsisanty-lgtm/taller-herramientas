@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prueba Firebase</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Prueba de Conexión Firebase</h1>
+    <div id="status">Cargando...</div>
+    <div id="tools"></div>
+
+    <script type="module">
+        import { db, collection, getDocs } from './firebase-config.js';
+
+        async function probar() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "herramientas"));
+                document.getElementById('status').innerHTML = '<span class="success">✅ Conectado a Firebase correctamente</span>';
+                
+                if (querySnapshot.empty) {
+                    document.getElementById('tools').innerHTML = '⚠️ No hay herramientas en la base de datos';
+                } else {
+                    let html = '<h3>Herramientas encontradas:</h3><ul>';
+                    querySnapshot.forEach(doc => {
+                        html += `<li>${doc.data().nombre}</li>`;
+                    });
+                    html += '</ul>';
+                    document.getElementById('tools').innerHTML = html;
+                }
+            } catch (error) {
+                document.getElementById('status').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        probar();
+    </script>
+</body>
+</html>
