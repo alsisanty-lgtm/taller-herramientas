@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- ======================================== -->
-    <!-- NUEVO: Iconos y manifest para PWA -->
-    <!-- ======================================== -->
+    <!-- Iconos y manifest para PWA -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192x192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
@@ -18,11 +16,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#27ae60">
     <meta name="mobile-web-app-capable" content="yes">
-    <!-- ======================================== -->
     
     <title>Admin - Taller Mecánico</title>
     
-    <!-- RESTO DE TU CSS ORIGINAL SIN CAMBIOS -->
     <style>
         * {
             margin: 0;
@@ -625,6 +621,30 @@
             outline: none;
             border-color: #3498db;
         }
+
+        /* Tabla de herramientas */
+        .herramientas-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .herramientas-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .herramientas-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .herramientas-table tr:hover {
+            background: #f8f9fa;
+        }
     </style>
 </head>
 <body>
@@ -633,13 +653,10 @@
         <p>Gestión completa de usuarios, herramientas e incidencias</p>
     </div>
 
-    <!-- ======================================== -->
-    <!-- NUEVO: Botón de instalación (opcional) -->
-    <!-- ======================================== -->
+    <!-- Botón de instalación -->
     <button id="installButton" style="position: fixed; bottom: 20px; right: 20px; background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 1000;">
         📲 Instalar App
     </button>
-    <!-- ======================================== -->
 
     <div class="container">
         <!-- Estadísticas -->
@@ -665,9 +682,9 @@
         <!-- Pestañas -->
         <div class="tabs">
             <div class="tab active" onclick="cambiarTab('usuarios')">👥 Usuarios</div>
-            <div class="tab" onclick="cambiarTab('inventario')">📦 Inventario Global</div>
+            <div class="tab" onclick="cambiarTab('herramientas')">🔧 Herramientas</div>
+            <div class="tab" onclick="cambiarTab('inventario')">📦 Catálogo</div>
             <div class="tab" onclick="cambiarTab('incidencias')">⚠️ Incidencias</div>
-            <div class="tab" onclick="cambiarTab('reparacion')">🔧 En reparación</div>
             <div class="tab" onclick="cambiarTab('historial')">📋 Historial</div>
         </div>
 
@@ -707,17 +724,74 @@
         </div>
 
         <!-- ======================================== -->
-        <!-- PANEL DE INVENTARIO GLOBAL -->
+        <!-- PANEL DE HERRAMIENTAS (NUEVO) -->
+        <!-- ======================================== -->
+        <div id="panelHerramientas" style="display: none;">
+            <!-- Formulario crear herramienta -->
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>➕ CREAR NUEVA HERRAMIENTA</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre de la herramienta *</label>
+                        <input type="text" id="nombreHerramienta" placeholder="Ej: Taladro percutor">
+                    </div>
+                    <div class="form-group">
+                        <label>Código / Referencia</label>
+                        <input type="text" id="codigoHerramienta" placeholder="Ej: TAL-001">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="categoriaHerramienta">
+                            <option value="Eléctrica">Eléctrica</option>
+                            <option value="Manual">Manual</option>
+                            <option value="Neumática">Neumática</option>
+                            <option value="Medición">Medición</option>
+                            <option value="Equipo">Equipo</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="crearHerramienta()">✅ Crear Herramienta</button>
+            </div>
+
+            <!-- Lista de herramientas global -->
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>🔧 LISTA DE HERRAMIENTAS</h2>
+                    <span class="badge-info" id="herramientasCount">0</span>
+                </div>
+                <input type="text" id="buscarHerramientas" class="buscador" placeholder="🔍 Buscar herramienta...">
+                <table class="herramientas-table" id="herramientasTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Código</th>
+                            <th>Categoría</th>
+                            <th>Asignada a</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="herramientasList">
+                        <tr><td colspan="6" class="loading">Cargando herramientas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- PANEL DE INVENTARIO / CATÁLOGO -->
         <!-- ======================================== -->
         <div id="panelInventario" style="display: none;">
             <div class="admin-section">
                 <div class="section-title">
-                    <h2>📦 INVENTARIO GLOBAL DE HERRAMIENTAS</h2>
+                    <h2>📦 CATÁLOGO DE HERRAMIENTAS</h2>
                     <button class="btn btn-info" onclick="exportarInventario()">📊 Exportar Excel</button>
                 </div>
                 
-                <!-- Lista maestra de herramientas -->
-                <h3 style="margin: 20px 0 10px;">➕ Añadir nueva herramienta al catálogo</h3>
+                <!-- Añadir herramienta al catálogo -->
+                <h3 style="margin: 20px 0 10px;">➕ Añadir herramienta al catálogo</h3>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nombre de la herramienta</label>
@@ -748,21 +822,6 @@
                 </div>
                 <div id="incidenciasContainer" class="loading">
                     Cargando incidencias...
-                </div>
-            </div>
-        </div>
-
-        <!-- ======================================== -->
-        <!-- PANEL DE EN REPARACIÓN -->
-        <!-- ======================================== -->
-        <div id="panelReparacion" style="display: none;">
-            <div class="admin-section">
-                <div class="section-title">
-                    <h2>🔧 HERRAMIENTAS EN REPARACIÓN</h2>
-                    <span class="badge-warning" id="reparacionCount">0</span>
-                </div>
-                <div id="reparacionContainer" class="loading">
-                    Cargando...
                 </div>
             </div>
         </div>
@@ -807,7 +866,6 @@
                 <button class="close-btn" onclick="cerrarModal('modalAñadirHerramientas')">&times;</button>
             </div>
             
-            <!-- Controles de selección múltiple -->
             <div class="seleccion-info">
                 <div>
                     <span id="seleccionadasCount">0</span> herramientas seleccionadas
@@ -835,6 +893,38 @@
         </div>
     </div>
 
+    <!-- Modal para editar herramienta -->
+    <div id="modalEditarHerramienta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Herramienta</h2>
+                <button class="close-btn" onclick="cerrarModal('modalEditarHerramienta')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="editHerramientaNombre">
+            </div>
+            <div class="form-group">
+                <label>Código</label>
+                <input type="text" id="editHerramientaCodigo">
+            </div>
+            <div class="form-group">
+                <label>Categoría</label>
+                <select id="editHerramientaCategoria">
+                    <option value="Eléctrica">Eléctrica</option>
+                    <option value="Manual">Manual</option>
+                    <option value="Neumática">Neumática</option>
+                    <option value="Medición">Medición</option>
+                    <option value="Equipo">Equipo</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="guardarEdicionHerramienta()">💾 Guardar</button>
+                <button class="btn btn-secondary" onclick="cerrarModal('modalEditarHerramienta')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <script type="module">
@@ -849,6 +939,7 @@
         let catalogoHerramientas = [];
         let todasLasIncidencias = [];
         let usuarioSeleccionadoId = null;
+        let herramientaEditandoId = null;
 
         // Lista inicial de herramientas por defecto
         const herramientasPorDefecto = [
@@ -894,9 +985,9 @@
             event.target.classList.add('active');
             
             document.getElementById('panelUsuarios').style.display = tab === 'usuarios' ? 'block' : 'none';
+            document.getElementById('panelHerramientas').style.display = tab === 'herramientas' ? 'block' : 'none';
             document.getElementById('panelInventario').style.display = tab === 'inventario' ? 'block' : 'none';
             document.getElementById('panelIncidencias').style.display = tab === 'incidencias' ? 'block' : 'none';
-            document.getElementById('panelReparacion').style.display = tab === 'reparacion' ? 'block' : 'none';
             document.getElementById('panelHistorial').style.display = tab === 'historial' ? 'block' : 'none';
         };
 
@@ -948,8 +1039,8 @@
             });
             
             actualizarEstadisticas();
+            actualizarHerramientas(); // NUEVA FUNCIÓN
             actualizarIncidencias();
-            actualizarReparacion();
             actualizarHistorial();
             
             // Forzar actualización de usuarios para que los contadores se refresquen
@@ -1024,12 +1115,140 @@
             `;
             
             document.getElementById('usuariosCount').textContent = totalUsuarios;
+            document.getElementById('herramientasCount').textContent = totalHerramientas;
             document.getElementById('pendientesCount').textContent = pendientes;
-            document.getElementById('reparacionCount').textContent = todasLasIncidencias.filter(i => i.estado === 'reparacion').length;
         }
 
         // ============================================
-        // GESTIÓN DE USUARIOS (CON CONTADORES CORREGIDOS)
+        // GESTIÓN DE HERRAMIENTAS (NUEVA)
+        // ============================================
+        
+        function actualizarHerramientas() {
+            const tbody = document.getElementById('herramientasList');
+            const busqueda = document.getElementById('buscarHerramientas').value.toLowerCase();
+            
+            let herramientasFiltradas = herramientas;
+            if (busqueda) {
+                herramientasFiltradas = herramientas.filter(h => 
+                    h.nombre.toLowerCase().includes(busqueda) ||
+                    (h.codigo && h.codigo.toLowerCase().includes(busqueda))
+                );
+            }
+            
+            if (herramientasFiltradas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="loading">No hay herramientas</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = herramientasFiltradas.map(h => {
+                const usuario = usuarios.find(u => u.id === h.trabajadorId);
+                const nombreUsuario = usuario ? usuario.nombre : 'Sin asignar';
+                
+                return `
+                    <tr>
+                        <td>${h.nombre}</td>
+                        <td>${h.codigo || 'Sin código'}</td>
+                        <td>${h.categoria || 'General'}</td>
+                        <td>${nombreUsuario}</td>
+                        <td>
+                            <span class="badge ${h.estado === 'bueno' ? 'badge-success' : 'badge-warning'}">
+                                ${h.estado || 'bueno'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-small btn-info" onclick="editarHerramienta('${h.id}')">✏️ Editar</button>
+                            <button class="btn btn-small btn-danger" onclick="eliminarHerramienta('${h.id}')">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.crearHerramienta = async function() {
+            const nombre = document.getElementById('nombreHerramienta').value.trim();
+            const codigo = document.getElementById('codigoHerramienta').value.trim();
+            const categoria = document.getElementById('categoriaHerramienta').value;
+            
+            if (!nombre) {
+                alert('El nombre es obligatorio');
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, "herramientas_usuarios"), {
+                    nombre: nombre,
+                    codigo: codigo || "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                    categoria: categoria,
+                    cantidad: 1,
+                    presente: true,
+                    estado: 'bueno',
+                    reportes: [],
+                    fechaCreacion: new Date().toISOString()
+                });
+                
+                document.getElementById('nombreHerramienta').value = '';
+                document.getElementById('codigoHerramienta').value = '';
+                
+                mostrarToast('✅ Herramienta creada correctamente');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al crear herramienta', 'error');
+            }
+        };
+
+        window.editarHerramienta = function(id) {
+            const herramienta = herramientas.find(h => h.id === id);
+            if (!herramienta) return;
+            
+            herramientaEditandoId = id;
+            document.getElementById('editHerramientaNombre').value = herramienta.nombre || '';
+            document.getElementById('editHerramientaCodigo').value = herramienta.codigo || '';
+            document.getElementById('editHerramientaCategoria').value = herramienta.categoria || 'General';
+            
+            document.getElementById('modalEditarHerramienta').style.display = 'flex';
+        };
+
+        window.guardarEdicionHerramienta = async function() {
+            if (!herramientaEditandoId) return;
+            
+            const nombre = document.getElementById('editHerramientaNombre').value.trim();
+            const codigo = document.getElementById('editHerramientaCodigo').value.trim();
+            const categoria = document.getElementById('editHerramientaCategoria').value;
+            
+            if (!nombre) {
+                alert('El nombre es obligatorio');
+                return;
+            }
+            
+            try {
+                await updateDoc(doc(db, "herramientas_usuarios", herramientaEditandoId), {
+                    nombre: nombre,
+                    codigo: codigo,
+                    categoria: categoria
+                });
+                
+                document.getElementById('modalEditarHerramienta').style.display = 'none';
+                mostrarToast('✅ Herramienta actualizada');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al actualizar', 'error');
+            }
+        };
+
+        window.eliminarHerramienta = async function(id) {
+            if (!confirm('¿Estás seguro de eliminar esta herramienta?')) return;
+            
+            try {
+                await deleteDoc(doc(db, "herramientas_usuarios", id));
+                mostrarToast('✅ Herramienta eliminada');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al eliminar', 'error');
+            }
+        };
+
+        // ============================================
+        // GESTIÓN DE USUARIOS
         // ============================================
         
         function actualizarUsuarios() {
@@ -1050,17 +1269,10 @@
             }
             
             container.innerHTML = usuariosFiltrados.map(u => {
-                // 🔴 CONTAR HERRAMIENTAS DE ESTE USUARIO (CORREGIDO)
                 const herramientasUsuario = herramientas.filter(h => h.trabajadorId === u.id);
                 const totalHerramientas = herramientasUsuario.length;
                 const herramientasPresentes = herramientasUsuario.filter(h => h.presente === true).length;
                 const herramientasRojas = herramientasUsuario.filter(h => h.estado === 'roto').length;
-                
-                console.log(`Usuario ${u.nombre}:`, { // Para depuración
-                    total: totalHerramientas,
-                    presentes: herramientasPresentes,
-                    rotas: herramientasRojas
-                });
                 
                 return `
                     <div class="usuario-card ${u.activo === false ? 'inactivo' : ''}">
@@ -1072,7 +1284,6 @@
                         </div>
                         <div style="color: #7f8c8d; margin-bottom: 10px;">${u.rol || 'Trabajador'}</div>
                         
-                        <!-- CONTADORES DE HERRAMIENTAS -->
                         <div class="usuario-stats">
                             <div class="stat-item">
                                 <div class="stat-valor total">${totalHerramientas}</div>
@@ -1110,14 +1321,12 @@
                 return;
             }
             
-            // Verificar si ya existe
             if (usuarios.some(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
                 alert('Ya existe un usuario con ese nombre');
                 return;
             }
             
             try {
-                // Crear usuario
                 const usuarioRef = await addDoc(collection(db, "usuarios_taller"), {
                     nombre: nombre,
                     rol: rol || 'Trabajador',
@@ -1125,7 +1334,6 @@
                     fechaCreacion: new Date().toISOString()
                 });
                 
-                // Asignar herramientas básicas (10 herramientas)
                 const herramientasBasicas = herramientasPorDefecto.slice(0, 10);
                 for (const nombreHerramienta of herramientasBasicas) {
                     await addDoc(collection(db, "herramientas_usuarios"), {
@@ -1167,13 +1375,11 @@
             if (!confirm('¿Estás seguro? Esto eliminará todas sus herramientas también.')) return;
             
             try {
-                // Eliminar herramientas del usuario
                 const herramientasUsuario = herramientas.filter(h => h.trabajadorId === usuarioId);
                 for (const h of herramientasUsuario) {
                     await deleteDoc(doc(db, "herramientas_usuarios", h.id));
                 }
                 
-                // Eliminar usuario
                 await deleteDoc(doc(db, "usuarios_taller", usuarioId));
                 
                 mostrarToast('✅ Usuario eliminado');
@@ -1227,7 +1433,6 @@
             try {
                 await deleteDoc(doc(db, "herramientas_usuarios", herramientaId));
                 mostrarToast('✅ Herramienta eliminada');
-                // Cerrar y reabrir el modal para actualizar
                 document.getElementById('modalHerramientas').style.display = 'none';
             } catch (error) {
                 console.error("Error:", error);
@@ -1235,10 +1440,6 @@
             }
         };
 
-        // ============================================
-        // GESTIÓN DE HERRAMIENTAS (CON SELECCIÓN MÚLTIPLE)
-        // ============================================
-        
         window.abrirAñadirHerramientas = function(usuarioId, usuarioNombre) {
             usuarioSeleccionadoId = usuarioId;
             document.getElementById('usuarioSeleccionadoNombre').textContent = usuarioNombre;
@@ -1250,12 +1451,10 @@
             const container = document.getElementById('herramientasAñadirLista');
             const busqueda = document.getElementById('buscarHerramientasAñadir').value.toLowerCase();
             
-            // Herramientas que ya tiene el usuario
             const herramientasUsuario = herramientas
                 .filter(h => h.trabajadorId === usuarioSeleccionadoId)
                 .map(h => h.nombre);
             
-            // Filtrar catálogo
             let catalogoFiltrado = catalogoHerramientas;
             if (busqueda) {
                 catalogoFiltrado = catalogoHerramientas.filter(h => 
@@ -1386,7 +1585,7 @@
                 document.getElementById('nuevaHerramientaCodigo').value = '';
                 
                 mostrarToast('✅ Herramienta añadida al catálogo');
-                cargarCatalogo(); // Recargar catálogo
+                cargarCatalogo();
             } catch (error) {
                 console.error("Error:", error);
                 mostrarToast('❌ Error', 'error');
@@ -1415,40 +1614,11 @@
                     <div class="incidencia-detalle">
                         <strong>👤 ${i.trabajadorNombre}</strong><br>
                         <span style="color: #e74c3c;">"${i.detalle}"</span>
-                        ${i.tipo === 'repuesto' ? '<br><span style="color: #f39c12;">🔧 Solicitud de repuesto</span>' : ''}
                     </div>
                     <div class="incidencia-acciones">
                         <button class="btn btn-warning" onclick="marcarReparacion('${i.herramientaId}', '${i.timestamp}')">
                             🔧 Enviar a reparación
                         </button>
-                        <button class="btn btn-success" onclick="marcarReparado('${i.herramientaId}', '${i.timestamp}')">
-                            ✅ Marcar reparado
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function actualizarReparacion() {
-            const container = document.getElementById('reparacionContainer');
-            const enReparacion = todasLasIncidencias.filter(i => i.estado === 'reparacion');
-            
-            if (enReparacion.length === 0) {
-                container.innerHTML = '<div class="loading">No hay herramientas en reparación</div>';
-                return;
-            }
-            
-            container.innerHTML = enReparacion.map(i => `
-                <div class="incidencia-card reparacion">
-                    <div class="incidencia-header">
-                        <span class="incidencia-titulo">🔧 ${i.herramienta}</span>
-                        <span class="incidencia-fecha">📅 ${i.timestamp}</span>
-                    </div>
-                    <div class="incidencia-detalle">
-                        <strong>👤 ${i.trabajadorNombre}</strong><br>
-                        <span>"${i.detalle}"</span>
-                    </div>
-                    <div class="incidencia-acciones">
                         <button class="btn btn-success" onclick="marcarReparado('${i.herramientaId}', '${i.timestamp}')">
                             ✅ Marcar reparado
                         </button>
@@ -1471,7 +1641,6 @@
                 );
             }
             
-            // Ordenar por fecha (más reciente primero)
             historial.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
             if (historial.length === 0) {
@@ -1556,7 +1725,6 @@
         // ============================================
         
         window.exportarInventario = function() {
-            // Agrupar herramientas por nombre
             const inventario = {};
             herramientas.forEach(h => {
                 if (!inventario[h.nombre]) {
@@ -1627,16 +1795,14 @@
 
         // Event listeners para búsquedas
         document.getElementById('buscarUsuarios').addEventListener('input', actualizarUsuarios);
+        document.getElementById('buscarHerramientas').addEventListener('input', actualizarHerramientas);
         document.getElementById('buscarCatalogo').addEventListener('input', actualizarCatalogo);
         document.getElementById('buscarHerramientasAñadir').addEventListener('input', mostrarHerramientasParaAñadir);
         document.getElementById('buscarHistorial').addEventListener('input', actualizarHistorial);
     </script>
 
-    <!-- ======================================== -->
-    <!-- NUEVO: Script para Service Worker y PWA -->
-    <!-- ======================================== -->
+    <!-- Script para Service Worker y PWA -->
     <script>
-        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -1649,7 +1815,6 @@
             });
         }
 
-        // Botón de instalación
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -1666,9 +1831,9 @@
             document.getElementById('installButton').style.display = 'none';
         });
     </script>
-    <!-- ======================================== -->
 </body>
 </html>
+
 
 
 
