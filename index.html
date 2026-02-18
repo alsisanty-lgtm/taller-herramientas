@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Iconos y manifest -->
+    <!-- Iconos y manifest (NUEVO) -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192x192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
     <link rel="shortcut icon" href="favicon.ico">
     
-    <!-- Meta tags para móvil -->
+    <!-- Meta tags para móvil (NUEVO) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#27ae60">
@@ -19,241 +19,214 @@
     
     <title>Acceso Taller - Control de Herramientas</title>
     
-    <!-- ... resto del CSS ... -->
-</head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso - Taller</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        
+
         .login-container {
             background: white;
+            padding: 40px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             width: 90%;
             max-width: 400px;
-            padding: 40px;
-        }
-        
-        .logo {
             text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        h2 {
+            color: #333;
             margin-bottom: 30px;
+            font-size: 24px;
         }
-        
-        .logo h1 {
-            color: #2c3e50;
-            font-size: 2em;
-        }
-        
-        .logo p {
-            color: #7f8c8d;
-            margin-top: 10px;
-        }
-        
-        .form-group {
+
+        .input-group {
             margin-bottom: 20px;
+            text-align: left;
         }
-        
-        .form-group label {
+
+        label {
             display: block;
             margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 600;
+            color: #555;
+            font-weight: 500;
         }
-        
-        .form-group input {
+
+        input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e9ecef;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
             transition: border-color 0.3s;
         }
-        
-        .form-group input:focus {
+
+        input:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: #667eea;
         }
-        
-        .btn {
+
+        button {
             width: 100%;
-            padding: 15px;
-            background: #27ae60;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        
-        .btn:hover {
-            background: #219a52;
+
+        button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
-        
+
         .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
-        }
-        
-        .info {
-            text-align: center;
-            margin-top: 20px;
-            color: #7f8c8d;
+            color: #e74c3c;
+            margin-top: 10px;
             font-size: 14px;
-        }
-        
-        .loading {
             display: none;
-            text-align: center;
+        }
+
+        .info {
             margin-top: 20px;
-        }
-        
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #666;
+            border-left: 4px solid #667eea;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">
-            <h1>🔧 TALLER MECÁNICO</h1>
-            <p>Acceso para trabajadores</p>
+        <div class="logo">🔧</div>
+        <h2>Control de Herramientas Taller</h2>
+        
+        <div class="input-group">
+            <label for="username">Usuario</label>
+            <input type="text" id="username" placeholder="Ej: admin, juan, maria" autocomplete="off">
         </div>
         
-        <div class="form-group">
-            <label>👤 Tu nombre</label>
-            <input type="text" id="nombreInput" placeholder="Ej: Juan Pérez" autocomplete="off">
+        <div class="input-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••">
         </div>
         
-        <button class="btn" onclick="acceder()">✅ Acceder al taller</button>
+        <button onclick="login()">Acceder al Taller</button>
         
-        <div class="error" id="errorMensaje">
-            Usuario no encontrado o inactivo
-        </div>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 10px;">Verificando...</p>
-        </div>
+        <div class="error" id="errorMessage">Usuario o contraseña incorrectos</div>
         
         <div class="info">
-            Solo personal autorizado
+            <strong>🔐 Accesos de prueba:</strong><br>
+            Admin: admin / admin123<br>
+            Trabajador: juan / juan123<br>
+            Trabajador: maria / maria123
         </div>
     </div>
 
-    <script type="module">
-        import { db, collection, query, where, getDocs } from './firebase-config.js';
+    <script>
+        // Credenciales válidas
+        const USERS = {
+            'admin': { password: 'admin123', role: 'admin', name: 'Administrador' },
+            'juan': { password: 'juan123', role: 'worker', name: 'Juan Pérez' },
+            'maria': { password: 'maria123', role: 'worker', name: 'María García' }
+        };
 
-        window.acceder = async function() {
-            const nombre = document.getElementById('nombreInput').value.trim();
-            
-            if (!nombre || nombre.length < 3) {
-                alert('Por favor, introduce tu nombre completo');
+        function login() {
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            // Validar que los campos no estén vacíos
+            if (!username || !password) {
+                errorDiv.textContent = 'Por favor, completa todos los campos';
+                errorDiv.style.display = 'block';
                 return;
             }
+
+            // Verificar credenciales
+            const user = USERS[username];
             
-            // Mostrar loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('errorMensaje').style.display = 'none';
-            
-            try {
-                // Buscar usuario en Firebase
-                const q = query(collection(db, "usuarios_taller"), where("nombre", "==", nombre));
-                const querySnapshot = await getDocs(q);
-                
-                if (querySnapshot.empty) {
-                    // Usuario no encontrado
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('errorMensaje').style.display = 'block';
-                    return;
-                }
-                
-                // Usuario encontrado
-                const usuario = {
-                    id: querySnapshot.docs[0].id,
-                    ...querySnapshot.docs[0].data()
-                };
-                
-                if (usuario.activo === false) {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('errorMensaje').textContent = 'Usuario desactivado. Contacta al administrador.';
-                    document.getElementById('errorMensaje').style.display = 'block';
-                    return;
-                }
-                
+            if (user && user.password === password) {
                 // Guardar sesión
-                localStorage.setItem('taller_usuario', JSON.stringify({
-                    id: usuario.id,
-                    nombre: usuario.nombre
+                sessionStorage.setItem('currentUser', JSON.stringify({
+                    username: username,
+                    name: user.name,
+                    role: user.role
                 }));
                 
-                // Redirigir a la app
-                window.location.href = 'mis-herramientas.html';
-                
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('errorMensaje').textContent = 'Error de conexión';
-                document.getElementById('errorMensaje').style.display = 'block';
+                // Redirigir según el rol
+                if (user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'mis-herramientas.html';
+                }
+            } else {
+                errorDiv.textContent = 'Usuario o contraseña incorrectos';
+                errorDiv.style.display = 'block';
             }
-        };
-    <script>
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(registration => {
-                    console.log('ServiceWorker registrado:', registration);
-                })
-                .catch(error => {
-                    console.log('Error registrando ServiceWorker:', error);
-                });
-        });
-    }
+        }
 
-    // Botón de instalación
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        // Mostrar botón de instalación si quieres
-    });
-</script>
+        // Permitir login con Enter
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        // REGISTRO SERVICE WORKER (NUEVO)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Error registrando ServiceWorker:', error);
+                    });
+            });
+        }
+
+        // Botón de instalación (NUEVO)
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Aquí podrías mostrar un botón de instalación si quieres
+        });
+    </script>
 </body>
 </html>
+
 
 
 
