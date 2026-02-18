@@ -2,14 +2,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, query, onSnapshot, addDoc, updateDoc, doc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 🔴 REEMPLAZA ESTO CON TUS DATOS DE FIREBASE
+// 🔴 TUS DATOS REALES DE FIREBASE (copiados de tu consola)
 const firebaseConfig = {
-  apiKey: "AIzaSyB...",  // ← PON EL TUYO
-  authDomain: "taller-herramientas.firebaseapp.com",  // ← PON EL TUYO
-  projectId: "taller-herramientas",  // ← PON EL TUYO
-  storageBucket: "taller-herramientas.appspot.com",  // ← PON EL TUYO
-  messagingSenderId: "123456789",  // ← PON EL TUYO
-  appId: "1:123456789:web:abc123"  // ← PON EL TUYO
+  apiKey: "AIzaSyDfNTl9SIDmpJWmrNfVyX7ptk1WRjxQ-LA",
+  authDomain: "taller-herramientas-38bed.firebaseapp.com",
+  projectId: "taller-herramientas-38bed",
+  storageBucket: "taller-herramientas-38bed.firebasestorage.app",
+  messagingSenderId: "550679684036",
+  appId: "1:550679684036:web:fac9e63eb8154c7b36fa91"
 };
 
 // Inicializar Firebase
