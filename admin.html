@@ -288,10 +288,11 @@
             display: flex;
             gap: 20px;
             margin: 15px 0;
-            padding: 10px;
+            padding: 15px;
             background: white;
             border-radius: 12px;
             justify-content: space-around;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
         
         .stat-item {
@@ -299,8 +300,9 @@
         }
         
         .stat-valor {
-            font-size: 1.4em;
-            font-weight: bold;
+            font-size: 1.6em;
+            font-weight: 700;
+            line-height: 1.2;
         }
         
         .stat-valor.total { color: #2c3e50; }
@@ -308,8 +310,10 @@
         .stat-valor.dañadas { color: #e74c3c; }
         
         .stat-etiqueta {
-            font-size: 0.8em;
+            font-size: 0.75em;
             color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .usuario-acciones {
@@ -920,6 +924,9 @@
             actualizarIncidencias();
             actualizarReparacion();
             actualizarHistorial();
+            
+            // Forzar actualización de usuarios para que los contadores se refresquen
+            actualizarUsuarios();
         });
 
         // Cargar catálogo de herramientas
@@ -995,7 +1002,7 @@
         }
 
         // ============================================
-        // GESTIÓN DE USUARIOS (CON CONTADORES)
+        // GESTIÓN DE USUARIOS (CON CONTADORES CORREGIDOS)
         // ============================================
         
         function actualizarUsuarios() {
@@ -1016,11 +1023,17 @@
             }
             
             container.innerHTML = usuariosFiltrados.map(u => {
-                // Contar herramientas de este usuario
+                // 🔴 CONTAR HERRAMIENTAS DE ESTE USUARIO (CORREGIDO)
                 const herramientasUsuario = herramientas.filter(h => h.trabajadorId === u.id);
                 const totalHerramientas = herramientasUsuario.length;
-                const herramientasPresentes = herramientasUsuario.filter(h => h.presente).length;
+                const herramientasPresentes = herramientasUsuario.filter(h => h.presente === true).length;
                 const herramientasRojas = herramientasUsuario.filter(h => h.estado === 'roto').length;
+                
+                console.log(`Usuario ${u.nombre}:`, { // Para depuración
+                    total: totalHerramientas,
+                    presentes: herramientasPresentes,
+                    rotas: herramientasRojas
+                });
                 
                 return `
                     <div class="usuario-card ${u.activo === false ? 'inactivo' : ''}">
@@ -1036,15 +1049,15 @@
                         <div class="usuario-stats">
                             <div class="stat-item">
                                 <div class="stat-valor total">${totalHerramientas}</div>
-                                <div class="stat-etiqueta">Total</div>
+                                <div class="stat-etiqueta">TOTAL</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-valor presentes">${herramientasPresentes}</div>
-                                <div class="stat-etiqueta">Presentes</div>
+                                <div class="stat-etiqueta">PRESENTES</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-valor dañadas">${herramientasRojas}</div>
-                                <div class="stat-etiqueta">Dañadas</div>
+                                <div class="stat-etiqueta">DAÑADAS</div>
                             </div>
                         </div>
                         
@@ -1593,6 +1606,7 @@
     </script>
 </body>
 </html>
+
 
 
 
