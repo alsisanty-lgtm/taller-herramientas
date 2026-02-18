@@ -23,6 +23,7 @@
             padding: 25px 20px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
         }
         
         .header h1 {
@@ -33,6 +34,45 @@
         .header p {
             opacity: 0.9;
             font-size: 1.1em;
+        }
+        
+        .notification-bell {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: white;
+            color: #2c3e50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.1);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid white;
         }
         
         .container {
@@ -54,6 +94,11 @@
             border-radius: 16px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
         
         .stat-number {
@@ -84,11 +129,16 @@
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 2px solid #ecf0f1;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .section-title h2 {
             color: #2c3e50;
             font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .badge {
@@ -136,6 +186,9 @@
             font-weight: 600;
             font-size: 15px;
             transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .btn-primary {
@@ -167,6 +220,24 @@
             background: #c0392b;
         }
         
+        .btn-success {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #2980b9;
+        }
+        
+        .btn-excel {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-excel:hover {
+            background: #219a52;
+        }
+        
         .alert-card {
             background: #fff3cd;
             border-left: 6px solid #e74c3c;
@@ -178,6 +249,18 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         .worker-tag {
@@ -191,9 +274,10 @@
         
         .report-detail {
             background: white;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
             margin: 10px 0;
+            border-left: 4px solid #3498db;
         }
         
         .table-container {
@@ -303,19 +387,96 @@
             border-radius: 50px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             z-index: 1000;
-            animation: slideIn 0.3s ease;
+            animation: slideInRight 0.3s ease;
+            display: none;
+            max-width: 350px;
+        }
+        
+        .toast.error {
+            background: #e74c3c;
+        }
+        
+        .toast.warning {
+            background: #f39c12;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .notification-panel {
+            position: fixed;
+            top: 80px;
+            right: 30px;
+            width: 350px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1001;
             display: none;
         }
         
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .notification-header {
+            padding: 15px 20px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-list {
+            padding: 10px;
+        }
+        
+        .notification-item {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .notification-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .notification-item.unread {
+            background: #ebf5ff;
+        }
+        
+        .notification-time {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
         }
         
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: 1fr 1fr; }
             .alert-card { flex-direction: column; align-items: flex-start; }
             .btn { width: 100%; margin: 5px 0; }
+            .notification-panel {
+                width: 90%;
+                right: 5%;
+                left: 5%;
+            }
+            .notification-bell {
+                top: 10px;
+                right: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -323,9 +484,24 @@
     <div class="header">
         <h1>👨‍🔧 PANEL ADMINISTRADOR</h1>
         <p>Gestión completa del taller · Tiempo real</p>
+        <div class="notification-bell" onclick="toggleNotifications()">
+            🔔
+            <span class="notification-badge" id="notificationBadge">0</span>
+        </div>
     </div>
 
     <div class="container">
+        <!-- Panel de notificaciones flotante -->
+        <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+                <span>📬 Notificaciones</span>
+                <button onclick="marcarTodasLeidas()" style="background: none; border: none; color: white; cursor: pointer;">✓ Todo leído</button>
+            </div>
+            <div class="notification-list" id="notificationList">
+                <div style="padding: 20px; text-align: center; color: #7f8c8d;">No hay notificaciones</div>
+            </div>
+        </div>
+
         <!-- Estadísticas -->
         <div class="stats-grid" id="statsContainer">
             <div class="stat-card">
@@ -342,7 +518,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-number">-</div>
-                <div class="stat-label">Trabajadores</div>
+                <div class="stat-label">Reportes hoy</div>
             </div>
         </div>
 
@@ -373,14 +549,53 @@
             <button class="btn btn-primary" onclick="agregarHerramienta()">Guardar herramienta</button>
         </div>
 
+        <!-- Barra de acciones -->
+        <div class="admin-section">
+            <div class="action-buttons">
+                <button class="btn btn-excel" onclick="exportarAExcel()">
+                    📊 EXPORTAR REPORTES A EXCEL
+                </button>
+                <button class="btn btn-success" onclick="marcarTodasLeidas()">
+                    ✅ MARCAR TODAS LAS NOTIFICACIONES COMO LEÍDAS
+                </button>
+                <button class="btn btn-warning" onclick="toggleNotifications()">
+                    🔔 ABRIR NOTIFICACIONES
+                </button>
+            </div>
+        </div>
+
         <!-- Reportes activos -->
         <div class="admin-section">
             <div class="section-title">
-                <h2>⚠️ REPORTES ACTIVOS</h2>
+                <h2>⚠️ REPORTES ACTIVOS <span style="font-size: 14px; color: #e74c3c;">(nuevos resaltados)</span></h2>
                 <span class="badge" id="reportesCount">0</span>
             </div>
             <div id="reportesContainer">
                 <p style="color: #7f8c8d; text-align: center; padding: 20px;">No hay reportes activos</p>
+            </div>
+        </div>
+
+        <!-- Historial de reportes -->
+        <div class="admin-section">
+            <div class="section-title">
+                <h2>📋 HISTORIAL DE REPORTES</h2>
+                <button class="btn btn-success" onclick="exportarAExcel()">📥 Exportar a Excel</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Trabajador</th>
+                            <th>Herramienta</th>
+                            <th>Problema reportado</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historialTable">
+                        <tr><td colspan="5" style="text-align: center; padding: 40px;">Cargando historial...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -417,7 +632,7 @@
     <div id="toast" class="toast"></div>
 
     <script type="module">
-        import { db, collection, query, onSnapshot, addDoc, updateDoc, doc } from './firebase-config.js';
+        import { db, collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs } from './firebase-config.js';
 
         // ============================================
         // VARIABLES GLOBALES
@@ -425,6 +640,8 @@
         
         let herramientas = [];
         let filtro = '';
+        let notificaciones = JSON.parse(localStorage.getItem('notificaciones')) || [];
+        let ultimoReporteId = localStorage.getItem('ultimoReporteId') || '';
 
         // ============================================
         // FUNCIONES DE NOTIFICACIÓN
@@ -433,10 +650,88 @@
         function mostrarToast(mensaje, tipo = 'exito') {
             const toast = document.getElementById('toast');
             toast.style.display = 'block';
-            toast.style.background = tipo === 'exito' ? '#27ae60' : '#e74c3c';
+            toast.className = `toast ${tipo}`;
             toast.textContent = mensaje;
             setTimeout(() => toast.style.display = 'none', 3000);
         }
+
+        function agregarNotificacion(reporte) {
+            const nuevaNotificacion = {
+                id: Date.now() + Math.random(),
+                trabajador: reporte.trabajadorNombre,
+                herramienta: reporte.herramienta,
+                detalle: reporte.detalle,
+                timestamp: reporte.timestamp,
+                leida: false,
+                fecha: new Date().toISOString()
+            };
+            
+            notificaciones.unshift(nuevaNotificacion);
+            
+            // Mantener solo las últimas 50 notificaciones
+            if (notificaciones.length > 50) {
+                notificaciones = notificaciones.slice(0, 50);
+            }
+            
+            localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+            actualizarBadgeNotificaciones();
+            mostrarNotificaciones();
+            
+            // Mostrar toast de nueva notificación
+            mostrarToast(`🔔 Nuevo reporte de ${reporte.trabajadorNombre}: ${reporte.herramienta}`, 'warning');
+        }
+
+        function actualizarBadgeNotificaciones() {
+            const noLeidas = notificaciones.filter(n => !n.leida).length;
+            document.getElementById('notificationBadge').textContent = noLeidas;
+            
+            if (noLeidas > 0) {
+                document.getElementById('notificationBadge').style.display = 'flex';
+            } else {
+                document.getElementById('notificationBadge').style.display = 'none';
+            }
+        }
+
+        function mostrarNotificaciones() {
+            const list = document.getElementById('notificationList');
+            
+            if (notificaciones.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #7f8c8d;">No hay notificaciones</div>';
+                return;
+            }
+            
+            list.innerHTML = notificaciones.map(n => `
+                <div class="notification-item ${!n.leida ? 'unread' : ''}" onclick="marcarLeida('${n.id}')">
+                    <strong>👤 ${n.trabajador}</strong><br>
+                    <span style="color: #e74c3c;">🔧 ${n.herramienta}</span><br>
+                    <span style="font-size: 13px;">"${n.detalle}"</span>
+                    <div class="notification-time">${n.timestamp}</div>
+                </div>
+            `).join('');
+        }
+
+        window.toggleNotifications = function() {
+            const panel = document.getElementById('notificationPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            mostrarNotificaciones();
+        };
+
+        window.marcarLeida = function(id) {
+            notificaciones = notificaciones.map(n => 
+                n.id == id ? { ...n, leida: true } : n
+            );
+            localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+            actualizarBadgeNotificaciones();
+            mostrarNotificaciones();
+        };
+
+        window.marcarTodasLeidas = function() {
+            notificaciones = notificaciones.map(n => ({ ...n, leida: true }));
+            localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+            actualizarBadgeNotificaciones();
+            mostrarNotificaciones();
+            mostrarToast('✅ Todas las notificaciones marcadas como leídas');
+        };
 
         // ============================================
         // ESCUCHAR CAMBIOS EN TIEMPO REAL
@@ -452,7 +747,26 @@
                 });
             });
             actualizarTodo();
-            mostrarToast('🔄 Datos actualizados');
+            
+            // Verificar nuevos reportes
+            herramientas.forEach(h => {
+                if (h.reportes && h.reportes.length > 0) {
+                    const ultimoReporte = h.reportes[h.reportes.length - 1];
+                    const reporteId = `${h.id}_${ultimoReporte.timestamp}`;
+                    
+                    if (reporteId !== ultimoReporteId && h.estado === 'roto') {
+                        ultimoReporteId = reporteId;
+                        localStorage.setItem('ultimoReporteId', reporteId);
+                        
+                        agregarNotificacion({
+                            trabajadorNombre: ultimoReporte.trabajadorNombre,
+                            herramienta: h.nombre,
+                            detalle: ultimoReporte.detalle,
+                            timestamp: ultimoReporte.timestamp
+                        });
+                    }
+                }
+            });
         }, (error) => {
             console.error("Error:", error);
             mostrarToast('❌ Error de conexión', 'error');
@@ -466,6 +780,7 @@
             actualizarEstadisticas();
             actualizarReportes();
             actualizarTabla();
+            actualizarHistorial();
         }
 
         function actualizarEstadisticas() {
@@ -473,11 +788,14 @@
             const presentes = herramientas.filter(h => h.presente).length;
             const rotas = herramientas.filter(h => h.estado === 'roto').length;
             
-            // Contar trabajadores únicos que han reportado
-            const trabajadores = new Set();
+            // Reportes de hoy
+            const hoy = new Date().toLocaleDateString();
+            let reportesHoy = 0;
             herramientas.forEach(h => {
                 if (h.reportes) {
-                    h.reportes.forEach(r => trabajadores.add(r.trabajadorId));
+                    h.reportes.forEach(r => {
+                        if (r.timestamp.includes(hoy)) reportesHoy++;
+                    });
                 }
             });
             
@@ -495,8 +813,8 @@
                     <div class="stat-label">Dañadas</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" style="color:#3498db;">${trabajadores.size}</div>
-                    <div class="stat-label">Trabajadores</div>
+                    <div class="stat-number" style="color:#3498db;">${reportesHoy}</div>
+                    <div class="stat-label">Reportes hoy</div>
                 </div>
             `;
         }
@@ -525,23 +843,61 @@
                 return;
             }
             
-            container.innerHTML = reportesActivos.map(r => `
-                <div class="alert-card">
-                    <div style="flex: 1;">
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                            <span class="worker-tag">👤 ${r.trabajadorNombre}</span>
-                            <span style="font-weight: bold;">${r.herramienta}</span>
-                            <span style="color: #7f8c8d;">${r.codigo || ''}</span>
+            container.innerHTML = reportesActivos.map(r => {
+                const esNuevo = !notificaciones.some(n => n.detalle === r.detalle && n.timestamp === r.timestamp);
+                return `
+                    <div class="alert-card" style="${esNuevo ? 'border-left-color: #f39c12; background: #fff9e6;' : ''}">
+                        <div style="flex: 1;">
+                            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                                <span class="worker-tag">👤 ${r.trabajadorNombre}</span>
+                                <span style="font-weight: bold;">${r.herramienta}</span>
+                                ${esNuevo ? '<span style="background: #f39c12; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">NUEVO</span>' : ''}
+                            </div>
+                            <div class="report-detail">
+                                <p style="margin-bottom: 5px;">"${r.detalle}"</p>
+                                <small style="color: #7f8c8d;">📅 ${r.timestamp}</small>
+                            </div>
                         </div>
-                        <div class="report-detail">
-                            <p style="margin-bottom: 5px;">"${r.detalle}"</p>
-                            <small style="color: #7f8c8d;">📅 ${r.timestamp}</small>
-                        </div>
+                        <button class="btn btn-primary" onclick="marcarReparado('${r.herramientaId}')">
+                            ✅ Marcar reparado
+                        </button>
                     </div>
-                    <button class="btn btn-primary" onclick="marcarReparado('${r.herramientaId}')">
-                        ✅ Marcar reparado
-                    </button>
-                </div>
+                `;
+            }).join('');
+        }
+
+        function actualizarHistorial() {
+            const tbody = document.getElementById('historialTable');
+            const todosReportes = [];
+            
+            herramientas.forEach(h => {
+                if (h.reportes) {
+                    h.reportes.forEach(r => {
+                        todosReportes.push({
+                            ...r,
+                            herramienta: h.nombre,
+                            estado: h.estado
+                        });
+                    });
+                }
+            });
+            
+            // Ordenar por fecha (más reciente primero)
+            todosReportes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            if (todosReportes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px;">No hay reportes en el historial</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = todosReportes.slice(0, 50).map(r => `
+                <tr>
+                    <td>${r.timestamp}</td>
+                    <td><strong>${r.trabajadorNombre}</strong></td>
+                    <td>${r.herramienta}</td>
+                    <td>"${r.detalle}"</td>
+                    <td><span class="status-badge status-${r.estado || 'bueno'}">${r.estado || 'bueno'}</span></td>
+                </tr>
             `).join('');
         }
 
@@ -586,7 +942,7 @@
                             <button class="btn btn-warning" style="margin: 2px;" onclick="cambiarEstado('${h.id}')">
                                 📝 Estado
                             </button>
-                            <button class="btn btn-danger" style="margin: 2px;" onclick="verReportes('${h.id}')">
+                            <button class="btn btn-success" style="margin: 2px;" onclick="verReportes('${h.id}')">
                                 📋 Ver
                             </button>
                         </td>
@@ -594,6 +950,56 @@
                 `;
             }).join('');
         }
+
+        // ============================================
+        // EXPORTAR A EXCEL
+        // ============================================
+        
+        window.exportarAExcel = function() {
+            // Recopilar todos los reportes
+            const todosReportes = [];
+            
+            herramientas.forEach(h => {
+                if (h.reportes && h.reportes.length > 0) {
+                    h.reportes.forEach(r => {
+                        todosReportes.push({
+                            'Fecha': r.timestamp,
+                            'Trabajador': r.trabajadorNombre,
+                            'Herramienta': h.nombre,
+                            'Código': h.codigo || '-',
+                            'Problema reportado': r.detalle,
+                            'Estado actual': h.estado,
+                            'Presente': h.presente ? 'Sí' : 'No'
+                        });
+                    });
+                }
+            });
+            
+            if (todosReportes.length === 0) {
+                mostrarToast('No hay reportes para exportar', 'warning');
+                return;
+            }
+            
+            // Ordenar por fecha (más reciente primero)
+            todosReportes.sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
+            
+            // Crear contenido CSV
+            const headers = Object.keys(todosReportes[0]).join(',');
+            const rows = todosReportes.map(r => Object.values(r).map(v => `"${v}"`).join(',')).join('\n');
+            const csv = headers + '\n' + rows;
+            
+            // Descargar archivo
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // \uFEFF para UTF-8 con BOM
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `reportes_taller_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            mostrarToast(`✅ Exportados ${todosReportes.length} reportes a Excel`);
+        };
 
         // ============================================
         // ACCIONES DE ADMIN
@@ -611,81 +1017,8 @@
                     nombre: nombre,
                     codigo: document.getElementById('toolCode').value.trim(),
                     cantidad: parseInt(document.getElementById('toolQty').value),
-                    estado: document.getElementById('toolState').value,
-                    presente: true,
-                    reportes: [],
-                    fechaCreacion: new Date().toISOString()
-                });
-                
-                document.getElementById('toolName').value = '';
-                document.getElementById('toolCode').value = '';
-                document.getElementById('toolQty').value = '1';
-                document.getElementById('toolState').value = 'bueno';
-                
-                mostrarToast('✅ Herramienta añadida correctamente');
-            } catch (error) {
-                console.error("Error:", error);
-                mostrarToast('❌ Error al añadir', 'error');
-            }
-        };
+                    estado
 
-        window.marcarReparado = async function(id) {
-            try {
-                await updateDoc(doc(db, "herramientas", id), { 
-                    estado: 'bueno'
-                });
-                mostrarToast('✅ Marcada como reparada');
-            } catch (error) {
-                console.error("Error:", error);
-                mostrarToast('❌ Error', 'error');
-            }
-        };
-
-        window.cambiarEstado = async function(id) {
-            const nuevoEstado = prompt('Nuevo estado (bueno/roto/reparacion):');
-            if (nuevoEstado && ['bueno', 'roto', 'reparacion'].includes(nuevoEstado)) {
-                try {
-                    await updateDoc(doc(db, "herramientas", id), { 
-                        estado: nuevoEstado
-                    });
-                    mostrarToast('✅ Estado actualizado');
-                } catch (error) {
-                    console.error("Error:", error);
-                    mostrarToast('❌ Error', 'error');
-                }
-            }
-        };
-
-        window.verReportes = function(id) {
-            const herramienta = herramientas.find(h => h.id === id);
-            if (herramienta?.reportes?.length) {
-                let mensaje = `📋 REPORTES DE: ${herramienta.nombre}\n\n`;
-                herramienta.reportes.forEach((r, i) => {
-                    mensaje += `${i+1}. ${r.trabajadorNombre}\n`;
-                    mensaje += `   "${r.detalle}"\n`;
-                    mensaje += `   📅 ${r.timestamp}\n\n`;
-                });
-                alert(mensaje);
-            } else {
-                alert('No hay reportes para esta herramienta');
-            }
-        };
-
-        // Buscador en admin
-        document.getElementById('buscadorAdmin').addEventListener('input', (e) => {
-            filtro = e.target.value;
-            actualizarTabla();
-        });
-
-        // Verificar conexión inicial
-        setTimeout(() => {
-            if (herramientas.length === 0) {
-                mostrarToast('⚠️ Verifica tu conexión a Firebase', 'error');
-            }
-        }, 5000);
-    </script>
-</body>
-</html>
 
 
 
