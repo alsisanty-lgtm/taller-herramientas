@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Herramientas - Taller</title>
+    <title>Acceso - Taller</title>
     <style>
         * {
             margin: 0;
@@ -13,335 +13,152 @@
         }
         
         body {
-            background: #f0f2f5;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
-            color: white;
-            padding: 25px 20px;
-            text-align: center;
-        }
-        
-        .user-section {
-            background: white;
-            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             display: flex;
-            gap: 15px;
             justify-content: center;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .user-input {
-            padding: 15px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            width: 300px;
-            font-size: 16px;
-        }
-        
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background: #27ae60;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #219a52;
-            transform: translateY(-2px);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        
-        .welcome-message {
-            background: #e8f5e9;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-left: 6px solid #27ae60;
         }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            padding: 40px;
+        }
+        
+        .logo {
+            text-align: center;
             margin-bottom: 30px;
         }
         
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: 700;
+        .logo h1 {
             color: #2c3e50;
-            margin-bottom: 5px;
+            font-size: 2em;
         }
         
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .tool-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border-left: 6px solid #2ecc71;
-            transition: transform 0.3s;
-        }
-        
-        .tool-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .tool-card.roto {
-            border-left-color: #e74c3c;
-            background: #fff5f5;
-        }
-        
-        .tool-name {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 5px;
-        }
-        
-        .tool-code {
+        .logo p {
             color: #7f8c8d;
-            font-size: 0.9em;
-            margin-bottom: 10px;
+            margin-top: 10px;
         }
         
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .form-group {
+            margin-bottom: 20px;
         }
         
-        .status-bueno {
-            background: #d4edda;
-            color: #155724;
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
         }
         
-        .status-roto {
-            background: #f8d7da;
-            color: #721c24;
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
         
-        .tool-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            justify-content: flex-end;
-            border-top: 1px solid #ecf0f1;
-            padding-top: 15px;
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
         }
         
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            padding: 8px 15px;
-            background: #f8f9fa;
-            border-radius: 30px;
-        }
-        
-        .checkbox-label input {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #27ae60;
-        }
-        
-        .report-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .report-btn:hover {
-            background: #c0392b;
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
+        .btn {
+            width: 100%;
+            padding: 15px;
             background: #27ae60;
             color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 20px;
             display: none;
-            animation: slideIn 0.3s ease;
-            z-index: 1000;
         }
         
-        .toast.error {
-            background: #e74c3c;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0%); opacity: 1; }
+        .info {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
         }
         
         .loading {
+            display: none;
             text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🔧 MIS HERRAMIENTAS</h1>
-        <p>Identifícate para ver tu inventario personal</p>
-    </div>
-
-    <div class="user-section">
-        <input type="text" id="userNameInput" class="user-input" placeholder="👤 Tu nombre completo" value="">
-        <button class="btn btn-primary" onclick="registrarTrabajador()">✅ Entrar</button>
-    </div>
-
-    <div class="container">
-        <div id="welcomeSection" style="display: none;" class="welcome-message">
-            <span>👋 Bienvenido, <strong id="displayName"></strong></span>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🔧 TALLER MECÁNICO</h1>
+            <p>Acceso para trabajadores</p>
         </div>
-
-        <div class="stats-grid" id="statsContainer">
-            <div class="stat-card">
-                <div class="stat-number">0</div>
-                <div>Mis herramientas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">0</div>
-                <div>En mi poder</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">0</div>
-                <div>Dañadas</div>
-            </div>
+        
+        <div class="form-group">
+            <label>👤 Tu nombre</label>
+            <input type="text" id="nombreInput" placeholder="Ej: Juan Pérez" autocomplete="off">
         </div>
-
-        <div class="tools-grid" id="toolsContainer">
-            <div class="loading">Identifícate para ver tus herramientas</div>
+        
+        <button class="btn" onclick="acceder()">✅ Acceder al taller</button>
+        
+        <div class="error" id="errorMensaje">
+            Usuario no encontrado o inactivo
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px;">Verificando...</p>
+        </div>
+        
+        <div class="info">
+            Solo personal autorizado
         </div>
     </div>
-
-    <div id="toast" class="toast"></div>
 
     <script type="module">
-        import { db, collection, query, where, onSnapshot, addDoc, updateDoc, getDocs, doc } from './firebase-config.js';
+        import { db, collection, query, where, getDocs } from './firebase-config.js';
 
-        // ============================================
-        // VARIABLES GLOBALES
-        // ============================================
-        
-        let trabajadorActual = null;
-        let misHerramientas = [];
-        let unsubscribe = null;
-
-        // ============================================
-        // FUNCIONES AUXILIARES
-        // ============================================
-        
-        function mostrarToast(mensaje, tipo = 'exito') {
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            toast.className = `toast ${tipo === 'error' ? 'error' : ''}`;
-            toast.textContent = mensaje;
-            setTimeout(() => toast.style.display = 'none', 3000);
-        }
-
-        // ============================================
-        // LISTA COMPLETA DE HERRAMIENTAS
-        // ============================================
-        
-        const herramientasCompletas = [
-            { nombre: "Juego de carracas", codigo: "JC-001" },
-            { nombre: "Caja de herramientas BT.11A", codigo: "BT-11A" },
-            { nombre: "Llave con trinquete 467B.10", codigo: "467B.10" },
-            { nombre: "Llave trinquete 467B.13", codigo: "467B.13" },
-            { nombre: "Llave trinquete 467B.17", codigo: "467B.17" },
-            { nombre: "Llave trinquete 467B.19", codigo: "467B.19" },
-            { nombre: "Llave mixta 440.10", codigo: "440.10" },
-            { nombre: "Llave mixta 440.13", codigo: "440.13" },
-            { nombre: "Llave mixta 440.17", codigo: "440.17" },
-            { nombre: "Llave mixta 440.19", codigo: "440.19" },
-            { nombre: "Llave mixta 440.20", codigo: "440.20" },
-            { nombre: "Llave mixta 440.22", codigo: "440.22" },
-            { nombre: "Llave mixta 440.24", codigo: "440.24" },
-            { nombre: "Llave mixta 440.36", codigo: "440.36" },
-            { nombre: "Llave de pipa 75.10", codigo: "75.10" },
-            { nombre: "Llave de pipa 75.13", codigo: "75.13" },
-            { nombre: "Llave de pipa 75.17", codigo: "75.17" },
-            { nombre: "Llave de pipa 75.19", codigo: "75.19" },
-            { nombre: "Llave de vaso con mango 74A.7", codigo: "74A.7" },
-            { nombre: "Llave de vaso con mango 74A.8", codigo: "74A.8" },
-            { nombre: "Llave inglesa 101.10", codigo: "101.10" },
-            { nombre: "Destornilladores juego ATP.J6", codigo: "ATP.J6" },
-            { nombre: "Llaves Allen con mango 84TZA", codigo: "84TZA" },
-            { nombre: "Juego llaves de Allen 83H.JP9A", codigo: "83H.JP9A" },
-            { nombre: "Alicates de corte 192A.18CPE", codigo: "192A.18" },
-            { nombre: "Alicates de punta 185A.20CPE", codigo: "185A.20" },
-            { nombre: "Alicates universales 187A.18CPE", codigo: "187A.18" },
-            { nombre: "Picoloro 181A.25CPE", codigo: "181A.25" },
-            { nombre: "Alicates para arandela 179A.9", codigo: "179A.9" },
-            { nombre: "Mordaza de presión 580.10", codigo: "580.10" },
-            { nombre: "Calibre 805.2", codigo: "805.2" },
-            { nombre: "Escuadra DELA.1223.03", codigo: "DELA.1223" },
-            { nombre: "Metro 893B.825", codigo: "893B.825" },
-            { nombre: "Nivel 3078.40", codigo: "3078.40" },
-            { nombre: "Tiralíneas DELA.13299.15", codigo: "DELA.13299" },
-            { nombre: "Maza 1262H.125", codigo: "1262H.125" },
-            { nombre: "Cincel 263.25", codigo: "263.25" },
-            { nombre: "Alargadera 50m", codigo: "AL-50" },
-            { nombre: "Combo Makita DGA504 + DHP486 + SAMP", codigo: "MK-COMBO" },
-            { nombre: "Taladro Makita DTW285Z", codigo: "MK-DTW285" },
-            { nombre: "Taladro Makita percutor HP2071", codigo: "MK-HP2071" },
-            { nombre: "Máquina de soldar", codigo: "SLD-001" },
-            { nombre: "Carro transporte herramientas", codigo: "CARRO-01" }
-        ];
-
-        // ============================================
-        // REGISTRO DE TRABAJADOR
-        // ============================================
-        
-        window.registrarTrabajador = async function() {
-            const nombre = document.getElementById('userNameInput').value.trim();
+        window.acceder = async function() {
+            const nombre = document.getElementById('nombreInput').value.trim();
             
             if (!nombre || nombre.length < 3) {
                 alert('Por favor, introduce tu nombre completo');
@@ -349,215 +166,54 @@
             }
             
             // Mostrar loading
-            document.getElementById('toolsContainer').innerHTML = '<div class="loading">Cargando tus herramientas...</div>';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('errorMensaje').style.display = 'none';
             
-            // Crear ID único para el trabajador
-            const trabajadorId = 'usr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-            
-            trabajadorActual = {
-                id: trabajadorId,
-                nombre: nombre
-            };
-            
-            // Guardar en localStorage
-            localStorage.setItem('trabajadorActual', JSON.stringify(trabajadorActual));
-            
-            // Mostrar bienvenida
-            document.getElementById('welcomeSection').style.display = 'flex';
-            document.getElementById('displayName').textContent = nombre;
-            
-            // Buscar si ya tiene herramientas
-            await cargarOCrearHerramientas();
-            
-            // Escuchar cambios en tiempo real
-            escucharCambios();
-            
-            mostrarToast(`✅ Bienvenido ${nombre}`);
-        };
-
-        async function cargarOCrearHerramientas() {
             try {
-                // Buscar herramientas de este trabajador
-                const q = query(collection(db, "herramientas_usuarios"), where("trabajadorId", "==", trabajadorActual.id));
+                // Buscar usuario en Firebase
+                const q = query(collection(db, "usuarios_taller"), where("nombre", "==", nombre));
                 const querySnapshot = await getDocs(q);
                 
                 if (querySnapshot.empty) {
-                    // Es un trabajador nuevo, crear TODAS las herramientas
-                    for (const h of herramientasCompletas) {
-                        await addDoc(collection(db, "herramientas_usuarios"), {
-                            trabajadorId: trabajadorActual.id,
-                            trabajadorNombre: trabajadorActual.nombre,
-                            nombre: h.nombre,
-                            codigo: h.codigo,
-                            cantidad: 1,
-                            presente: true,
-                            estado: 'bueno',
-                            reportes: [],
-                            fechaAsignacion: new Date().toISOString()
-                        });
-                    }
-                    mostrarToast('✅ Todas las herramientas asignadas');
+                    // Usuario no encontrado
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('errorMensaje').style.display = 'block';
+                    return;
                 }
-            } catch (error) {
-                console.error("Error al cargar herramientas:", error);
-                mostrarToast('❌ Error al cargar herramientas', 'error');
-            }
-        }
-
-        // ============================================
-        // ESCUCHAR CAMBIOS EN TIEMPO REAL
-        // ============================================
-        
-        function escucharCambios() {
-            if (unsubscribe) {
-                unsubscribe();
-            }
-            
-            const q = query(collection(db, "herramientas_usuarios"), where("trabajadorId", "==", trabajadorActual.id));
-            
-            unsubscribe = onSnapshot(q, (snapshot) => {
-                misHerramientas = [];
-                snapshot.forEach((doc) => {
-                    misHerramientas.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                actualizarVista();
-            }, (error) => {
-                console.error("Error en snapshot:", error);
-                mostrarToast('❌ Error de conexión', 'error');
-            });
-        }
-
-        // ============================================
-        // ACTUALIZAR VISTA
-        // ============================================
-        
-        function actualizarVista() {
-            actualizarEstadisticas();
-            
-            const container = document.getElementById('toolsContainer');
-            
-            if (misHerramientas.length === 0) {
-                container.innerHTML = '<div class="loading">No tienes herramientas asignadas</div>';
-                return;
-            }
-
-            container.innerHTML = '';
-            misHerramientas.forEach(h => {
-                const card = document.createElement('div');
-                card.className = `tool-card ${h.estado}`;
                 
-                card.innerHTML = `
-                    <div class="tool-name">${h.nombre}</div>
-                    <div class="tool-code">${h.codigo || 'Sin código'}</div>
-                    <span class="status-badge status-${h.estado}">${h.estado.toUpperCase()}</span>
-                    
-                    <div class="tool-actions">
-                        <label class="checkbox-label">
-                            <input type="checkbox" ${h.presente ? 'checked' : ''} 
-                                onchange="togglePresente('${h.id}', this.checked)">
-                            Tengo
-                        </label>
-                        
-                        <button class="report-btn" onclick="reportarProblema('${h.id}')">
-                            ⚠️ Reportar
-                        </button>
-                    </div>
-                `;
-                
-                container.appendChild(card);
-            });
-        }
-
-        function actualizarEstadisticas() {
-            const total = misHerramientas.length;
-            const presentes = misHerramientas.filter(h => h.presente).length;
-            const problemas = misHerramientas.filter(h => h.estado === 'roto').length;
-            
-            document.getElementById('statsContainer').innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${total}</div>
-                    <div>Mis herramientas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#27ae60;">${presentes}</div>
-                    <div>En mi poder</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#e74c3c;">${problemas}</div>
-                    <div>Dañadas</div>
-                </div>
-            `;
-        }
-
-        // ============================================
-        // ACCIONES (CORREGIDAS)
-        // ============================================
-        
-        window.togglePresente = async function(id, presente) {
-            try {
-                const herramientaRef = doc(db, "herramientas_usuarios", id);
-                await updateDoc(herramientaRef, { 
-                    presente: presente
-                });
-            } catch (error) {
-                console.error("Error al actualizar:", error);
-                mostrarToast('❌ Error al actualizar', 'error');
-            }
-        };
-
-        window.reportarProblema = async function(id) {
-            const motivo = prompt("Describe el problema de la herramienta:");
-            if (!motivo || motivo.trim() === '') return;
-            
-            try {
-                // Buscar la herramienta actual
-                const herramienta = misHerramientas.find(h => h.id === id);
-                if (!herramienta) return;
-                
-                // Crear nuevo reporte
-                const nuevoReporte = {
-                    trabajadorId: trabajadorActual.id,
-                    trabajadorNombre: trabajadorActual.nombre,
-                    detalle: motivo,
-                    timestamp: new Date().toLocaleString()
+                // Usuario encontrado
+                const usuario = {
+                    id: querySnapshot.docs[0].id,
+                    ...querySnapshot.docs[0].data()
                 };
                 
-                // Obtener reportes existentes o crear array nuevo
-                const reportesExistentes = Array.isArray(herramienta.reportes) ? herramienta.reportes : [];
+                if (usuario.activo === false) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('errorMensaje').textContent = 'Usuario desactivado. Contacta al administrador.';
+                    document.getElementById('errorMensaje').style.display = 'block';
+                    return;
+                }
                 
-                // Actualizar en Firebase
-                const herramientaRef = doc(db, "herramientas_usuarios", id);
-                await updateDoc(herramientaRef, {
-                    estado: 'roto',
-                    reportes: [...reportesExistentes, nuevoReporte]
-                });
+                // Guardar sesión
+                localStorage.setItem('taller_usuario', JSON.stringify({
+                    id: usuario.id,
+                    nombre: usuario.nombre
+                }));
                 
-                mostrarToast('✅ Reporte enviado al administrador');
+                // Redirigir a la app
+                window.location.href = 'mis-herramientas.html';
+                
             } catch (error) {
-                console.error("Error al reportar:", error);
-                mostrarToast('❌ Error al enviar reporte', 'error');
+                console.error("Error:", error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('errorMensaje').textContent = 'Error de conexión';
+                document.getElementById('errorMensaje').style.display = 'block';
             }
         };
-
-        // ============================================
-        // AUTO-REGISTRO (opcional)
-        // ============================================
-        
-        const usuarioGuardado = localStorage.getItem('trabajadorActual');
-        if (usuarioGuardado) {
-            try {
-                const t = JSON.parse(usuarioGuardado);
-                document.getElementById('userNameInput').value = t.nombre;
-            } catch (e) {
-                console.log("No hay usuario guardado");
-            }
-        }
     </script>
 </body>
 </html>
+
 
 
 
