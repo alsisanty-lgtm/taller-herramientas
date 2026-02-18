@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Gestión de Reparaciones</title>
+    <title>Admin - Taller Mecánico</title>
     <style>
         * {
             margin: 0;
@@ -21,6 +21,12 @@
             color: white;
             padding: 25px;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
         }
         
         .container {
@@ -29,6 +35,7 @@
             padding: 0 20px;
         }
         
+        /* Tarjetas de estadísticas */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -42,14 +49,27 @@
             border-radius: 16px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
         
         .stat-number {
             font-size: 2.5em;
-            font-weight: bold;
+            font-weight: 700;
             color: #2c3e50;
+            margin-bottom: 5px;
         }
         
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        
+        /* Secciones */
         .admin-section {
             background: white;
             border-radius: 20px;
@@ -62,37 +82,215 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 2px solid #ecf0f1;
             flex-wrap: wrap;
             gap: 15px;
         }
         
-        .badge {
-            background: #e74c3c;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 14px;
+        .section-title h2 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .badge-warning {
-            background: #f39c12;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 14px;
+        /* Pestañas */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
         }
         
-        .badge-success {
+        .tab {
+            padding: 12px 25px;
+            background: #ecf0f1;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: #bdc3c7;
+            transform: translateY(-2px);
+        }
+        
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        /* Formulario de usuario */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+        
+        /* Botones */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
             background: #27ae60;
             color: white;
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 14px;
         }
         
+        .btn-primary:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-info {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        /* Tarjetas de usuario */
+        .usuarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .usuario-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 6px solid #3498db;
+            transition: all 0.3s;
+        }
+        
+        .usuario-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .usuario-card.inactivo {
+            border-left-color: #95a5a6;
+            opacity: 0.7;
+        }
+        
+        .usuario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .usuario-nombre {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .usuario-estado {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .estado-activo {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .estado-inactivo {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .usuario-stats {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        
+        .usuario-acciones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* Tarjetas de incidencias */
         .incidencia-card {
             background: white;
             border-left: 6px solid;
@@ -100,11 +298,6 @@
             margin-bottom: 15px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-        }
-        
-        .incidencia-card:hover {
-            transform: translateX(5px);
         }
         
         .incidencia-card.pendiente {
@@ -126,9 +319,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
-            gap: 10px;
         }
         
         .incidencia-fecha {
@@ -155,137 +347,7 @@
             flex-wrap: wrap;
         }
         
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background: #27ae60;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #219a52;
-        }
-        
-        .btn-warning {
-            background: #f39c12;
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background: #e67e22;
-        }
-        
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-        
-        .btn-info {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-info:hover {
-            background: #2980b9;
-        }
-        
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-        
-        .btn-success {
-            background: #27ae60;
-            color: white;
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .tab {
-            padding: 12px 25px;
-            background: #ecf0f1;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .tab.active {
-            background: #3498db;
-            color: white;
-        }
-        
-        .tab:hover {
-            transform: translateY(-2px);
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #27ae60;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: none;
-            animation: slideIn 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .toast.error {
-            background: #e74c3c;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0%); opacity: 1; }
-        }
-        
-        .estado-tag {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .estado-pendiente {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .estado-reparacion {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .estado-reparado {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .estado-sustituido {
-            background: #cce5ff;
-            color: #004085;
-        }
-        
+        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -321,61 +383,12 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-        
-        .form-group textarea {
-            height: 100px;
-            resize: vertical;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
             color: #7f8c8d;
         }
         
-        .filtros {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .filtro-select {
-            padding: 10px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            min-width: 200px;
-        }
-        
-        .busqueda-input {
-            padding: 10px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            flex: 1;
-            min-width: 250px;
-        }
-        
+        /* Historial */
         .historial-item {
-            padding: 10px;
+            padding: 12px;
             border-bottom: 1px solid #ecf0f1;
         }
         
@@ -386,13 +399,83 @@
         .fecha-historial {
             color: #7f8c8d;
             font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.error {
+            background: #e74c3c;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0%); opacity: 1; }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        /* Badges */
+        .badge {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+        
+        .badge-warning {
+            background: #f39c12;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+        }
+        
+        .estado-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .estado-pendiente {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .estado-reparacion {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .estado-reparado {
+            background: #d4edda;
+            color: #155724;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>👨‍🔧 ADMIN - GESTIÓN DE REPARACIONES</h1>
-        <p>Controla el estado de cada herramienta dañada</p>
+        <h1>👨‍🔧 ADMIN - TALLER MECÁNICO</h1>
+        <p>Gestión completa de usuarios, herramientas e incidencias</p>
     </div>
 
     <div class="container">
@@ -400,106 +483,107 @@
         <div class="stats-grid" id="statsContainer">
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div>Pendientes</div>
+                <div class="stat-label">Usuarios</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div>En reparación</div>
+                <div class="stat-label">Herramientas</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div>Reparadas hoy</div>
+                <div class="stat-label">Incidencias</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div>Total incidencias</div>
+                <div class="stat-label">Pendientes</div>
             </div>
         </div>
 
-        <!-- Tabs de navegación -->
+        <!-- Pestañas -->
         <div class="tabs">
-            <div class="tab active" onclick="cambiarTab('pendientes')">⚠️ Pendientes</div>
+            <div class="tab active" onclick="cambiarTab('usuarios')">👥 Usuarios</div>
+            <div class="tab" onclick="cambiarTab('incidencias')">⚠️ Incidencias</div>
             <div class="tab" onclick="cambiarTab('reparacion')">🔧 En reparación</div>
             <div class="tab" onclick="cambiarTab('historial')">📋 Historial</div>
-            <div class="tab" onclick="cambiarTab('estadisticas')">📊 Estadísticas</div>
         </div>
 
-        <!-- Panel de Pendientes -->
-        <div id="panelPendientes" class="admin-section">
-            <div class="section-title">
-                <h2>⚠️ INCIDENCIAS PENDIENTES</h2>
-                <span class="badge" id="pendientesCount">0</span>
-            </div>
-            <div class="filtros">
-                <input type="text" id="buscarPendientes" class="busqueda-input" placeholder="🔍 Buscar por herramienta o trabajador...">
-                <select id="filtroUrgencia" class="filtro-select">
-                    <option value="todo">Todas las urgencias</option>
-                    <option value="alta">Alta urgencia</option>
-                    <option value="media">Media urgencia</option>
-                    <option value="baja">Baja urgencia</option>
-                </select>
-            </div>
-            <div id="pendientesContainer" class="loading">Cargando incidencias...</div>
-        </div>
-
-        <!-- Panel de En Reparación -->
-        <div id="panelReparacion" style="display: none;" class="admin-section">
-            <div class="section-title">
-                <h2>🔧 HERRAMIENTAS EN REPARACIÓN</h2>
-                <span class="badge-warning" id="reparacionCount">0</span>
-            </div>
-            <div class="filtros">
-                <input type="text" id="buscarReparacion" class="busqueda-input" placeholder="🔍 Buscar...">
-                <select id="filtroTaller" class="filtro-select">
-                    <option value="todo">Todos los talleres</option>
-                    <option value="interno">Taller interno</option>
-                    <option value="externo">Taller externo</option>
-                </select>
-            </div>
-            <div id="reparacionContainer" class="loading">Cargando...</div>
-        </div>
-
-        <!-- Panel de Historial -->
-        <div id="panelHistorial" style="display: none;" class="admin-section">
-            <div class="section-title">
-                <h2>📋 HISTORIAL DE INCIDENCIAS</h2>
-                <button class="btn btn-info" onclick="exportarHistorial()">📊 Exportar Excel</button>
-            </div>
-            <div class="filtros">
-                <input type="text" id="buscarHistorial" class="busqueda-input" placeholder="🔍 Buscar en historial...">
-                <input type="date" id="fechaDesde" class="filtro-select">
-                <input type="date" id="fechaHasta" class="filtro-select">
-            </div>
-            <div id="historialContainer" class="loading">Cargando historial...</div>
-        </div>
-
-        <!-- Panel de Estadísticas -->
-        <div id="panelEstadisticas" style="display: none;" class="admin-section">
-            <div class="section-title">
-                <h2>📊 ESTADÍSTICAS DE INCIDENCIAS</h2>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
-                    <h3 style="margin-bottom: 15px;">Herramientas más reportadas</h3>
-                    <div id="topHerramientas"></div>
+        <!-- PANEL DE USUARIOS -->
+        <div id="panelUsuarios">
+            <!-- Formulario crear usuario -->
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>➕ CREAR NUEVO USUARIO</h2>
                 </div>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
-                    <h3 style="margin-bottom: 15px;">Trabajadores con más reportes</h3>
-                    <div id="topTrabajadores"></div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre completo *</label>
+                        <input type="text" id="nombreUsuario" placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label>Rol / Puesto</label>
+                        <input type="text" id="rolUsuario" placeholder="Ej: Mecánico">
+                    </div>
                 </div>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
-                    <h3 style="margin-bottom: 15px;">Tiempo medio de reparación</h3>
-                    <div id="tiempoMedio" style="font-size: 2em; text-align: center;">-</div>
+                <button class="btn btn-primary" onclick="crearUsuario()">✅ Crear Usuario</button>
+            </div>
+
+            <!-- Lista de usuarios -->
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>👥 LISTA DE USUARIOS</h2>
+                    <span class="badge" id="usuariosCount">0</span>
+                </div>
+                <div class="usuarios-grid" id="usuariosContainer">
+                    <div class="loading">Cargando usuarios...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DE INCIDENCIAS PENDIENTES -->
+        <div id="panelIncidencias" style="display: none;">
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>⚠️ INCIDENCIAS PENDIENTES</h2>
+                    <span class="badge" id="pendientesCount">0</span>
+                </div>
+                <div id="incidenciasContainer" class="loading">
+                    Cargando incidencias...
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DE EN REPARACIÓN -->
+        <div id="panelReparacion" style="display: none;">
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>🔧 HERRAMIENTAS EN REPARACIÓN</h2>
+                    <span class="badge-warning" id="reparacionCount">0</span>
+                </div>
+                <div id="reparacionContainer" class="loading">
+                    Cargando...
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DE HISTORIAL -->
+        <div id="panelHistorial" style="display: none;">
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>📋 HISTORIAL DE INCIDENCIAS</h2>
+                    <button class="btn btn-info" onclick="exportarExcel()">📊 Exportar Excel</button>
+                </div>
+                <div id="historialContainer" class="loading">
+                    Cargando historial...
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para gestionar incidencia -->
-    <div id="modalIncidencia" class="modal">
+    <!-- Modal para ver historial de herramienta -->
+    <div id="modalHistorial" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitulo">Gestionar incidencia</h2>
+                <h2 id="modalTitulo">Historial de herramienta</h2>
                 <button class="close-btn" onclick="cerrarModal()">&times;</button>
             </div>
             <div id="modalContenido"></div>
@@ -509,23 +593,15 @@
     <div id="toast" class="toast"></div>
 
     <script type="module">
-        import { db, collection, query, onSnapshot, updateDoc, doc, getDocs } from './firebase-config.js';
+        import { db, collection, query, onSnapshot, addDoc, updateDoc, doc, deleteDoc, getDocs } from './firebase-config.js';
 
         // ============================================
         // VARIABLES GLOBALES
         // ============================================
         
-        let todasLasIncidencias = [];
+        let usuarios = [];
         let herramientas = [];
-        let filtros = {
-            pendientes: '',
-            reparacion: '',
-            historial: '',
-            urgencia: 'todo',
-            taller: 'todo',
-            fechaDesde: '',
-            fechaHasta: ''
-        };
+        let todasLasIncidencias = [];
 
         // ============================================
         // FUNCIONES AUXILIARES
@@ -539,26 +615,38 @@
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        function cerrarModal() {
-            document.getElementById('modalIncidencia').style.display = 'none';
-        }
-
-        window.cerrarModal = cerrarModal;
+        window.cerrarModal = function() {
+            document.getElementById('modalHistorial').style.display = 'none';
+        };
 
         window.cambiarTab = function(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             
-            document.getElementById('panelPendientes').style.display = tab === 'pendientes' ? 'block' : 'none';
+            document.getElementById('panelUsuarios').style.display = tab === 'usuarios' ? 'block' : 'none';
+            document.getElementById('panelIncidencias').style.display = tab === 'incidencias' ? 'block' : 'none';
             document.getElementById('panelReparacion').style.display = tab === 'reparacion' ? 'block' : 'none';
             document.getElementById('panelHistorial').style.display = tab === 'historial' ? 'block' : 'none';
-            document.getElementById('panelEstadisticas').style.display = tab === 'estadisticas' ? 'block' : 'none';
         };
 
         // ============================================
-        // CARGAR DATOS
+        // CARGAR DATOS DESDE FIREBASE
         // ============================================
         
+        // Cargar usuarios
+        const qUsuarios = query(collection(db, "usuarios_taller"));
+        onSnapshot(qUsuarios, (snapshot) => {
+            usuarios = [];
+            snapshot.forEach((doc) => {
+                usuarios.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            actualizarUsuarios();
+            actualizarEstadisticas();
+        });
+
         // Cargar herramientas de usuarios
         const qHerramientas = query(collection(db, "herramientas_usuarios"));
         onSnapshot(qHerramientas, (snapshot) => {
@@ -573,7 +661,7 @@
                 });
                 
                 // Recopilar todas las incidencias
-                if (data.reportes && data.reportes.length > 0) {
+                if (data.reportes && Array.isArray(data.reportes)) {
                     data.reportes.forEach((reporte, index) => {
                         todasLasIncidencias.push({
                             id: `${doc.id}_${index}`,
@@ -582,74 +670,223 @@
                             codigo: data.codigo,
                             trabajadorId: data.trabajadorId,
                             trabajadorNombre: data.trabajadorNombre,
-                            ...reporte,
-                            estado: reporte.estado || 'pendiente',
-                            fechaResolucion: reporte.fechaResolucion || null
+                            ...reporte
                         });
                     });
                 }
             });
             
             actualizarEstadisticas();
-            actualizarPendientes();
+            actualizarIncidencias();
             actualizarReparacion();
             actualizarHistorial();
-            actualizarEstadisticasDetalladas();
         });
 
         // ============================================
-        // ACTUALIZAR VISTAS
+        // ACTUALIZAR ESTADÍSTICAS
         // ============================================
         
         function actualizarEstadisticas() {
-            const pendientes = todasLasIncidencias.filter(i => i.estado === 'pendiente').length;
-            const enReparacion = todasLasIncidencias.filter(i => i.estado === 'reparacion').length;
-            const reparadasHoy = todasLasIncidencias.filter(i => {
-                if (i.fechaResolucion) {
-                    const hoy = new Date().toDateString();
-                    return new Date(i.fechaResolucion).toDateString() === hoy;
-                }
-                return false;
-            }).length;
+            const totalUsuarios = usuarios.length;
+            const totalHerramientas = herramientas.length;
+            const totalIncidencias = todasLasIncidencias.length;
+            const pendientes = todasLasIncidencias.filter(i => i.estado === 'pendiente' || !i.estado).length;
             
             document.getElementById('statsContainer').innerHTML = `
                 <div class="stat-card">
+                    <div class="stat-number">${totalUsuarios}</div>
+                    <div class="stat-label">Usuarios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalHerramientas}</div>
+                    <div class="stat-label">Herramientas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalIncidencias}</div>
+                    <div class="stat-label">Incidencias</div>
+                </div>
+                <div class="stat-card">
                     <div class="stat-number" style="color:#e74c3c;">${pendientes}</div>
-                    <div>Pendientes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#f39c12;">${enReparacion}</div>
-                    <div>En reparación</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#27ae60;">${reparadasHoy}</div>
-                    <div>Reparadas hoy</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${todasLasIncidencias.length}</div>
-                    <div>Total incidencias</div>
+                    <div class="stat-label">Pendientes</div>
                 </div>
             `;
             
+            document.getElementById('usuariosCount').textContent = totalUsuarios;
             document.getElementById('pendientesCount').textContent = pendientes;
-            document.getElementById('reparacionCount').textContent = enReparacion;
+            document.getElementById('reparacionCount').textContent = todasLasIncidencias.filter(i => i.estado === 'reparacion').length;
         }
 
-        function actualizarPendientes() {
-            const container = document.getElementById('pendientesContainer');
-            const busqueda = document.getElementById('buscarPendientes').value.toLowerCase();
-            const urgencia = document.getElementById('filtroUrgencia').value;
+        // ============================================
+        // GESTIÓN DE USUARIOS
+        // ============================================
+        
+        function actualizarUsuarios() {
+            const container = document.getElementById('usuariosContainer');
             
-            let pendientes = todasLasIncidencias.filter(i => i.estado === 'pendiente');
-            
-            // Aplicar filtros
-            if (busqueda) {
-                pendientes = pendientes.filter(i => 
-                    i.herramienta.toLowerCase().includes(busqueda) ||
-                    i.trabajadorNombre.toLowerCase().includes(busqueda) ||
-                    i.detalle.toLowerCase().includes(busqueda)
-                );
+            if (usuarios.length === 0) {
+                container.innerHTML = '<div class="loading">No hay usuarios creados</div>';
+                return;
             }
+            
+            container.innerHTML = usuarios.map(u => {
+                // Contar herramientas de este usuario
+                const herramientasUsuario = herramientas.filter(h => h.trabajadorId === u.id);
+                const herramientasRojas = herramientasUsuario.filter(h => h.estado === 'roto').length;
+                const herramientasPresentes = herramientasUsuario.filter(h => h.presente).length;
+                
+                return `
+                    <div class="usuario-card ${u.activo === false ? 'inactivo' : ''}">
+                        <div class="usuario-header">
+                            <span class="usuario-nombre">${u.nombre}</span>
+                            <span class="usuario-estado ${u.activo !== false ? 'estado-activo' : 'estado-inactivo'}">
+                                ${u.activo !== false ? 'Activo' : 'Inactivo'}
+                            </span>
+                        </div>
+                        <div style="color: #7f8c8d; margin-bottom: 10px;">${u.rol || 'Trabajador'}</div>
+                        <div class="usuario-stats">
+                            <span>🔧 Total: ${herramientasUsuario.length}</span>
+                            <span style="color:#27ae60;">✅ ${herramientasPresentes}</span>
+                            <span style="color:#e74c3c;">⚠️ ${herramientasRojas}</span>
+                        </div>
+                        <div class="usuario-acciones">
+                            <button class="btn btn-info" onclick="verHerramientas('${u.id}')">🔍 Ver herramientas</button>
+                            <button class="btn btn-warning" onclick="toggleUsuario('${u.id}', ${u.activo !== false})">
+                                ${u.activo !== false ? '❌ Desactivar' : '✅ Activar'}
+                            </button>
+                            <button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.crearUsuario = async function() {
+            const nombre = document.getElementById('nombreUsuario').value.trim();
+            const rol = document.getElementById('rolUsuario').value.trim();
+            
+            if (!nombre) {
+                alert('El nombre es obligatorio');
+                return;
+            }
+            
+            // Verificar si ya existe
+            if (usuarios.some(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
+                alert('Ya existe un usuario con ese nombre');
+                return;
+            }
+            
+            try {
+                // Crear usuario
+                const usuarioRef = await addDoc(collection(db, "usuarios_taller"), {
+                    nombre: nombre,
+                    rol: rol || 'Trabajador',
+                    activo: true,
+                    fechaCreacion: new Date().toISOString()
+                });
+                
+                // Lista de herramientas básicas para nuevo usuario
+                const herramientasBasicas = [
+                    "Juego de carracas", "Caja de herramientas BT.11A",
+                    "Llave con trinquete 467B.10", "Llave trinquete 467B.13",
+                    "Llave mixta 440.10", "Llave mixta 440.13",
+                    "Destornilladores juego ATP.J6", "Alicates universales 187A.18CPE",
+                    "Metro 893B.825", "Calibre 805.2"
+                ];
+                
+                // Asignar herramientas básicas
+                for (const nombre of herramientasBasicas) {
+                    await addDoc(collection(db, "herramientas_usuarios"), {
+                        trabajadorId: usuarioRef.id,
+                        trabajadorNombre: nombre,
+                        nombre: nombre,
+                        codigo: "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                        cantidad: 1,
+                        presente: true,
+                        estado: 'bueno',
+                        reportes: [],
+                        fechaAsignacion: new Date().toISOString()
+                    });
+                }
+                
+                document.getElementById('nombreUsuario').value = '';
+                document.getElementById('rolUsuario').value = '';
+                
+                mostrarToast('✅ Usuario creado correctamente');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al crear usuario', 'error');
+            }
+        };
+
+        window.toggleUsuario = async function(usuarioId, activo) {
+            try {
+                await updateDoc(doc(db, "usuarios_taller", usuarioId), {
+                    activo: !activo
+                });
+                mostrarToast(`Usuario ${!activo ? 'activado' : 'desactivado'}`);
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        window.eliminarUsuario = async function(usuarioId) {
+            if (!confirm('¿Estás seguro? Esto eliminará todas sus herramientas también.')) return;
+            
+            try {
+                // Eliminar herramientas del usuario
+                const herramientasUsuario = herramientas.filter(h => h.trabajadorId === usuarioId);
+                for (const h of herramientasUsuario) {
+                    await deleteDoc(doc(db, "herramientas_usuarios", h.id));
+                }
+                
+                // Eliminar usuario
+                await deleteDoc(doc(db, "usuarios_taller", usuarioId));
+                
+                mostrarToast('✅ Usuario eliminado');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        window.verHerramientas = function(usuarioId) {
+            const usuario = usuarios.find(u => u.id === usuarioId);
+            const herramientasUsuario = herramientas.filter(h => h.trabajadorId === usuarioId);
+            
+            let contenido = `<h3 style="margin-bottom: 15px;">Herramientas de ${usuario ? usuario.nombre : 'Usuario'}</h3>`;
+            
+            if (herramientasUsuario.length === 0) {
+                contenido += '<p>No tiene herramientas asignadas</p>';
+            } else {
+                contenido += '<div style="max-height: 400px; overflow-y: auto;">';
+                herramientasUsuario.forEach(h => {
+                    contenido += `
+                        <div style="padding: 10px; border-bottom: 1px solid #ecf0f1;">
+                            <strong>${h.nombre}</strong><br>
+                            <span style="color: #7f8c8d;">Código: ${h.codigo || '-'}</span><br>
+                            <span style="display: inline-block; padding: 2px 8px; background: ${h.estado === 'bueno' ? '#d4edda' : '#f8d7da'}; border-radius: 12px; font-size: 12px;">
+                                ${h.estado}
+                            </span>
+                            ${h.presente ? ' ✅ Presente' : ' ❌ Ausente'}
+                        </div>
+                    `;
+                });
+                contenido += '</div>';
+            }
+            
+            document.getElementById('modalTitulo').innerHTML = 'Herramientas del usuario';
+            document.getElementById('modalContenido').innerHTML = contenido;
+            document.getElementById('modalHistorial').style.display = 'flex';
+        };
+
+        // ============================================
+        // GESTIÓN DE INCIDENCIAS
+        // ============================================
+        
+        function actualizarIncidencias() {
+            const container = document.getElementById('incidenciasContainer');
+            const pendientes = todasLasIncidencias.filter(i => i.estado === 'pendiente' || !i.estado);
             
             if (pendientes.length === 0) {
                 container.innerHTML = '<div class="loading">No hay incidencias pendientes</div>';
@@ -659,19 +896,20 @@
             container.innerHTML = pendientes.map(i => `
                 <div class="incidencia-card pendiente">
                     <div class="incidencia-header">
-                        <span class="incidencia-titulo">🔧 ${i.herramienta} ${i.codigo ? `(${i.codigo})` : ''}</span>
+                        <span class="incidencia-titulo">🔧 ${i.herramienta}</span>
                         <span class="incidencia-fecha">📅 ${i.timestamp}</span>
                     </div>
                     <div class="incidencia-detalle">
                         <strong>👤 ${i.trabajadorNombre}</strong><br>
                         <span style="color: #e74c3c;">"${i.detalle}"</span>
+                        ${i.tipo === 'repuesto' ? '<br><span style="color: #f39c12;">🔧 Solicitud de repuesto</span>' : ''}
                     </div>
                     <div class="incidencia-acciones">
                         <button class="btn btn-warning" onclick="marcarReparacion('${i.herramientaId}', '${i.timestamp}')">
                             🔧 Enviar a reparación
                         </button>
-                        <button class="btn btn-primary" onclick="marcarSustituida('${i.herramientaId}', '${i.timestamp}')">
-                            🔄 Sustituir herramienta
+                        <button class="btn btn-success" onclick="marcarReparado('${i.herramientaId}', '${i.timestamp}')">
+                            ✅ Marcar reparado
                         </button>
                         <button class="btn btn-info" onclick="verHistorialHerramienta('${i.herramientaId}')">
                             📋 Ver historial
@@ -683,16 +921,7 @@
 
         function actualizarReparacion() {
             const container = document.getElementById('reparacionContainer');
-            const busqueda = document.getElementById('buscarReparacion').value.toLowerCase();
-            
-            let enReparacion = todasLasIncidencias.filter(i => i.estado === 'reparacion');
-            
-            if (busqueda) {
-                enReparacion = enReparacion.filter(i => 
-                    i.herramienta.toLowerCase().includes(busqueda) ||
-                    i.trabajadorNombre.toLowerCase().includes(busqueda)
-                );
-            }
+            const enReparacion = todasLasIncidencias.filter(i => i.estado === 'reparacion');
             
             if (enReparacion.length === 0) {
                 container.innerHTML = '<div class="loading">No hay herramientas en reparación</div>';
@@ -703,20 +932,15 @@
                 <div class="incidencia-card reparacion">
                     <div class="incidencia-header">
                         <span class="incidencia-titulo">🔧 ${i.herramienta}</span>
-                        <span class="estado-tag estado-reparacion">En reparación</span>
+                        <span class="incidencia-fecha">📅 ${i.timestamp}</span>
                     </div>
                     <div class="incidencia-detalle">
-                        <strong>Reportado por:</strong> ${i.trabajadorNombre}<br>
-                        <strong>Problema:</strong> "${i.detalle}"<br>
-                        <strong>Fecha reporte:</strong> ${i.timestamp}<br>
-                        ${i.fechaEnvioReparacion ? `<strong>Enviado a reparar:</strong> ${i.fechaEnvioReparacion}` : ''}
+                        <strong>👤 ${i.trabajadorNombre}</strong><br>
+                        <span>"${i.detalle}"</span>
                     </div>
                     <div class="incidencia-acciones">
                         <button class="btn btn-success" onclick="marcarReparado('${i.herramientaId}', '${i.timestamp}')">
-                            ✅ Marcar como reparado
-                        </button>
-                        <button class="btn btn-primary" onclick="marcarSustituida('${i.herramientaId}', '${i.timestamp}')">
-                            🔄 Sustituir (nueva)
+                            ✅ Marcar reparado
                         </button>
                         <button class="btn btn-info" onclick="verHistorialHerramienta('${i.herramientaId}')">
                             📋 Ver historial
@@ -728,11 +952,7 @@
 
         function actualizarHistorial() {
             const container = document.getElementById('historialContainer');
-            const busqueda = document.getElementById('buscarHistorial').value.toLowerCase();
-            const fechaDesde = document.getElementById('fechaDesde').value;
-            const fechaHasta = document.getElementById('fechaHasta').value;
-            
-            let historial = todasLasIncidencias.filter(i => i.estado !== 'pendiente');
+            const historial = todasLasIncidencias.filter(i => i.estado === 'reparado' || i.estado === 'sustituido');
             
             // Ordenar por fecha (más reciente primero)
             historial.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -743,53 +963,22 @@
             }
             
             container.innerHTML = historial.slice(0, 50).map(i => `
-                <div class="incidencia-card ${i.estado === 'reparado' ? 'reparado' : ''}">
+                <div class="incidencia-card reparado">
                     <div class="incidencia-header">
                         <span class="incidencia-titulo">🔧 ${i.herramienta}</span>
-                        <span class="estado-tag estado-${i.estado}">${i.estado}</span>
+                        <span class="incidencia-fecha">📅 ${i.timestamp}</span>
                     </div>
                     <div class="incidencia-detalle">
-                        <strong>👤 ${i.trabajadorNombre}</strong> - ${i.timestamp}<br>
+                        <strong>👤 ${i.trabajadorNombre}</strong><br>
                         <span>Problema: "${i.detalle}"</span><br>
                         ${i.fechaResolucion ? `<span style="color: #27ae60;">✅ Resuelto: ${i.fechaResolucion}</span>` : ''}
-                        ${i.motivoSustitucion ? `<span style="color: #3498db;">🔄 Sustituido: ${i.motivoSustitucion}</span>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
-        function actualizarEstadisticasDetalladas() {
-            // Top herramientas más reportadas
-            const herramientasCount = {};
-            todasLasIncidencias.forEach(i => {
-                herramientasCount[i.herramienta] = (herramientasCount[i.herramienta] || 0) + 1;
-            });
-            
-            const topHerramientas = Object.entries(herramientasCount)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5)
-                .map(([h, c]) => `<div style="margin: 5px 0;">🔧 ${h}: <strong>${c}</strong> reportes</div>`)
-                .join('');
-            
-            document.getElementById('topHerramientas').innerHTML = topHerramientas || 'No hay datos';
-            
-            // Top trabajadores
-            const trabajadoresCount = {};
-            todasLasIncidencias.forEach(i => {
-                trabajadoresCount[i.trabajadorNombre] = (trabajadoresCount[i.trabajadorNombre] || 0) + 1;
-            });
-            
-            const topTrabajadores = Object.entries(trabajadoresCount)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5)
-                .map(([t, c]) => `<div style="margin: 5px 0;">👤 ${t}: <strong>${c}</strong> reportes</div>`)
-                .join('');
-            
-            document.getElementById('topTrabajadores').innerHTML = topTrabajadores || 'No hay datos';
-        }
-
         // ============================================
-        // ACCIONES DE ADMIN
+        // ACCIONES SOBRE INCIDENCIAS
         // ============================================
         
         window.marcarReparacion = async function(herramientaId, timestamp) {
@@ -797,7 +986,6 @@
                 const herramienta = herramientas.find(h => h.id === herramientaId);
                 if (!herramienta) return;
                 
-                // Actualizar el reporte específico
                 const reportesActualizados = herramienta.reportes.map(r => {
                     if (r.timestamp === timestamp) {
                         return {
@@ -831,8 +1019,7 @@
                         return {
                             ...r,
                             estado: 'reparado',
-                            fechaResolucion: new Date().toLocaleString(),
-                            observaciones: 'Reparado correctamente'
+                            fechaResolucion: new Date().toLocaleString()
                         };
                     }
                     return r;
@@ -851,100 +1038,52 @@
             }
         };
 
-        window.marcarSustituida = async function(herramientaId, timestamp) {
-            const motivo = prompt("Motivo de la sustitución (ej: no tiene reparación, muy costoso, etc.):");
-            if (!motivo) return;
-            
-            try {
-                const herramienta = herramientas.find(h => h.id === herramientaId);
-                if (!herramienta) return;
-                
-                const reportesActualizados = herramienta.reportes.map(r => {
-                    if (r.timestamp === timestamp) {
-                        return {
-                            ...r,
-                            estado: 'sustituido',
-                            fechaResolucion: new Date().toLocaleString(),
-                            motivoSustitucion: motivo
-                        };
-                    }
-                    return r;
-                });
-                
-                // Crear nueva herramienta (sustituta)
-                const nuevaHerramienta = {
-                    trabajadorId: herramienta.trabajadorId,
-                    trabajadorNombre: herramienta.trabajadorNombre,
-                    nombre: herramienta.nombre + " (NUEVA)",
-                    codigo: herramienta.codigo + "-N",
-                    cantidad: 1,
-                    presente: true,
-                    estado: 'bueno',
-                    reportes: [],
-                    fechaAsignacion: new Date().toISOString(),
-                    herramientaSustituye: herramientaId
-                };
-                
-                await addDoc(collection(db, "herramientas_usuarios"), nuevaHerramienta);
-                
-                // Actualizar la antigua
-                await updateDoc(doc(db, "herramientas_usuarios", herramientaId), {
-                    estado: 'sustituido',
-                    presente: false,
-                    reportes: reportesActualizados,
-                    fechaBaja: new Date().toISOString()
-                });
-                
-                mostrarToast('✅ Herramienta sustituida por una nueva');
-            } catch (error) {
-                console.error("Error:", error);
-                mostrarToast('❌ Error', 'error');
-            }
-        };
-
         window.verHistorialHerramienta = function(herramientaId) {
             const herramienta = herramientas.find(h => h.id === herramientaId);
             if (!herramienta) return;
             
             const incidencias = todasLasIncidencias.filter(i => i.herramientaId === herramientaId);
             
-            let historial = `<h3 style="margin-bottom: 15px;">Historial de ${herramienta.nombre}</h3>`;
+            let contenido = `<h3 style="margin-bottom: 15px;">Historial de ${herramienta.nombre}</h3>`;
             
             if (incidencias.length === 0) {
-                historial += '<p>No hay incidencias registradas</p>';
+                contenido += '<p>No hay incidencias registradas</p>';
             } else {
-                historial += incidencias.map(i => `
-                    <div class="historial-item">
-                        <div class="fecha-historial">📅 ${i.timestamp}</div>
-                        <div><strong>👤 ${i.trabajadorNombre}</strong></div>
-                        <div>Problema: "${i.detalle}"</div>
-                        <div>Estado: <span class="estado-tag estado-${i.estado || 'pendiente'}">${i.estado || 'pendiente'}</span></div>
-                        ${i.fechaResolucion ? `<div style="color: #27ae60;">✅ Resuelto: ${i.fechaResolucion}</div>` : ''}
-                    </div>
-                `).join('');
+                incidencias.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                incidencias.forEach(i => {
+                    contenido += `
+                        <div class="historial-item">
+                            <div class="fecha-historial">📅 ${i.timestamp}</div>
+                            <div><strong>👤 ${i.trabajadorNombre}</strong></div>
+                            <div>Problema: "${i.detalle}"</div>
+                            <div>Estado: <span class="estado-tag estado-${i.estado || 'pendiente'}">${i.estado || 'pendiente'}</span></div>
+                            ${i.fechaResolucion ? `<div style="color: #27ae60;">✅ Resuelto: ${i.fechaResolucion}</div>` : ''}
+                        </div>
+                    `;
+                });
             }
             
             document.getElementById('modalTitulo').innerHTML = 'Historial de herramienta';
-            document.getElementById('modalContenido').innerHTML = historial;
-            document.getElementById('modalIncidencia').style.display = 'flex';
+            document.getElementById('modalContenido').innerHTML = contenido;
+            document.getElementById('modalHistorial').style.display = 'flex';
         };
 
-        window.exportarHistorial = function() {
+        window.exportarExcel = function() {
             if (todasLasIncidencias.length === 0) {
                 alert('No hay datos para exportar');
                 return;
             }
             
-            const headers = ['Fecha reporte', 'Trabajador', 'Herramienta', 'Código', 'Problema', 'Estado', 'Fecha resolución', 'Observaciones'];
+            const headers = ['Fecha', 'Trabajador', 'Herramienta', 'Código', 'Problema', 'Tipo', 'Estado', 'Fecha Resolución'];
             const rows = todasLasIncidencias.map(i => [
                 i.timestamp,
                 i.trabajadorNombre,
                 i.herramienta,
                 i.codigo || '-',
                 i.detalle,
+                i.tipo || 'reporte',
                 i.estado || 'pendiente',
-                i.fechaResolucion || '-',
-                i.motivoSustitucion || i.observaciones || '-'
+                i.fechaResolucion || '-'
             ]);
             
             const csvContent = [
@@ -960,15 +1099,10 @@
             
             mostrarToast(`✅ Exportadas ${todasLasIncidencias.length} incidencias`);
         };
-
-        // Event listeners para filtros
-        document.getElementById('buscarPendientes').addEventListener('input', actualizarPendientes);
-        document.getElementById('filtroUrgencia').addEventListener('change', actualizarPendientes);
-        document.getElementById('buscarReparacion').addEventListener('input', actualizarReparacion);
-        document.getElementById('buscarHistorial').addEventListener('input', actualizarHistorial);
     </script>
 </body>
 </html>
+
 
 
 
