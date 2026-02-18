@@ -13,7 +13,7 @@ import {
   getDocs 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 🔴 TUS DATOS DE FIREBASE (verifica que sean exactamente estos)
+// 🔴 TUS DATOS DE FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyDfNTl9SIDmpJWmrNfVyX7ptk1WRjxQ-LA",
   authDomain: "taller-herramientas-38bed.firebaseapp.com",
@@ -23,11 +23,9 @@ const firebaseConfig = {
   appId: "1:550679684036:web:fac9e63eb8154c7b36fa91"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Exportar todo lo necesario
 export { 
   db, 
   collection, 
