@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Control por Trabajador</title>
+    <title>Admin - Gestión de Usuarios</title>
     <style>
         * {
             margin: 0;
@@ -48,7 +48,6 @@
             font-size: 2.5em;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 5px;
         }
         
         .admin-section {
@@ -76,78 +75,38 @@
             font-size: 14px;
         }
         
-        .trabajador-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             margin-bottom: 20px;
         }
         
-        .tab {
-            padding: 12px 25px;
-            background: #ecf0f1;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
+        .form-group {
+            margin-bottom: 15px;
         }
         
-        .tab.active {
-            background: #3498db;
-            color: white;
-        }
-        
-        .tab:hover {
-            transform: translateY(-2px);
-            background: #bdc3c7;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th {
-            background: #2c3e50;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-        
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ecf0f1;
-        }
-        
-        tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            display: inline-block;
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
+            color: #2c3e50;
         }
         
-        .status-bueno {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-roto {
-            background: #f8d7da;
-            color: #721c24;
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 15px;
         }
         
         .btn {
-            padding: 8px 15px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            margin: 2px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s;
         }
         
@@ -160,15 +119,6 @@
             background: #219a52;
         }
         
-        .btn-warning {
-            background: #f39c12;
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background: #e67e22;
-        }
-        
         .btn-danger {
             background: #e74c3c;
             color: white;
@@ -178,9 +128,87 @@
             background: #c0392b;
         }
         
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
         .btn-info {
             background: #3498db;
             color: white;
+        }
+        
+        .usuarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .usuario-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 6px solid #3498db;
+            transition: transform 0.3s;
+        }
+        
+        .usuario-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .usuario-card.inactivo {
+            border-left-color: #95a5a6;
+            opacity: 0.7;
+        }
+        
+        .usuario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .usuario-nombre {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .usuario-id {
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+        
+        .usuario-estado {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .estado-activo {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .estado-inactivo {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .usuario-stats {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        
+        .usuario-acciones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
         
         .toast {
@@ -208,191 +236,301 @@
             color: #7f8c8d;
         }
         
-        .solicitud-card {
-            background: #fff3cd;
-            border-left: 6px solid #f39c12;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 12px;
+        .herramientas-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
         }
         
-        .reporte-card {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border-left: 4px solid #e74c3c;
+        .herramienta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.9em;
+        }
+        
+        .herramienta-item:last-child {
+            border-bottom: none;
+        }
+        
+        .badge-success {
+            background: #27ae60;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        .badge-danger {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #ecf0f1;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 20px;
+            padding: 25px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>👨‍🔧 ADMIN - CONTROL POR TRABAJADOR</h1>
-        <p>Cada trabajador tiene su propio inventario</p>
+        <h1>👨‍🔧 ADMIN - GESTIÓN DE USUARIOS</h1>
+        <p>Crea y gestiona los trabajadores del taller</p>
     </div>
 
     <div class="container">
-        <!-- Estadísticas globales -->
+        <!-- Estadísticas -->
         <div class="stats-grid" id="statsContainer">
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div>Trabajadores</div>
+                <div>Usuarios activos</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div>Herramientas totales</div>
+                <div>Total herramientas</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div>Presentes</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">0</div>
-                <div>Dañadas</div>
+                <div>Herramientas dañadas</div>
             </div>
         </div>
 
-        <!-- Trabajadores -->
-        <div class="admin-section">
-            <div class="section-title">
-                <h2>👥 TRABAJADORES</h2>
-                <span class="badge" id="trabajadoresCount">0</span>
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="cambiarTab('usuarios')">👥 Usuarios</div>
+            <div class="tab" onclick="cambiarTab('reportes')">⚠️ Reportes</div>
+            <div class="tab" onclick="cambiarTab('inventario')">📦 Inventario Global</div>
+        </div>
+
+        <!-- Panel de Usuarios -->
+        <div id="panelUsuarios">
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>➕ CREAR NUEVO USUARIO</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre completo *</label>
+                        <input type="text" id="nuevoUsuarioNombre" placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label>Rol / Puesto</label>
+                        <input type="text" id="nuevoUsuarioRol" placeholder="Ej: Mecánico">
+                    </div>
+                    <div class="form-group">
+                        <label>Herramientas iniciales</label>
+                        <select id="nuevoUsuarioHerramientas">
+                            <option value="completo">Todas las herramientas</option>
+                            <option value="basico">Solo herramientas básicas</option>
+                            <option value="personalizado">Personalizado</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="crearUsuario()">✅ Crear Usuario</button>
             </div>
-            <div class="trabajador-tabs" id="trabajadoresTabs">
-                <div class="loading">Cargando trabajadores...</div>
+
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>👥 LISTA DE USUARIOS</h2>
+                    <span class="badge" id="usuariosCount">0</span>
+                </div>
+                <div class="usuarios-grid" id="usuariosContainer">
+                    <div class="loading">Cargando usuarios...</div>
+                </div>
             </div>
         </div>
 
-        <!-- Herramientas del trabajador seleccionado -->
-        <div class="admin-section" id="herramientasSection" style="display: none;">
-            <h2 id="tituloTrabajador">Selecciona un trabajador</h2>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Herramienta</th>
-                            <th>Código</th>
-                            <th>Estado</th>
-                            <th>Presente</th>
-                            <th>Reportes</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="herramientasTable">
-                        <tr><td colspan="6" class="loading">Selecciona un trabajador</td></tr>
-                    </tbody>
-                </table>
+        <!-- Panel de Reportes -->
+        <div id="panelReportes" style="display: none;">
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>⚠️ TODOS LOS REPORTES</h2>
+                    <button class="btn btn-info" onclick="exportarReportes()">📊 Exportar Excel</button>
+                </div>
+                <div id="reportesContainer"></div>
             </div>
         </div>
 
-        <!-- Solicitudes -->
-        <div class="admin-section">
-            <div class="section-title">
-                <h2>📝 SOLICITUDES PENDIENTES</h2>
-                <span class="badge" id="solicitudesCount">0</span>
-            </div>
-            <div id="solicitudesContainer">
-                <div class="loading">Cargando solicitudes...</div>
+        <!-- Panel de Inventario Global -->
+        <div id="panelInventario" style="display: none;">
+            <div class="admin-section">
+                <div class="section-title">
+                    <h2>📦 INVENTARIO GLOBAL</h2>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Herramienta</th>
+                                <th>Código</th>
+                                <th>Total</th>
+                                <th>Presentes</th>
+                                <th>Dañadas</th>
+                                <th>Usuarios que la tienen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventarioGlobalTable"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Reportes recientes -->
-        <div class="admin-section">
-            <div class="section-title">
-                <h2>⚠️ REPORTES RECIENTES</h2>
-                <button class="btn btn-info" onclick="exportarExcel()">📊 Exportar a Excel</button>
+    <!-- Modal para ver herramientas -->
+    <div id="modalHerramientas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Herramientas del usuario</h2>
+                <button class="close-btn" onclick="cerrarModal()">&times;</button>
             </div>
-            <div id="reportesContainer">
-                <div class="loading">Cargando reportes...</div>
-            </div>
+            <div id="modalHerramientasLista"></div>
         </div>
     </div>
 
     <div id="toast" class="toast"></div>
 
     <script type="module">
-        import { db, collection, query, onSnapshot, updateDoc, doc, getDocs } from './firebase-config.js';
+        import { db, collection, query, onSnapshot, addDoc, updateDoc, doc, deleteDoc, getDocs } from './firebase-config.js';
 
         // ============================================
         // VARIABLES GLOBALES
         // ============================================
         
-        let trabajadores = {};
-        let solicitudes = [];
-        let todosReportes = [];
+        let usuarios = [];
+        let herramientasPorUsuario = {};
+        let herramientasCompletas = [
+            "Juego de carracas", "Caja de herramientas BT.11A",
+            "Llave con trinquete 467B.10", "Llave trinquete 467B.13",
+            "Llave trinquete 467B.17", "Llave trinquete 467B.19",
+            "Llave mixta 440.10", "Llave mixta 440.13", "Llave mixta 440.17",
+            "Llave mixta 440.19", "Llave mixta 440.20", "Llave mixta 440.22",
+            "Llave mixta 440.24", "Llave mixta 440.36", "Llave de pipa 75.10",
+            "Llave de pipa 75.13", "Llave de pipa 75.17", "Llave de pipa 75.19",
+            "Llave de vaso con mango 74A.7", "Llave de vaso con mango 74A.8",
+            "Llave inglesa 101.10", "Destornilladores juego ATP.J6",
+            "Llaves Allen con mango 84TZA", "Juego llaves de Allen 83H.JP9A",
+            "Alicates de corte 192A.18CPE", "Alicates de punta 185A.20CPE",
+            "Alicates universales 187A.18CPE", "Picoloro 181A.25CPE",
+            "Alicates para arandela 179A.9", "Mordaza de presión 580.10",
+            "Calibre 805.2", "Escuadra DELA.1223.03", "Metro 893B.825",
+            "Nivel 3078.40", "Tiralíneas DELA.13299.15", "Maza 1262H.125",
+            "Cincel 263.25", "Alargadera 50m",
+            "Combo Makita DGA504 + DHP486 + SAMP", "Taladro Makita DTW285Z",
+            "Taladro Makita percutor HP2071", "Máquina de soldar",
+            "Carro transporte herramientas"
+        ];
 
         // ============================================
         // FUNCIONES AUXILIARES
         // ============================================
         
-        function mostrarToast(mensaje) {
+        function mostrarToast(mensaje, tipo = 'exito') {
             const toast = document.getElementById('toast');
             toast.style.display = 'block';
+            toast.style.background = tipo === 'exito' ? '#27ae60' : '#e74c3c';
             toast.textContent = mensaje;
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
+        window.cambiarTab = function(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('panelUsuarios').style.display = tab === 'usuarios' ? 'block' : 'none';
+            document.getElementById('panelReportes').style.display = tab === 'reportes' ? 'block' : 'none';
+            document.getElementById('panelInventario').style.display = tab === 'inventario' ? 'block' : 'none';
+        };
+
+        window.cerrarModal = function() {
+            document.getElementById('modalHerramientas').style.display = 'none';
+        };
+
         // ============================================
-        // CARGAR HERRAMIENTAS DE USUARIOS
+        // CARGAR DATOS
         // ============================================
         
+        const qUsuarios = query(collection(db, "usuarios_taller"));
+        onSnapshot(qUsuarios, (snapshot) => {
+            usuarios = [];
+            snapshot.forEach((doc) => {
+                usuarios.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            actualizarUsuarios();
+        });
+
         const qHerramientas = query(collection(db, "herramientas_usuarios"));
         onSnapshot(qHerramientas, (snapshot) => {
-            trabajadores = {};
-            todosReportes = [];
-            
+            herramientasPorUsuario = {};
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                const trabajadorId = data.trabajadorId;
-                const trabajadorNombre = data.trabajadorNombre;
-                
-                if (!trabajadores[trabajadorId]) {
-                    trabajadores[trabajadorId] = {
-                        id: trabajadorId,
-                        nombre: trabajadorNombre,
-                        herramientas: []
-                    };
+                if (!herramientasPorUsuario[data.trabajadorId]) {
+                    herramientasPorUsuario[data.trabajadorId] = [];
                 }
-                
-                trabajadores[trabajadorId].herramientas.push({
+                herramientasPorUsuario[data.trabajadorId].push({
                     id: doc.id,
                     ...data
                 });
-                
-                // Recopilar reportes
-                if (data.reportes && data.reportes.length > 0) {
-                    data.reportes.forEach(r => {
-                        todosReportes.push({
-                            ...r,
-                            herramienta: data.nombre,
-                            codigo: data.codigo
-                        });
-                    });
-                }
             });
-            
+            actualizarUsuarios();
             actualizarEstadisticas();
-            actualizarTabs();
-            actualizarReportes();
-        });
-
-        // ============================================
-        // CARGAR SOLICITUDES
-        // ============================================
-        
-        const qSolicitudes = query(collection(db, "solicitudes_herramientas"));
-        onSnapshot(qSolicitudes, (snapshot) => {
-            solicitudes = [];
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                if (data.estado === 'pendiente') {
-                    solicitudes.push({
-                        id: doc.id,
-                        ...data
-                    });
-                }
-            });
-            actualizarSolicitudes();
+            actualizarInventarioGlobal();
         });
 
         // ============================================
@@ -400,113 +538,237 @@
         // ============================================
         
         function actualizarEstadisticas() {
-            const totalTrabajadores = Object.keys(trabajadores).length;
             let totalHerramientas = 0;
-            let totalPresentes = 0;
             let totalRotas = 0;
             
-            Object.values(trabajadores).forEach(t => {
-                totalHerramientas += t.herramientas.length;
-                totalPresentes += t.herramientas.filter(h => h.presente).length;
-                totalRotas += t.herramientas.filter(h => h.estado === 'roto').length;
+            Object.values(herramientasPorUsuario).forEach(lista => {
+                totalHerramientas += lista.length;
+                totalRotas += lista.filter(h => h.estado === 'roto').length;
             });
             
             document.getElementById('statsContainer').innerHTML = `
                 <div class="stat-card">
-                    <div class="stat-number">${totalTrabajadores}</div>
-                    <div>Trabajadores</div>
+                    <div class="stat-number">${usuarios.length}</div>
+                    <div>Usuarios activos</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">${totalHerramientas}</div>
-                    <div>Herramientas totales</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#27ae60;">${totalPresentes}</div>
-                    <div>Presentes</div>
+                    <div>Total herramientas</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" style="color:#e74c3c;">${totalRotas}</div>
-                    <div>Dañadas</div>
+                    <div>Herramientas dañadas</div>
                 </div>
             `;
             
-            document.getElementById('trabajadoresCount').textContent = totalTrabajadores;
+            document.getElementById('usuariosCount').textContent = usuarios.length;
         }
 
-        function actualizarTabs() {
-            const tabsContainer = document.getElementById('trabajadoresTabs');
-            const trabajadoresArray = Object.values(trabajadores);
+        function actualizarUsuarios() {
+            const container = document.getElementById('usuariosContainer');
             
-            if (trabajadoresArray.length === 0) {
-                tabsContainer.innerHTML = '<div class="loading">No hay trabajadores registrados</div>';
+            if (usuarios.length === 0) {
+                container.innerHTML = '<div class="loading">No hay usuarios creados</div>';
                 return;
             }
             
-            tabsContainer.innerHTML = trabajadoresArray.map(t => `
-                <div class="tab" onclick="verTrabajador('${t.id}')">
-                    👤 ${t.nombre} (${t.herramientas.length})
-                </div>
-            `).join('');
-        }
-
-        window.verTrabajador = function(trabajadorId) {
-            const trabajador = trabajadores[trabajadorId];
-            if (!trabajador) return;
-            
-            document.getElementById('herramientasSection').style.display = 'block';
-            document.getElementById('tituloTrabajador').innerHTML = `🔧 Herramientas de <strong style="color: #3498db;">${trabajador.nombre}</strong>`;
-            
-            const tbody = document.getElementById('herramientasTable');
-            
-            if (trabajador.herramientas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">No tiene herramientas asignadas</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = trabajador.herramientas.map(h => `
-                <tr>
-                    <td><strong>${h.nombre}</strong></td>
-                    <td>${h.codigo || '-'}</td>
-                    <td><span class="status-badge status-${h.estado}">${h.estado}</span></td>
-                    <td>${h.presente ? '✅ Sí' : '❌ No'}</td>
-                    <td>${h.reportes?.length || 0}</td>
-                    <td>
-                        <button class="btn btn-warning" onclick="cambiarEstado('${h.id}')">📝 Cambiar estado</button>
-                        <button class="btn btn-info" onclick="verReportes('${h.id}')">📋 Ver reportes</button>
-                    </td>
-                </tr>
-            `).join('');
-        };
-
-        function actualizarSolicitudes() {
-            const container = document.getElementById('solicitudesContainer');
-            document.getElementById('solicitudesCount').textContent = solicitudes.length;
-            
-            if (solicitudes.length === 0) {
-                container.innerHTML = '<div class="loading">No hay solicitudes pendientes</div>';
-                return;
-            }
-            
-            container.innerHTML = solicitudes.map(s => `
-                <div class="solicitud-card">
-                    <div style="display: flex; justify-content: space-between; align-items: start;">
-                        <div>
-                            <strong style="font-size: 1.1em;">👤 ${s.trabajadorNombre}</strong><br>
-                            <strong>🔧 ${s.nombre}</strong>
-                            ${s.codigo ? `<span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 12px; margin-left: 10px;">${s.codigo}</span>` : ''}
-                            ${s.motivo ? `<p style="margin: 10px 0;">"${s.motivo}"</p>` : ''}
-                            <small>📅 ${s.fechaLegible}</small>
+            container.innerHTML = usuarios.map(u => {
+                const herramientas = herramientasPorUsuario[u.id] || [];
+                const herramientasRojas = herramientas.filter(h => h.estado === 'roto').length;
+                const herramientasPresentes = herramientas.filter(h => h.presente).length;
+                
+                return `
+                    <div class="usuario-card ${u.activo === false ? 'inactivo' : ''}">
+                        <div class="usuario-header">
+                            <span class="usuario-nombre">${u.nombre}</span>
+                            <span class="usuario-estado ${u.activo !== false ? 'estado-activo' : 'estado-inactivo'}">
+                                ${u.activo !== false ? 'Activo' : 'Inactivo'}
+                            </span>
                         </div>
-                        <div>
-                            <button class="btn btn-primary" onclick="aprobarSolicitud('${s.id}')">✅ Aprobar</button>
-                            <button class="btn btn-danger" onclick="rechazarSolicitud('${s.id}')">❌ Rechazar</button>
+                        <div class="usuario-id">ID: ${u.id}</div>
+                        <div class="usuario-stats">
+                            <span>🔧 Total: ${herramientas.length}</span>
+                            <span style="color:#27ae60;">✅ ${herramientasPresentes}</span>
+                            <span style="color:#e74c3c;">⚠️ ${herramientasRojas}</span>
+                        </div>
+                        <div class="usuario-acciones">
+                            <button class="btn btn-info" onclick="verHerramientas('${u.id}')">🔍 Ver herramientas</button>
+                            <button class="btn btn-warning" onclick="toggleUsuario('${u.id}', ${u.activo !== false})">
+                                ${u.activo !== false ? '❌ Desactivar' : '✅ Activar'}
+                            </button>
+                            <button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">🗑️ Eliminar</button>
                         </div>
                     </div>
-                </div>
+                `;
+            }).join('');
+        }
+
+        window.verHerramientas = function(usuarioId) {
+            const herramientas = herramientasPorUsuario[usuarioId] || [];
+            const usuario = usuarios.find(u => u.id === usuarioId);
+            
+            document.getElementById('modalTitulo').innerHTML = `Herramientas de ${usuario ? usuario.nombre : 'Usuario'}`;
+            
+            const lista = document.getElementById('modalHerramientasLista');
+            
+            if (herramientas.length === 0) {
+                lista.innerHTML = '<p>No tiene herramientas asignadas</p>';
+            } else {
+                lista.innerHTML = herramientas.map(h => `
+                    <div class="herramienta-item">
+                        <span>${h.nombre}</span>
+                        <span>
+                            <span class="${h.estado === 'bueno' ? 'badge-success' : 'badge-danger'}">${h.estado}</span>
+                            ${h.presente ? '✅' : '❌'}
+                        </span>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('modalHerramientas').style.display = 'flex';
+        };
+
+        window.toggleUsuario = async function(usuarioId, activo) {
+            try {
+                await updateDoc(doc(db, "usuarios_taller", usuarioId), {
+                    activo: !activo
+                });
+                mostrarToast(`Usuario ${!activo ? 'activado' : 'desactivado'}`);
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        window.eliminarUsuario = async function(usuarioId) {
+            if (!confirm('¿Estás seguro? Esto eliminará todas sus herramientas también.')) return;
+            
+            try {
+                // Eliminar herramientas del usuario
+                const herramientas = herramientasPorUsuario[usuarioId] || [];
+                for (const h of herramientas) {
+                    await deleteDoc(doc(db, "herramientas_usuarios", h.id));
+                }
+                
+                // Eliminar usuario
+                await deleteDoc(doc(db, "usuarios_taller", usuarioId));
+                
+                mostrarToast('✅ Usuario eliminado');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        window.crearUsuario = async function() {
+            const nombre = document.getElementById('nuevoUsuarioNombre').value.trim();
+            
+            if (!nombre) {
+                alert('El nombre es obligatorio');
+                return;
+            }
+            
+            // Verificar si ya existe
+            if (usuarios.some(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
+                alert('Ya existe un usuario con ese nombre');
+                return;
+            }
+            
+            try {
+                // Crear usuario
+                const usuarioRef = await addDoc(collection(db, "usuarios_taller"), {
+                    nombre: nombre,
+                    rol: document.getElementById('nuevoUsuarioRol').value.trim() || 'Trabajador',
+                    activo: true,
+                    fechaCreacion: new Date().toISOString()
+                });
+                
+                // Asignar herramientas
+                for (const h of herramientasCompletas) {
+                    await addDoc(collection(db, "herramientas_usuarios"), {
+                        trabajadorId: usuarioRef.id,
+                        trabajadorNombre: nombre,
+                        nombre: h,
+                        codigo: "COD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                        cantidad: 1,
+                        presente: true,
+                        estado: 'bueno',
+                        reportes: [],
+                        fechaAsignacion: new Date().toISOString()
+                    });
+                }
+                
+                document.getElementById('nuevoUsuarioNombre').value = '';
+                document.getElementById('nuevoUsuarioRol').value = '';
+                
+                mostrarToast('✅ Usuario creado correctamente');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al crear usuario', 'error');
+            }
+        };
+
+        function actualizarInventarioGlobal() {
+            const inventario = {};
+            
+            Object.values(herramientasPorUsuario).forEach(lista => {
+                lista.forEach(h => {
+                    if (!inventario[h.nombre]) {
+                        inventario[h.nombre] = {
+                            nombre: h.nombre,
+                            codigo: h.codigo,
+                            total: 0,
+                            presentes: 0,
+                            rotas: 0,
+                            usuarios: []
+                        };
+                    }
+                    
+                    inventario[h.nombre].total++;
+                    if (h.presente) inventario[h.nombre].presentes++;
+                    if (h.estado === 'roto') inventario[h.nombre].rotas++;
+                    
+                    const usuario = usuarios.find(u => u.id === h.trabajadorId);
+                    if (usuario) {
+                        inventario[h.nombre].usuarios.push(usuario.nombre);
+                    }
+                });
+            });
+            
+            const tbody = document.getElementById('inventarioGlobalTable');
+            tbody.innerHTML = Object.values(inventario).map(i => `
+                <tr>
+                    <td><strong>${i.nombre}</strong></td>
+                    <td>${i.codigo || '-'}</td>
+                    <td>${i.total}</td>
+                    <td style="color:#27ae60;">${i.presentes}</td>
+                    <td style="color:#e74c3c;">${i.rotas}</td>
+                    <td>${i.usuarios.join(', ')}</td>
+                </tr>
             `).join('');
         }
 
+        // ============================================
+        // REPORTES
+        // ============================================
+        
         function actualizarReportes() {
+            const todosReportes = [];
+            
+            Object.values(herramientasPorUsuario).forEach(lista => {
+                lista.forEach(h => {
+                    if (h.reportes && h.reportes.length > 0) {
+                        h.reportes.forEach(r => {
+                            todosReportes.push({
+                                ...r,
+                                herramienta: h.nombre,
+                                codigo: h.codigo
+                            });
+                        });
+                    }
+                });
+            });
+            
             const container = document.getElementById('reportesContainer');
             
             if (todosReportes.length === 0) {
@@ -514,100 +776,48 @@
                 return;
             }
             
-            // Ordenar por fecha (más reciente primero)
             todosReportes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
-            container.innerHTML = todosReportes.slice(0, 20).map(r => `
-                <div class="reporte-card">
+            container.innerHTML = todosReportes.slice(0, 50).map(r => `
+                <div style="background: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid #e74c3c;">
                     <strong>👤 ${r.trabajadorNombre}</strong><br>
-                    <strong>🔧 ${r.herramienta}</strong> ${r.codigo ? `<span style="color: #7f8c8d;">(${r.codigo})</span>` : ''}<br>
+                    <strong>🔧 ${r.herramienta}</strong> ${r.codigo ? `(${r.codigo})` : ''}<br>
                     <span style="color: #e74c3c;">"${r.detalle}"</span><br>
                     <small style="color: #7f8c8d;">📅 ${r.timestamp}</small>
                 </div>
             `).join('');
         }
 
-        // ============================================
-        // ACCIONES DE ADMIN
-        // ============================================
-        
-        window.cambiarEstado = async function(id) {
-            const nuevoEstado = prompt('Nuevo estado (bueno/roto):');
-            if (nuevoEstado && ['bueno', 'roto'].includes(nuevoEstado)) {
-                try {
-                    await updateDoc(doc(db, "herramientas_usuarios", id), { 
-                        estado: nuevoEstado
-                    });
-                    mostrarToast('✅ Estado actualizado');
-                } catch (error) {
-                    console.error("Error:", error);
-                    mostrarToast('❌ Error', 'error');
-                }
-            }
-        };
-
-        window.verReportes = function(id) {
-            // Buscar la herramienta en todos los trabajadores
-            for (const t of Object.values(trabajadores)) {
-                const h = t.herramientas.find(h => h.id === id);
-                if (h && h.reportes && h.reportes.length > 0) {
-                    let mensaje = `📋 Reportes de ${h.nombre}\n\n`;
-                    h.reportes.forEach((r, i) => {
-                        mensaje += `${i+1}. ${r.trabajadorNombre}\n   "${r.detalle}"\n   📅 ${r.timestamp}\n\n`;
-                    });
-                    alert(mensaje);
-                    return;
-                }
-            }
-            alert('No hay reportes para esta herramienta');
-        };
-
-        window.aprobarSolicitud = async function(id) {
-            try {
-                await updateDoc(doc(db, "solicitudes_herramientas", id), { 
-                    estado: 'aprobada'
+        window.exportarReportes = function() {
+            const todosReportes = [];
+            
+            Object.values(herramientasPorUsuario).forEach(lista => {
+                lista.forEach(h => {
+                    if (h.reportes && h.reportes.length > 0) {
+                        h.reportes.forEach(r => {
+                            todosReportes.push({
+                                'Fecha': r.timestamp,
+                                'Trabajador': r.trabajadorNombre,
+                                'Herramienta': h.nombre,
+                                'Código': h.codigo || '-',
+                                'Problema': r.detalle,
+                                'Estado': h.estado
+                            });
+                        });
+                    }
                 });
-                mostrarToast('✅ Solicitud aprobada');
-            } catch (error) {
-                console.error("Error:", error);
-                mostrarToast('❌ Error', 'error');
-            }
-        };
-
-        window.rechazarSolicitud = async function(id) {
-            try {
-                await updateDoc(doc(db, "solicitudes_herramientas", id), { 
-                    estado: 'rechazada'
-                });
-                mostrarToast('❌ Solicitud rechazada');
-            } catch (error) {
-                console.error("Error:", error);
-                mostrarToast('❌ Error', 'error');
-            }
-        };
-
-        window.exportarExcel = function() {
+            });
+            
             if (todosReportes.length === 0) {
-                alert('No hay reportes para exportar');
+                alert('No hay reportes');
                 return;
             }
             
-            // Crear CSV
-            const headers = ['Fecha', 'Trabajador', 'Herramienta', 'Código', 'Problema'];
-            const rows = todosReportes.map(r => [
-                r.timestamp,
-                r.trabajadorNombre,
-                r.herramienta,
-                r.codigo || '-',
-                r.detalle
-            ]);
+            const headers = Object.keys(todosReportes[0]).join(',');
+            const rows = todosReportes.map(r => Object.values(r).map(v => `"${v}"`).join(',')).join('\n');
+            const csv = headers + '\n' + rows;
             
-            const csvContent = [
-                headers.join(','),
-                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-            ].join('\n');
-            
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `reportes_${new Date().toLocaleDateString()}.csv`;
@@ -618,6 +828,7 @@
     </script>
 </body>
 </html>
+
 
 
 
