@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taller - Control Herramientas</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
         
         body {
@@ -20,54 +20,32 @@
         .header {
             background: linear-gradient(135deg, #2c3e50, #3498db);
             color: white;
-            padding: 25px 20px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
         }
         
         .user-section {
             background: white;
-            padding: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
             display: flex;
             gap: 15px;
             justify-content: center;
-            align-items: center;
             flex-wrap: wrap;
         }
         
         .user-input {
-            padding: 15px 20px;
+            padding: 12px;
             border: 2px solid #e9ecef;
-            border-radius: 12px;
-            width: 300px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        .user-input:focus {
-            outline: none;
-            border-color: #3498db;
+            border-radius: 8px;
+            width: 250px;
         }
         
         .btn {
-            padding: 15px 30px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s;
         }
         
         .btn-primary {
@@ -75,509 +53,244 @@
             color: white;
         }
         
-        .btn-primary:hover {
-            background: #219a52;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-        }
-        
-        .btn-info {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-info:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-        
         .container {
             max-width: 1200px;
-            margin: 30px auto;
+            margin: 20px auto;
             padding: 0 20px;
-        }
-        
-        .welcome-message {
-            background: #e8f5e9;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 6px solid #27ae60;
-            font-size: 1.1em;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
         
         .stat-card {
             background: white;
-            padding: 25px;
-            border-radius: 16px;
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
         }
         
         .stat-number {
-            font-size: 2.5em;
-            font-weight: 700;
+            font-size: 2em;
+            font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 8px;
-        }
-        
-        .stat-label {
-            color: #7f8c8d;
-            font-size: 0.95em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .buscador {
-            width: 100%;
-            padding: 18px 25px;
-            margin: 25px 0;
-            border: 2px solid #e9ecef;
-            border-radius: 50px;
-            font-size: 16px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .buscador:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
         }
         
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
         }
         
         .tool-card {
             background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            border-left: 6px solid #2ecc71;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 5px solid #2ecc71;
         }
         
         .tool-card.roto {
             border-left-color: #e74c3c;
-            background: linear-gradient(to right, #fff5f5, white);
-        }
-        
-        .tool-card.reparacion {
-            border-left-color: #f39c12;
-            background: linear-gradient(to right, #fff9e6, white);
-        }
-        
-        .tool-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+            background: #fff5f5;
         }
         
         .tool-name {
-            font-weight: 700;
-            font-size: 1.2em;
-            color: #2c3e50;
+            font-weight: bold;
             margin-bottom: 5px;
-        }
-        
-        .tool-code {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-            display: inline-block;
-            background: #f8f9fa;
-            padding: 4px 12px;
-            border-radius: 20px;
         }
         
         .status-badge {
             display: inline-block;
-            padding: 6px 15px;
-            border-radius: 30px;
-            font-size: 0.85em;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
         }
         
         .status-bueno {
             background: #d4edda;
             color: #155724;
-            border: 1px solid #c3e6cb;
         }
         
         .status-roto {
             background: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .status-reparacion {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-        }
-        
-        .report-info {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 15px 0;
-            font-size: 0.9em;
-            border-left: 4px solid #e74c3c;
-        }
-        
-        .user-tag {
-            background: #3498db;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            margin-left: 10px;
-            display: inline-block;
         }
         
         .tool-actions {
             display: flex;
-            gap: 12px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 10px;
             justify-content: flex-end;
-            align-items: center;
-            border-top: 1px solid #ecf0f1;
-            padding-top: 15px;
         }
         
         .checkbox-label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 8px 15px;
-            background: #f8f9fa;
-            border-radius: 30px;
-            transition: all 0.3s;
-        }
-        
-        .checkbox-label:hover {
-            background: #e9ecef;
-        }
-        
-        .checkbox-label input {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #27ae60;
+            gap: 5px;
         }
         
         .report-btn {
             background: #e74c3c;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
+            padding: 8px 15px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
         
-        .report-btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        .buscador {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
         }
         
         .sync-status {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             padding: 15px;
             background: white;
-            border-radius: 50px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            border-radius: 8px;
         }
         
         .connected {
             color: #27ae60;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .connected::before {
-            content: "";
-            width: 10px;
-            height: 10px;
-            background: #27ae60;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
         }
         
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             background: #27ae60;
             color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
+            padding: 12px 20px;
+            border-radius: 8px;
             display: none;
-            font-weight: 500;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #7f8c8d;
-        }
-        
-        @media (max-width: 768px) {
-            .header h1 { font-size: 1.5em; }
-            .tools-grid { grid-template-columns: 1fr; }
-            .user-section { flex-direction: column; }
-            .user-input { width: 100%; }
-            .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🔧 CONTROL HERRAMIENTAS TALLER</h1>
-        <p>Identifícate para gestionar el inventario</p>
+        <h1>🔧 CONTROL HERRAMIENTAS</h1>
+        <p>Identifícate con tu nombre</p>
     </div>
 
     <div class="user-section">
-        <input type="text" id="userNameInput" class="user-input" placeholder="👤 Tu nombre completo" value="">
+        <input type="text" id="userNameInput" class="user-input" placeholder="👤 Tu nombre" value="">
         <button class="btn btn-primary" onclick="registrarTrabajador()">✅ Entrar al Taller</button>
-        <button class="btn btn-info" onclick="verMiHistorial()">📋 Mi Historial</button>
     </div>
 
     <div class="container">
-        <div id="welcomeSection" style="display: none;" class="welcome-message">
-            <span>👋 Bienvenido, <strong id="displayName"></strong></span>
-            <span>🔧 Trabajador</span>
-        </div>
+        <div id="welcomeSection" style="display: none;" class="welcome-message"></div>
 
         <div class="stats-grid" id="statsContainer">
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Total herramientas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Presentes</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Dañadas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Mis reportes</div>
-            </div>
+            <div class="stat-card">Cargando...</div>
         </div>
 
-        <input type="text" id="buscador" class="buscador" placeholder="🔍 Buscar herramienta por nombre o código...">
+        <input type="text" id="buscador" class="buscador" placeholder="🔍 Buscar herramienta...">
 
         <div class="tools-grid" id="toolsContainer">
-            <div class="loading">Identifícate para ver las herramientas</div>
+            <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                Identifícate para comenzar
+            </div>
         </div>
 
         <div class="sync-status" id="syncStatus">
-            <span class="connected">Conectado a la nube · Tiempo real</span>
+            <span class="connected">🟢 Esperando conexión...</span>
         </div>
     </div>
 
     <div id="toast" class="toast"></div>
 
-    <div id="historyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: white; width: 90%; max-width: 600px; max-height: 80vh; border-radius: 20px; padding: 25px; overflow-y: auto;">
-            <h3 style="margin-bottom: 20px; color: #2c3e50;">📜 Mi historial de acciones</h3>
-            <div id="historyLog" style="max-height: 400px; overflow-y: auto;"></div>
-            <button class="btn btn-primary" style="margin-top: 20px; width: 100%;" onclick="cerrarHistorial()">Cerrar</button>
-        </div>
-    </div>
-
     <script type="module">
         import { db, collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs } from './firebase-config.js';
 
-        // ============================================
-        // DATOS DE HERRAMIENTAS (LISTADO COMPLETO)
-        // ============================================
-        
         const herramientasData = [
-            { nombre: "Juego de carracas", codigo: "JC-001", cantidad: 1 },
-            { nombre: "Caja de herramientas BT.11A", codigo: "BT-11A", cantidad: 1 },
-            { nombre: "Llave con trinquete 467B.10", codigo: "467B.10", cantidad: 1 },
-            { nombre: "Llave trinquete 467B.13", codigo: "467B.13", cantidad: 1 },
-            { nombre: "Llave trinquete 467B.17", codigo: "467B.17", cantidad: 1 },
-            { nombre: "Llave trinquete 467B.19", codigo: "467B.19", cantidad: 1 },
-            { nombre: "Llave mixta 440.10", codigo: "440.10", cantidad: 1 },
-            { nombre: "Llave mixta 440.13", codigo: "440.13", cantidad: 1 },
-            { nombre: "Llave mixta 440.17", codigo: "440.17", cantidad: 1 },
-            { nombre: "Llave mixta 440.19", codigo: "440.19", cantidad: 1 },
-            { nombre: "Llave mixta 440.20", codigo: "440.20", cantidad: 1 },
-            { nombre: "Llave mixta 440.22", codigo: "440.22", cantidad: 1 },
-            { nombre: "Llave mixta 440.24", codigo: "440.24", cantidad: 1 },
-            { nombre: "Llave mixta 440.36", codigo: "440.36", cantidad: 1 },
-            { nombre: "Llave de pipa 75.10", codigo: "75.10", cantidad: 1 },
-            { nombre: "Llave de pipa 75.13", codigo: "75.13", cantidad: 1 },
-            { nombre: "Llave de pipa 75.17", codigo: "75.17", cantidad: 1 },
-            { nombre: "Llave de pipa 75.19", codigo: "75.19", cantidad: 1 },
-            { nombre: "Llave de vaso con mango 74A.7", codigo: "74A.7", cantidad: 1 },
-            { nombre: "Llave de vaso con mango 74A.8", codigo: "74A.8", cantidad: 1 },
-            { nombre: "Llave inglesa 101.10", codigo: "101.10", cantidad: 1 },
-            { nombre: "Destornilladores juego ATP.J6", codigo: "ATP.J6", cantidad: 6 },
-            { nombre: "Llaves Allen con mango 84TZA", codigo: "84TZA", cantidad: 4 },
-            { nombre: "Juego llaves de Allen 83H.JP9A", codigo: "83H.JP9A", cantidad: 9 },
-            { nombre: "Alicates de corte 192A.18CPE", codigo: "192A.18", cantidad: 1 },
-            { nombre: "Alicates de punta 185A.20CPE", codigo: "185A.20", cantidad: 1 },
-            { nombre: "Alicates universales 187A.18CPE", codigo: "187A.18", cantidad: 1 },
-            { nombre: "Picoloro 181A.25CPE", codigo: "181A.25", cantidad: 1 },
-            { nombre: "Alicates para arandela 179A.9", codigo: "179A.9", cantidad: 1 },
-            { nombre: "Mordaza de presión 580.10", codigo: "580.10", cantidad: 1 },
-            { nombre: "Calibre 805.2", codigo: "805.2", cantidad: 1 },
-            { nombre: "Escuadra DELA.1223.03", codigo: "DELA.1223", cantidad: 1 },
-            { nombre: "Metro 893B.825", codigo: "893B.825", cantidad: 1 },
-            { nombre: "Nivel 3078.40", codigo: "3078.40", cantidad: 1 },
-            { nombre: "Tiralíneas DELA.13299.15", codigo: "DELA.13299", cantidad: 1 },
-            { nombre: "Maza 1262H.125", codigo: "1262H.125", cantidad: 1 },
-            { nombre: "Cincel 263.25", codigo: "263.25", cantidad: 1 },
-            { nombre: "Alargadera 50m", codigo: "AL-50", cantidad: 1 },
-            { nombre: "Combo Makita DGA504 + DHP486 + SAMP", codigo: "MK-COMBO", cantidad: 1 },
-            { nombre: "Taladro Makita DTW285Z", codigo: "MK-DTW285", cantidad: 1 },
-            { nombre: "Taladro Makita percutor HP2071", codigo: "MK-HP2071", cantidad: 1 },
-            { nombre: "Máquina de soldar", codigo: "SLD-001", cantidad: 1 },
-            { nombre: "Carro transporte herramientas", codigo: "CARRO-01", cantidad: 1 }
+            "Juego de carracas", "Caja de herramientas BT.11A",
+            "Llave con trinquete 467B.10", "Llave trinquete 467B.13",
+            "Llave trinquete 467B.17", "Llave trinquete 467B.19",
+            "Llave mixta 440.10", "Llave mixta 440.13",
+            "Llave mixta 440.17", "Llave mixta 440.19",
+            "Llave mixta 440.20", "Llave mixta 440.22",
+            "Llave mixta 440.24", "Llave mixta 440.36",
+            "Llave de pipa 75.10", "Llave de pipa 75.13",
+            "Llave de pipa 75.17", "Llave de pipa 75.19",
+            "Llave de vaso con mango 74A.7", "Llave de vaso con mango 74A.8",
+            "Llave inglesa 101.10", "Destornilladores juego ATP.J6",
+            "Llaves Allen con mango 84TZA", "Juego llaves de Allen 83H.JP9A",
+            "Alicates de corte 192A.18CPE", "Alicates de punta 185A.20CPE",
+            "Alicates universales 187A.18CPE", "Picoloro 181A.25CPE",
+            "Alicates para arandela 179A.9", "Mordaza de presión 580.10",
+            "Calibre 805.2", "Escuadra DELA.1223.03",
+            "Metro 893B.825", "Nivel 3078.40",
+            "Tiralíneas DELA.13299.15", "Maza 1262H.125",
+            "Cincel 263.25", "Alargadera 50m",
+            "Combo Makita DGA504 + DHP486 + SAMP", "Taladro Makita DTW285Z",
+            "Taladro Makita percutor HP2071", "Máquina de soldar",
+            "Carro transporte herramientas"
         ];
 
-        // ============================================
-        // VARIABLES GLOBALES
-        // ============================================
-        
         let trabajadorActual = null;
         let herramientas = [];
         let filtro = '';
-        let historialAcciones = [];
 
-        // ============================================
-        // FUNCIONES DE NOTIFICACIÓN
-        // ============================================
-        
-        function mostrarToast(mensaje, tipo = 'exito') {
+        function mostrarToast(mensaje) {
             const toast = document.getElementById('toast');
             toast.style.display = 'block';
-            toast.style.background = tipo === 'exito' ? '#27ae60' : '#e74c3c';
             toast.textContent = mensaje;
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        // ============================================
-        // INICIALIZAR DATOS EN FIREBASE
-        // ============================================
-        
         async function inicializarDatos() {
             try {
                 const querySnapshot = await getDocs(collection(db, "herramientas"));
                 
                 if (querySnapshot.empty) {
-                    for (const h of herramientasData) {
+                    for (const nombre of herramientasData) {
                         await addDoc(collection(db, "herramientas"), {
-                            ...h,
+                            nombre: nombre,
+                            codigo: "COD-" + Math.random().toString(36).substr(2, 5),
+                            cantidad: 1,
                             presente: true,
                             estado: 'bueno',
-                            reportes: [],
-                            fechaCreacion: new Date().toISOString()
+                            reportes: []
                         });
                     }
                     console.log("✅ Datos iniciales cargados");
-                    mostrarToast('📦 Herramientas cargadas en la nube');
                 }
+                
+                document.getElementById('syncStatus').innerHTML = '<span class="connected">🟢 Conectado a la nube</span>';
             } catch (error) {
-                console.error("Error al inicializar:", error);
-                mostrarToast('❌ Error al cargar datos', 'error');
+                console.error("Error:", error);
+                document.getElementById('syncStatus').innerHTML = '<span style="color:#e74c3c;">❌ Error de conexión</span>';
             }
         }
 
-        // ============================================
-        // REGISTRO DE TRABAJADOR
-        // ============================================
-        
         window.registrarTrabajador = async function() {
             const nombre = document.getElementById('userNameInput').value.trim();
             
             if (!nombre || nombre.length < 3) {
-                alert('Por favor, introduce tu nombre completo');
+                alert('Introduce tu nombre');
                 return;
             }
             
             trabajadorActual = {
-                id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                id: 'usr_' + Date.now(),
                 nombre: nombre
             };
             
-            document.getElementById('welcomeSection').style.display = 'flex';
-            document.getElementById('displayName').textContent = nombre;
+            document.getElementById('welcomeSection').style.display = 'block';
+            document.getElementById('welcomeSection').innerHTML = `👋 Bienvenido, <strong>${nombre}</strong>`;
             
             await inicializarDatos();
             escucharCambios();
-            
-            registrarAccion('ENTRADA', 'Se conectó al taller');
-            mostrarToast(`✅ Bienvenido ${nombre}`);
         };
 
-        // ============================================
-        // ESCUCHAR CAMBIOS EN TIEMPO REAL
-        // ============================================
-        
         function escucharCambios() {
             const q = query(collection(db, "herramientas"));
             
@@ -590,234 +303,95 @@
                     });
                 });
                 actualizarVista();
-                if (trabajadorActual) {
-                    mostrarToast('🔄 Datos actualizados');
-                }
-            }, (error) => {
-                console.error("Error en snapshot:", error);
-                mostrarToast('❌ Error de conexión', 'error');
+                mostrarToast('🔄 Datos actualizados');
             });
         }
 
-        // ============================================
-        // VISTA DE HERRAMIENTAS
-        // ============================================
-        
         function actualizarVista() {
             if (!trabajadorActual) return;
             
-            actualizarEstadisticas();
+            const total = herramientas.length;
+            const presentes = herramientas.filter(h => h.presente).length;
+            const problemas = herramientas.filter(h => h.estado === 'roto').length;
+            
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="stat-card"><div class="stat-number">${total}</div><div>Total</div></div>
+                <div class="stat-card"><div class="stat-number" style="color:#27ae60;">${presentes}</div><div>Presentes</div></div>
+                <div class="stat-card"><div class="stat-number" style="color:#e74c3c;">${problemas}</div><div>Dañadas</div></div>
+            `;
             
             const container = document.getElementById('toolsContainer');
-            
-            if (!herramientas.length) {
-                container.innerHTML = '<div class="loading">Cargando herramientas...</div>';
-                return;
-            }
-
-            const herramientasFiltradas = herramientas.filter(h => 
-                h.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-                (h.codigo && h.codigo.toLowerCase().includes(filtro.toLowerCase()))
+            const filtradas = herramientas.filter(h => 
+                h.nombre.toLowerCase().includes(filtro.toLowerCase())
             );
 
-            if (herramientasFiltradas.length === 0) {
-                container.innerHTML = '<div class="loading">🔍 No se encontraron herramientas</div>';
+            if (filtradas.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px;">No hay herramientas</div>';
                 return;
             }
 
             container.innerHTML = '';
-            
-            herramientasFiltradas.forEach(herramienta => {
-                const miReporte = herramienta.reportes?.find(r => r.trabajadorId === trabajadorActual.id);
-                const ultimoReporte = herramienta.reportes?.length ? herramienta.reportes[herramienta.reportes.length-1] : null;
+            filtradas.forEach(h => {
+                const miReporte = h.reportes?.find(r => r.trabajadorId === trabajadorActual?.id);
                 
-                const card = document.createElement('div');
-                card.className = `tool-card ${herramienta.estado}`;
-                
-                card.innerHTML = `
-                    <div class="tool-header">
-                        <div>
-                            <div class="tool-name">${herramienta.nombre}</div>
-                            <span class="tool-code">${herramienta.codigo || 'Sin código'}</span>
-                            ${miReporte ? '<span class="user-tag">Tú reportaste</span>' : ''}
+                container.innerHTML += `
+                    <div class="tool-card ${h.estado}">
+                        <div class="tool-name">${h.nombre}</div>
+                        <div style="margin: 5px 0;">
+                            <span class="status-badge status-${h.estado}">${h.estado}</span>
                         </div>
-                        <span class="status-badge status-${herramienta.estado}">${herramienta.estado}</span>
-                    </div>
-                    
-                    ${ultimoReporte ? `
-                        <div class="report-info">
-                            <strong>⚠️ Último reporte:</strong> ${ultimoReporte.detalle}<br>
-                            <small>Por: ${ultimoReporte.trabajadorNombre} · ${ultimoReporte.timestamp}</small>
+                        <div class="tool-actions">
+                            <label class="checkbox-label">
+                                <input type="checkbox" ${h.presente ? 'checked' : ''} 
+                                    onchange="togglePresente('${h.id}', this.checked)">
+                                Presente
+                            </label>
+                            
+                            ${!miReporte ? `
+                                <button class="report-btn" onclick="reportar('${h.id}')">
+                                    Reportar
+                                </button>
+                            ` : ''}
                         </div>
-                    ` : ''}
-                    
-                    <div class="tool-actions">
-                        <label class="checkbox-label">
-                            <input type="checkbox" ${herramienta.presente ? 'checked' : ''} 
-                                onchange="togglePresente('${herramienta.id}', this.checked)">
-                            Presente
-                        </label>
-                        
-                        ${!miReporte ? `
-                            <button class="report-btn" onclick="reportarProblema('${herramienta.id}')">
-                                ⚠️ Reportar
-                            </button>
-                        ` : ''}
                     </div>
                 `;
-                
-                container.appendChild(card);
             });
         }
 
-        function actualizarEstadisticas() {
-            const total = herramientas.length;
-            const presentes = herramientas.filter(h => h.presente).length;
-            const problemas = herramientas.filter(h => h.estado === 'roto' || h.estado === 'reparacion').length;
-            
-            const misReportes = herramientas.filter(h => 
-                h.reportes?.some(r => r.trabajadorId === trabajadorActual.id)
-            ).length;
-            
-            document.getElementById('statsContainer').innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${total}</div>
-                    <div class="stat-label">Total</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#27ae60;">${presentes}</div>
-                    <div class="stat-label">Presentes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#e74c3c;">${problemas}</div>
-                    <div class="stat-label">Dañadas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color:#3498db;">${misReportes}</div>
-                    <div class="stat-label">Mis reportes</div>
-                </div>
-            `;
-        }
-
-        // ============================================
-        // ACCIONES DE TRABAJADOR
-        // ============================================
-        
         window.togglePresente = async function(id, presente) {
-            try {
-                await updateDoc(doc(db, "herramientas", id), { 
-                    presente: presente,
-                    ultimaModificacion: new Date().toISOString()
-                });
-                
-                const herramienta = herramientas.find(h => h.id === id);
-                registrarAccion(
-                    presente ? 'MARCAR_PRESENTE' : 'MARCAR_AUSENTE',
-                    `Marcó como ${presente ? 'presente' : 'ausente'}`,
-                    id,
-                    herramienta?.nombre
-                );
-                
-                mostrarToast(presente ? '✅ Marcada como presente' : '❌ Marcada como ausente');
-            } catch (error) {
-                console.error("Error:", error);
-                mostrarToast('❌ Error al actualizar', 'error');
-            }
+            await updateDoc(doc(db, "herramientas", id), { presente });
         };
 
-        window.reportarProblema = async function(id) {
-            const motivo = prompt("Describe el problema de la herramienta:");
-            if (!motivo || motivo.trim() === '') return;
+        window.reportar = async function(id) {
+            const motivo = prompt("Describe el problema:");
+            if (!motivo) return;
             
-            try {
-                const herramienta = herramientas.find(h => h.id === id);
-                const reportes = herramienta.reportes || [];
-                
-                const nuevoReporte = {
-                    trabajadorId: trabajadorActual.id,
-                    trabajadorNombre: trabajadorActual.nombre,
-                    detalle: motivo,
-                    timestamp: new Date().toLocaleString()
-                };
-                
-                reportes.push(nuevoReporte);
-                
-                await updateDoc(doc(db, "herramientas", id), {
-                    estado: 'roto',
-                    reportes: reportes,
-                    ultimoReporte: nuevoReporte
-                });
-                
-                registrarAccion('REPORTAR_PROBLEMA', `Reportó: ${motivo}`, id, herramienta.nombre);
-                mostrarToast('✅ Reporte enviado al administrador');
-            } catch (error) {
-                console.error("Error:", error);
-                mostrarToast('❌ Error al reportar', 'error');
-            }
-        };
-
-        function registrarAccion(tipo, detalle, herramientaId = null, herramientaNombre = null) {
-            if (!trabajadorActual) return;
+            const herramienta = herramientas.find(h => h.id === id);
+            const reportes = herramienta.reportes || [];
             
-            const accion = {
-                id: 'act_' + Date.now(),
-                tipo: tipo,
-                detalle: detalle,
-                herramientaId: herramientaId,
-                herramientaNombre: herramientaNombre,
+            reportes.push({
                 trabajadorId: trabajadorActual.id,
                 trabajadorNombre: trabajadorActual.nombre,
+                detalle: motivo,
                 timestamp: new Date().toLocaleString()
-            };
+            });
             
-            historialAcciones.unshift(accion);
-            localStorage.setItem(`historial_${trabajadorActual.id}`, JSON.stringify(historialAcciones));
-        }
-
-        window.verMiHistorial = function() {
-            if (!trabajadorActual) {
-                alert('Identifícate primero');
-                return;
-            }
+            await updateDoc(doc(db, "herramientas", id), {
+                estado: 'roto',
+                reportes: reportes
+            });
             
-            const modal = document.getElementById('historyModal');
-            const log = document.getElementById('historyLog');
-            
-            if (historialAcciones.length === 0) {
-                log.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">No hay acciones registradas</p>';
-            } else {
-                log.innerHTML = historialAcciones.slice(0, 30).map(a => `
-                    <div style="padding: 12px; border-bottom: 1px solid #ecf0f1;">
-                        <div style="font-weight: bold; color: #2c3e50;">${a.timestamp}</div>
-                        <div style="color: #3498db; margin: 5px 0;">${a.tipo}</div>
-                        <div>${a.detalle}</div>
-                        ${a.herramientaNombre ? `<div style="color: #7f8c8d; font-size: 0.9em;">🔧 ${a.herramientaNombre}</div>` : ''}
-                    </div>
-                `).join('');
-            }
-            
-            modal.style.display = 'flex';
+            mostrarToast('✅ Reporte enviado');
         };
 
-        window.cerrarHistorial = function() {
-            document.getElementById('historyModal').style.display = 'none';
-        };
-
-        // Buscador
         document.getElementById('buscador').addEventListener('input', (e) => {
             filtro = e.target.value;
             actualizarVista();
         });
-
-        // Cargar historial si existe
-        const usuarioGuardado = localStorage.getItem('ultimoUsuario');
-        if (usuarioGuardado) {
-            const datos = JSON.parse(usuarioGuardado);
-            document.getElementById('userNameInput').value = datos.nombre;
-        }
     </script>
 </body>
 </html>
+
 
 
 
