@@ -1,8 +1,19 @@
 // firebase-config.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, query, onSnapshot, addDoc, updateDoc, doc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { 
+  getFirestore, 
+  collection, 
+  query, 
+  where,
+  onSnapshot, 
+  addDoc, 
+  updateDoc, 
+  doc, 
+  deleteDoc, 
+  getDocs 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 🔴 TUS DATOS REALES DE FIREBASE (copiados de tu consola)
+// 🔴 TUS DATOS DE FIREBASE (verifica que sean exactamente estos)
 const firebaseConfig = {
   apiKey: "AIzaSyDfNTl9SIDmpJWmrNfVyX7ptk1WRjxQ-LA",
   authDomain: "taller-herramientas-38bed.firebaseapp.com",
@@ -16,5 +27,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Exportar funciones
-export { db, collection, query, onSnapshot, addDoc, updateDoc, doc, deleteDoc, getDocs };
+// Exportar todo lo necesario
+export { 
+  db, 
+  collection, 
+  query,
+  where,
+  onSnapshot, 
+  addDoc, 
+  updateDoc, 
+  doc, 
+  deleteDoc, 
+  getDocs 
+};
