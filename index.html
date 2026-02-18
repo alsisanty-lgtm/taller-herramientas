@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Herramientas - Taller</title>
     <style>
         * {
@@ -58,17 +58,6 @@
         
         .btn-primary:hover {
             background: #219a52;
-            transform: translateY(-2px);
-        }
-        
-        .btn-info {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-warning {
-            background: #f39c12;
-            color: white;
         }
         
         .container {
@@ -107,6 +96,7 @@
             font-size: 2.5em;
             font-weight: 700;
             color: #2c3e50;
+            margin-bottom: 5px;
         }
         
         .tools-grid {
@@ -128,21 +118,16 @@
             background: #fff5f5;
         }
         
-        .tool-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 10px;
-        }
-        
         .tool-name {
             font-weight: bold;
             font-size: 1.1em;
+            margin-bottom: 5px;
         }
         
         .tool-code {
             color: #7f8c8d;
             font-size: 0.9em;
+            margin-bottom: 10px;
         }
         
         .status-badge {
@@ -151,6 +136,7 @@
             border-radius: 30px;
             font-size: 12px;
             font-weight: bold;
+            margin-bottom: 10px;
         }
         
         .status-bueno {
@@ -168,8 +154,6 @@
             gap: 10px;
             margin-top: 15px;
             justify-content: flex-end;
-            border-top: 1px solid #ecf0f1;
-            padding-top: 15px;
         }
         
         .checkbox-label {
@@ -198,26 +182,8 @@
             font-weight: bold;
         }
         
-        .buscador {
-            width: 100%;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            font-size: 16px;
-        }
-        
-        .sync-status {
-            text-align: center;
-            margin-top: 30px;
-            padding: 15px;
-            background: white;
-            border-radius: 50px;
-        }
-        
-        .connected {
-            color: #27ae60;
-            font-weight: bold;
+        .report-btn:hover {
+            background: #c0392b;
         }
         
         .toast {
@@ -231,6 +197,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             display: none;
             animation: slideIn 0.3s ease;
+            z-index: 1000;
         }
         
         @keyframes slideIn {
@@ -238,43 +205,9 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border-radius: 20px;
-            padding: 25px;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #ecf0f1;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
+        .loading {
+            text-align: center;
+            padding: 40px;
             color: #7f8c8d;
         }
     </style>
@@ -282,75 +215,43 @@
 <body>
     <div class="header">
         <h1>🔧 MIS HERRAMIENTAS</h1>
-        <p>Cada trabajador tiene su propio inventario</p>
+        <p>Identifícate para ver tu inventario personal</p>
     </div>
 
     <div class="user-section">
-        <input type="text" id="userNameInput" class="user-input" placeholder="👤 Tu nombre" value="">
+        <input type="text" id="userNameInput" class="user-input" placeholder="👤 Tu nombre completo" value="">
         <button class="btn btn-primary" onclick="registrarTrabajador()">✅ Entrar</button>
-        <button class="btn btn-info" onclick="verMiHistorial()">📋 Mi Historial</button>
-        <button class="btn btn-warning" onclick="solicitarHerramienta()">➕ Solicitar herramienta</button>
     </div>
 
     <div class="container">
         <div id="welcomeSection" style="display: none;" class="welcome-message">
             <span>👋 Bienvenido, <strong id="displayName"></strong></span>
-            <span id="userIdDisplay" style="font-size: 0.9em; color: #7f8c8d;"></span>
         </div>
 
         <div class="stats-grid" id="statsContainer">
-            <div class="stat-card">Cargando...</div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div>Mis herramientas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div>En mi poder</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div>Dañadas</div>
+            </div>
         </div>
-
-        <input type="text" id="buscador" class="buscador" placeholder="🔍 Buscar en mis herramientas...">
 
         <div class="tools-grid" id="toolsContainer">
-            <div style="text-align: center; padding: 40px;">Identifícate para ver tus herramientas</div>
-        </div>
-
-        <div class="sync-status" id="syncStatus">
-            <span class="connected">🟢 Listo</span>
+            <div class="loading">Identifícate para ver tus herramientas</div>
         </div>
     </div>
 
     <div id="toast" class="toast"></div>
 
-    <!-- Modal para solicitar herramientas -->
-    <div id="solicitudModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📝 Solicitar herramienta</h2>
-                <button class="close-btn" onclick="cerrarModal('solicitudModal')">&times;</button>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: bold;">Nombre de la herramienta:</label>
-                <input type="text" id="solicitudNombre" class="user-input" style="width: 100%;" placeholder="Ej: Taladro Makita">
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: bold;">Código (opcional):</label>
-                <input type="text" id="solicitudCodigo" class="user-input" style="width: 100%;" placeholder="Ej: MK-DTW285">
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: bold;">Motivo de la solicitud:</label>
-                <textarea id="solicitudMotivo" class="user-input" style="width: 100%; height: 100px;" placeholder="¿Por qué necesitas esta herramienta?"></textarea>
-            </div>
-            <button class="btn btn-primary" style="width: 100%;" onclick="enviarSolicitud()">Enviar solicitud</button>
-        </div>
-    </div>
-
-    <!-- Modal para historial -->
-    <div id="historialModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📜 Mi historial</h2>
-                <button class="close-btn" onclick="cerrarModal('historialModal')">&times;</button>
-            </div>
-            <div id="historialContenido"></div>
-        </div>
-    </div>
-
     <script type="module">
-        import { db, collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs, where } from './firebase-config.js';
+        import { db, collection, query, where, onSnapshot, addDoc, updateDoc, getDocs } from './firebase-config.js';
 
         // ============================================
         // VARIABLES GLOBALES
@@ -358,8 +259,7 @@
         
         let trabajadorActual = null;
         let misHerramientas = [];
-        let filtro = '';
-        let historialAcciones = [];
+        let unsubscribe = null;
 
         // ============================================
         // FUNCIONES AUXILIARES
@@ -373,9 +273,26 @@
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        function cerrarModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+        // ============================================
+        // HERRAMIENTAS POR DEFECTO
+        // ============================================
+        
+        const herramientasBasicas = [
+            { nombre: "Juego de carracas", codigo: "JC-001" },
+            { nombre: "Caja de herramientas BT.11A", codigo: "BT-11A" },
+            { nombre: "Llave con trinquete 467B.10", codigo: "467B.10" },
+            { nombre: "Llave trinquete 467B.13", codigo: "467B.13" },
+            { nombre: "Llave mixta 440.10", codigo: "440.10" },
+            { nombre: "Llave mixta 440.13", codigo: "440.13" },
+            { nombre: "Llave mixta 440.17", codigo: "440.17" },
+            { nombre: "Llave de pipa 75.10", codigo: "75.10" },
+            { nombre: "Destornilladores juego ATP.J6", codigo: "ATP.J6" },
+            { nombre: "Llaves Allen con mango 84TZA", codigo: "84TZA" },
+            { nombre: "Alicates de corte 192A.18CPE", codigo: "192A.18" },
+            { nombre: "Alicates universales 187A.18CPE", codigo: "187A.18" },
+            { nombre: "Calibre 805.2", codigo: "805.2" },
+            { nombre: "Metro 893B.825", codigo: "893B.825" }
+        ];
 
         // ============================================
         // REGISTRO DE TRABAJADOR
@@ -385,89 +302,78 @@
             const nombre = document.getElementById('userNameInput').value.trim();
             
             if (!nombre || nombre.length < 3) {
-                alert('Introduce tu nombre completo');
+                alert('Por favor, introduce tu nombre completo');
                 return;
             }
             
+            // Mostrar loading
+            document.getElementById('toolsContainer').innerHTML = '<div class="loading">Cargando tus herramientas...</div>';
+            
             // Crear ID único para el trabajador
-            const trabajadorId = 'usr_' + btoa(nombre).replace(/=/g, '').substr(0, 10) + '_' + Date.now().toString().substr(-6);
+            const trabajadorId = 'usr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
             
             trabajadorActual = {
                 id: trabajadorId,
-                nombre: nombre,
-                fechaRegistro: new Date().toISOString()
+                nombre: nombre
             };
             
             // Guardar en localStorage
             localStorage.setItem('trabajadorActual', JSON.stringify(trabajadorActual));
             
+            // Mostrar bienvenida
             document.getElementById('welcomeSection').style.display = 'flex';
             document.getElementById('displayName').textContent = nombre;
-            document.getElementById('userIdDisplay').textContent = `ID: ${trabajadorId}`;
             
-            await cargarMisHerramientas();
+            // Buscar si ya tiene herramientas
+            await cargarOCrearHerramientas();
+            
+            // Escuchar cambios en tiempo real
             escucharCambios();
             
-            registrarAccion('ENTRADA', 'Se conectó al sistema');
             mostrarToast(`✅ Bienvenido ${nombre}`);
         };
 
-        // ============================================
-        // CARGAR MIS HERRAMIENTAS
-        // ============================================
-        
-        async function cargarMisHerramientas() {
-            if (!trabajadorActual) return;
-            
-            // Buscar herramientas de este trabajador
-            const q = query(collection(db, "herramientas_usuarios"), where("trabajadorId", "==", trabajadorActual.id));
-            const querySnapshot = await getDocs(q);
-            
-            if (querySnapshot.empty) {
-                // Si es nuevo, crear herramientas por defecto
-                await crearHerramientasIniciales();
+        async function cargarOCrearHerramientas() {
+            try {
+                // Buscar herramientas de este trabajador
+                const q = query(collection(db, "herramientas_usuarios"), where("trabajadorId", "==", trabajadorActual.id));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    // Es un trabajador nuevo, crear herramientas por defecto
+                    for (const h of herramientasBasicas) {
+                        await addDoc(collection(db, "herramientas_usuarios"), {
+                            trabajadorId: trabajadorActual.id,
+                            trabajadorNombre: trabajadorActual.nombre,
+                            nombre: h.nombre,
+                            codigo: h.codigo,
+                            cantidad: 1,
+                            presente: true,
+                            estado: 'bueno',
+                            reportes: [],
+                            fechaAsignacion: new Date().toISOString()
+                        });
+                    }
+                    mostrarToast('✅ Herramientas asignadas');
+                }
+            } catch (error) {
+                console.error("Error al cargar herramientas:", error);
+                mostrarToast('❌ Error al cargar herramientas', 'error');
             }
         }
 
-        async function crearHerramientasIniciales() {
-            const herramientasBasicas = [
-                { nombre: "Juego de carracas", codigo: "JC-001" },
-                { nombre: "Llave mixta 440.10", codigo: "440.10" },
-                { nombre: "Llave mixta 440.13", codigo: "440.13" },
-                { nombre: "Llave mixta 440.17", codigo: "440.17" },
-                { nombre: "Destornilladores juego", codigo: "ATP.J6" },
-                { nombre: "Alicates universales", codigo: "187A.18" },
-                { nombre: "Metro", codigo: "893B.825" },
-                { nombre: "Calibre", codigo: "805.2" }
-            ];
-            
-            for (const h of herramientasBasicas) {
-                await addDoc(collection(db, "herramientas_usuarios"), {
-                    trabajadorId: trabajadorActual.id,
-                    trabajadorNombre: trabajadorActual.nombre,
-                    nombre: h.nombre,
-                    codigo: h.codigo,
-                    cantidad: 1,
-                    presente: true,
-                    estado: 'bueno',
-                    reportes: [],
-                    fechaAsignacion: new Date().toISOString()
-                });
-            }
-            
-            mostrarToast('✅ Herramientas básicas asignadas');
-        }
-
         // ============================================
-        // ESCUCHAR CAMBIOS EN TIEMPO REAL (solo mis herramientas)
+        // ESCUCHAR CAMBIOS EN TIEMPO REAL
         // ============================================
         
         function escucharCambios() {
-            if (!trabajadorActual) return;
+            if (unsubscribe) {
+                unsubscribe();
+            }
             
             const q = query(collection(db, "herramientas_usuarios"), where("trabajadorId", "==", trabajadorActual.id));
             
-            onSnapshot(q, (snapshot) => {
+            unsubscribe = onSnapshot(q, (snapshot) => {
                 misHerramientas = [];
                 snapshot.forEach((doc) => {
                     misHerramientas.push({
@@ -476,51 +382,35 @@
                     });
                 });
                 actualizarVista();
-                mostrarToast('🔄 Tus herramientas actualizadas');
+            }, (error) => {
+                console.error("Error en snapshot:", error);
+                mostrarToast('❌ Error de conexión', 'error');
             });
         }
 
         // ============================================
-        // VISTA DE HERRAMIENTAS
+        // ACTUALIZAR VISTA
         // ============================================
         
         function actualizarVista() {
-            if (!trabajadorActual) return;
-            
             actualizarEstadisticas();
             
             const container = document.getElementById('toolsContainer');
             
             if (misHerramientas.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px;">No tienes herramientas asignadas</div>';
-                return;
-            }
-
-            const filtradas = misHerramientas.filter(h => 
-                h.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-                (h.codigo && h.codigo.toLowerCase().includes(filtro.toLowerCase()))
-            );
-
-            if (filtradas.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px;">🔍 No hay resultados</div>';
+                container.innerHTML = '<div class="loading">No tienes herramientas asignadas</div>';
                 return;
             }
 
             container.innerHTML = '';
-            filtradas.forEach(h => {
-                const miReporte = h.reportes?.find(r => r.trabajadorId === trabajadorActual.id);
-                
+            misHerramientas.forEach(h => {
                 const card = document.createElement('div');
                 card.className = `tool-card ${h.estado}`;
                 
                 card.innerHTML = `
-                    <div class="tool-header">
-                        <div>
-                            <div class="tool-name">${h.nombre}</div>
-                            <div class="tool-code">${h.codigo || 'Sin código'}</div>
-                        </div>
-                        <span class="status-badge status-${h.estado}">${h.estado}</span>
-                    </div>
+                    <div class="tool-name">${h.nombre}</div>
+                    <div class="tool-code">${h.codigo || 'Sin código'}</div>
+                    <span class="status-badge status-${h.estado}">${h.estado}</span>
                     
                     <div class="tool-actions">
                         <label class="checkbox-label">
@@ -530,7 +420,7 @@
                         </label>
                         
                         <button class="report-btn" onclick="reportarProblema('${h.id}')">
-                            ⚠️ Reportar
+                            Reportar
                         </button>
                     </div>
                 `;
@@ -551,7 +441,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" style="color:#27ae60;">${presentes}</div>
-                    <div>Tengo conmigo</div>
+                    <div>En mi poder</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" style="color:#e74c3c;">${problemas}</div>
@@ -565,135 +455,57 @@
         // ============================================
         
         window.togglePresente = async function(id, presente) {
-            await updateDoc(doc(db, "herramientas_usuarios", id), { 
-                presente,
-                ultimaModificacion: new Date().toISOString()
-            });
-            
-            const herramienta = misHerramientas.find(h => h.id === id);
-            registrarAccion(
-                presente ? 'MARCAR_PRESENTE' : 'MARCAR_AUSENTE',
-                `Marcó como ${presente ? 'presente' : 'ausente'}`,
-                herramienta?.nombre
-            );
+            try {
+                await updateDoc(doc(db, "herramientas_usuarios", id), { 
+                    presente: presente
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al actualizar', 'error');
+            }
         };
 
         window.reportarProblema = async function(id) {
-            const motivo = prompt("Describe el problema de la herramienta:");
+            const motivo = prompt("Describe el problema:");
             if (!motivo || motivo.trim() === '') return;
             
-            const herramienta = misHerramientas.find(h => h.id === id);
-            const reportes = herramienta.reportes || [];
-            
-            const nuevoReporte = {
-                trabajadorId: trabajadorActual.id,
-                trabajadorNombre: trabajadorActual.nombre,
-                detalle: motivo,
-                timestamp: new Date().toLocaleString()
-            };
-            
-            reportes.push(nuevoReporte);
-            
-            await updateDoc(doc(db, "herramientas_usuarios", id), {
-                estado: 'roto',
-                reportes: reportes
-            });
-            
-            registrarAccion('REPORTAR_PROBLEMA', `Reportó: ${motivo}`, herramienta.nombre);
-            mostrarToast('✅ Reporte enviado al administrador');
+            try {
+                const herramienta = misHerramientas.find(h => h.id === id);
+                const reportes = herramienta.reportes || [];
+                
+                reportes.push({
+                    trabajadorId: trabajadorActual.id,
+                    trabajadorNombre: trabajadorActual.nombre,
+                    detalle: motivo,
+                    timestamp: new Date().toLocaleString()
+                });
+                
+                await updateDoc(doc(db, "herramientas_usuarios", id), {
+                    estado: 'roto',
+                    reportes: reportes
+                });
+                
+                mostrarToast('✅ Reporte enviado');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al reportar', 'error');
+            }
         };
 
-        window.solicitarHerramienta = function() {
-            if (!trabajadorActual) {
-                alert('Identifícate primero');
-                return;
-            }
-            document.getElementById('solicitudModal').style.display = 'flex';
-        };
-
-        window.enviarSolicitud = async function() {
-            const nombre = document.getElementById('solicitudNombre').value.trim();
-            if (!nombre) {
-                alert('El nombre es obligatorio');
-                return;
-            }
-            
-            await addDoc(collection(db, "solicitudes_herramientas"), {
-                trabajadorId: trabajadorActual.id,
-                trabajadorNombre: trabajadorActual.nombre,
-                nombre: nombre,
-                codigo: document.getElementById('solicitudCodigo').value.trim(),
-                motivo: document.getElementById('solicitudMotivo').value.trim(),
-                fecha: new Date().toISOString(),
-                fechaLegible: new Date().toLocaleString(),
-                estado: 'pendiente'
-            });
-            
-            document.getElementById('solicitudModal').style.display = 'none';
-            document.getElementById('solicitudNombre').value = '';
-            document.getElementById('solicitudCodigo').value = '';
-            document.getElementById('solicitudMotivo').value = '';
-            
-            mostrarToast('✅ Solicitud enviada al administrador');
-        };
-
-        function registrarAccion(tipo, detalle, herramientaNombre = null) {
-            if (!trabajadorActual) return;
-            
-            const accion = {
-                id: 'act_' + Date.now(),
-                tipo: tipo,
-                detalle: detalle,
-                herramienta: herramientaNombre,
-                timestamp: new Date().toLocaleString()
-            };
-            
-            historialAcciones.unshift(accion);
-            localStorage.setItem(`historial_${trabajadorActual.id}`, JSON.stringify(historialAcciones));
-        }
-
-        window.verMiHistorial = function() {
-            if (!trabajadorActual) {
-                alert('Identifícate primero');
-                return;
-            }
-            
-            const modal = document.getElementById('historialModal');
-            const contenido = document.getElementById('historialContenido');
-            
-            if (historialAcciones.length === 0) {
-                contenido.innerHTML = '<p style="text-align: center; color: #7f8c8d;">No hay acciones registradas</p>';
-            } else {
-                contenido.innerHTML = historialAcciones.slice(0, 30).map(a => `
-                    <div style="padding: 12px; border-bottom: 1px solid #ecf0f1;">
-                        <div style="font-weight: bold;">${a.timestamp}</div>
-                        <div style="color: #3498db;">${a.tipo}</div>
-                        <div>${a.detalle}</div>
-                        ${a.herramienta ? `<div style="color: #7f8c8d;">🔧 ${a.herramienta}</div>` : ''}
-                    </div>
-                `).join('');
-            }
-            
-            modal.style.display = 'flex';
-        };
-
-        window.cerrarModal = cerrarModal;
-
-        document.getElementById('buscador').addEventListener('input', (e) => {
-            filtro = e.target.value;
-            actualizarVista();
-        });
-
-        // Auto-registro si ya existe
-        const guardado = localStorage.getItem('trabajadorActual');
-        if (guardado) {
-            const t = JSON.parse(guardado);
+        // ============================================
+        // AUTO-REGISTRO
+        // ============================================
+        
+        const usuarioGuardado = localStorage.getItem('trabajadorActual');
+        if (usuarioGuardado) {
+            const t = JSON.parse(usuarioGuardado);
             document.getElementById('userNameInput').value = t.nombre;
-            registrarTrabajador();
+            // No registrar automáticamente, esperar a que haga clic
         }
     </script>
 </body>
 </html>
+
 
 
 
