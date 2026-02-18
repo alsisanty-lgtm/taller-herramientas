@@ -135,6 +135,7 @@
             justify-content: flex-end;
             border-top: 1px solid #ecf0f1;
             padding-top: 15px;
+            flex-wrap: wrap;
         }
         
         .checkbox-label {
@@ -166,6 +167,21 @@
         
         .report-btn:hover {
             background: #c0392b;
+        }
+        
+        /* 🔴 NUEVO ESTILO PARA EL BOTÓN DE REPUESTO */
+        .repuesto-btn {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .repuesto-btn:hover {
+            background: #e67e22;
         }
         
         .toast {
@@ -300,6 +316,7 @@
                 const card = document.createElement('div');
                 card.className = `tool-card ${h.estado}`;
                 
+                // 🔴 AQUÍ SE AÑADE EL BOTÓN DE REPUESTO (solo si está rota)
                 card.innerHTML = `
                     <div class="tool-name">${h.nombre}</div>
                     <div class="tool-code">${h.codigo || 'Sin código'}</div>
@@ -311,6 +328,12 @@
                                 onchange="togglePresente('${h.id}', this.checked)">
                             Tengo
                         </label>
+                        
+                        ${h.estado === 'roto' ? `
+                            <button class="repuesto-btn" onclick="solicitarRepuesto('${h.id}')">
+                                🔧 Pedir repuesto
+                            </button>
+                        ` : ''}
                         
                         <button class="report-btn" onclick="reportarProblema('${h.id}')">
                             ⚠️ Reportar
@@ -366,7 +389,8 @@
                     trabajadorId: usuario.id,
                     trabajadorNombre: usuario.nombre,
                     detalle: motivo,
-                    timestamp: new Date().toLocaleString()
+                    timestamp: new Date().toLocaleString(),
+                    tipo: 'reporte'
                 });
                 
                 await updateDoc(doc(db, "herramientas_usuarios", id), {
@@ -378,6 +402,36 @@
             } catch (error) {
                 console.error("Error:", error);
                 mostrarToast('❌ Error', 'error');
+            }
+        };
+
+        // 🔴 NUEVA FUNCIÓN PARA SOLICITAR REPUESTO
+        window.solicitarRepuesto = async function(id) {
+            const motivo = prompt("¿Por qué necesitas un repuesto? (ej: está muy gastada, no funciona, etc.)");
+            if (!motivo || motivo.trim() === '') return;
+            
+            try {
+                const herramienta = misHerramientas.find(h => h.id === id);
+                const reportes = Array.isArray(herramienta.reportes) ? herramienta.reportes : [];
+                
+                reportes.push({
+                    trabajadorId: usuario.id,
+                    trabajadorNombre: usuario.nombre,
+                    detalle: `SOLICITUD REPUESTO: ${motivo}`,
+                    timestamp: new Date().toLocaleString(),
+                    tipo: 'repuesto',
+                    estado: 'pendiente'
+                });
+                
+                await updateDoc(doc(db, "herramientas_usuarios", id), {
+                    reportes: reportes,
+                    necesitaRepuesto: true
+                });
+                
+                mostrarToast('✅ Solicitud de repuesto enviada al administrador');
+            } catch (error) {
+                console.error("Error:", error);
+                mostrarToast('❌ Error al solicitar repuesto', 'error');
             }
         };
 
