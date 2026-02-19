@@ -689,7 +689,7 @@
         </div>
 
         <!-- ======================================== -->
-        <!-- PANEL DE USUARIOS -->
+        <!-- PANEL DE USUARIOS - CON NUEVOS BOTONES -->
         <!-- ======================================== -->
         <div id="panelUsuarios">
             <!-- Formulario crear usuario -->
@@ -710,11 +710,19 @@
                 <button class="btn btn-primary" onclick="crearUsuario()">✅ Crear Usuario</button>
             </div>
 
-            <!-- Lista de usuarios -->
+            <!-- Lista de usuarios con NUEVOS BOTONES -->
             <div class="admin-section">
                 <div class="section-title">
                     <h2>👥 LISTA DE USUARIOS</h2>
-                    <span class="badge-info" id="usuariosCount">0</span>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <span class="badge-info" id="usuariosCount">0</span>
+                        <button class="btn btn-info btn-small" onclick="exportarInformeUsuarios()">
+                            📊 Informe por Usuario
+                        </button>
+                        <button class="btn btn-warning btn-small" onclick="exportarHerramientasPorUsuario()">
+                            🔧 Herramientas x Usuario
+                        </button>
+                    </div>
                 </div>
                 <input type="text" id="buscarUsuarios" class="buscador" placeholder="🔍 Buscar usuario...">
                 <div class="usuarios-grid" id="usuariosContainer">
@@ -724,7 +732,7 @@
         </div>
 
         <!-- ======================================== -->
-        <!-- PANEL DE HERRAMIENTAS (NUEVO) -->
+        <!-- PANEL DE HERRAMIENTAS - CON NUEVOS BOTONES -->
         <!-- ======================================== -->
         <div id="panelHerramientas" style="display: none;">
             <!-- Formulario crear herramienta -->
@@ -755,13 +763,12 @@
                 <button class="btn btn-primary" onclick="crearHerramienta()">✅ Crear Herramienta</button>
             </div>
 
-            <!-- Lista de herramientas global - MODIFICADO CON NUEVOS BOTONES -->
+            <!-- Lista de herramientas global -->
             <div class="admin-section">
                 <div class="section-title">
                     <h2>🔧 LISTA DE HERRAMIENTAS</h2>
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <span class="badge-info" id="herramientasCount">0</span>
-                        <!-- NUEVOS BOTONES DE EXPORTACIÓN -->
                         <button class="btn btn-warning btn-small" onclick="exportarHerramientasRotas()">
                             ⚠️ Exportar Rotas
                         </button>
@@ -821,7 +828,7 @@
         </div>
 
         <!-- ======================================== -->
-        <!-- PANEL DE INCIDENCIAS PENDIENTES - MODIFICADO CON NUEVOS BOTONES -->
+        <!-- PANEL DE INCIDENCIAS - CON NUEVOS BOTONES -->
         <!-- ======================================== -->
         <div id="panelIncidencias" style="display: none;">
             <div class="admin-section">
@@ -829,7 +836,6 @@
                     <h2>⚠️ INCIDENCIAS PENDIENTES</h2>
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <span class="badge" id="pendientesCount">0</span>
-                        <!-- NUEVOS BOTONES DE EXPORTACIÓN -->
                         <button class="btn btn-warning btn-small" onclick="exportarIncidenciasPendientes()">
                             📊 Exportar Pendientes
                         </button>
@@ -1266,7 +1272,194 @@
         };
 
         // ============================================
-        // NUEVAS FUNCIONES DE EXPORTACIÓN
+        // NUEVAS FUNCIONES DE EXPORTACIÓN PARA USUARIOS
+        // ============================================
+        
+        // INFORME POR USUARIO (roturas y repuestos)
+        window.exportarInformeUsuarios = function() {
+            if (usuarios.length === 0) {
+                alert('No hay usuarios para generar informe');
+                return;
+            }
+            
+            // Preparar headers del Excel
+            const headers = [
+                'Usuario',
+                'Rol',
+                'Estado',
+                'Total Herramientas',
+                'Herramientas Rotas',
+                'Herramientas Perdidas',
+                'Solicitudes Repuesto',
+                'Última Incidencia',
+                'Detalle Incidencias'
+            ];
+            
+            const rows = [];
+            
+            // Generar informe para cada usuario
+            usuarios.forEach(u => {
+                // Herramientas de este usuario
+                const herramientasUsuario = herramientas.filter(h => h.trabajadorId === u.id);
+                
+                // Contar herramientas rotas
+                const herramientasRotas = herramientasUsuario.filter(h => h.estado === 'roto').length;
+                
+                // Contar herramientas perdidas (no presentes)
+                const herramientasPerdidas = herramientasUsuario.filter(h => h.presente === false).length;
+                
+                // Buscar incidencias de este usuario
+                const incidenciasUsuario = todasLasIncidencias.filter(i => i.trabajadorId === u.id);
+                
+                // Contar solicitudes de repuesto
+                const solicitudesRepuesto = incidenciasUsuario.filter(i => i.tipo === 'repuesto').length;
+                
+                // Última incidencia
+                let ultimaIncidencia = 'Ninguna';
+                let detalleIncidencias = '';
+                
+                if (incidenciasUsuario.length > 0) {
+                    // Ordenar por fecha (más reciente primero)
+                    const incidenciasOrdenadas = [...incidenciasUsuario].sort((a, b) => 
+                        new Date(b.timestamp) - new Date(a.timestamp)
+                    );
+                    
+                    ultimaIncidencia = incidenciasOrdenadas[0].timestamp || 'Fecha desconocida';
+                    
+                    // Crear resumen de incidencias (máximo 3)
+                    const resumenIncidencias = incidenciasOrdenadas.slice(0, 3).map(i => 
+                        `${i.herramienta}: ${i.detalle} (${i.estado || 'pendiente'})`
+                    ).join(' | ');
+                    
+                    detalleIncidencias = resumenIncidencias + (incidenciasOrdenadas.length > 3 ? ` (+${incidenciasOrdenadas.length - 3} más)` : '');
+                }
+                
+                rows.push([
+                    u.nombre,
+                    u.rol || 'Trabajador',
+                    u.activo !== false ? 'Activo' : 'Inactivo',
+                    herramientasUsuario.length,
+                    herramientasRotas,
+                    herramientasPerdidas,
+                    solicitudesRepuesto,
+                    ultimaIncidencia,
+                    detalleIncidencias
+                ]);
+            });
+            
+            // Ordenar por número de incidencias (de mayor a menor)
+            rows.sort((a, b) => {
+                const incidenciasA = a[4] + a[5] + a[6]; // Rotas + Perdidas + Repuestos
+                const incidenciasB = b[4] + b[5] + b[6];
+                return incidenciasB - incidenciasA;
+            });
+            
+            // Crear CSV
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            // Descargar archivo
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `informe_usuarios_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            mostrarToast(`✅ Informe generado para ${usuarios.length} usuarios`);
+        };
+
+        // INFORME DETALLADO DE HERRAMIENTAS POR USUARIO
+        window.exportarHerramientasPorUsuario = function() {
+            if (usuarios.length === 0) {
+                alert('No hay usuarios');
+                return;
+            }
+            
+            const headers = [
+                'Usuario',
+                'Herramienta',
+                'Código',
+                'Categoría',
+                'Estado',
+                'Presente',
+                'Fecha Reporte',
+                'Problema Reportado',
+                'Tipo Incidencia'
+            ];
+            
+            const rows = [];
+            
+            usuarios.forEach(u => {
+                const herramientasUsuario = herramientas.filter(h => h.trabajadorId === u.id);
+                
+                if (herramientasUsuario.length === 0) {
+                    // Usuario sin herramientas
+                    rows.push([
+                        u.nombre,
+                        'SIN HERRAMIENTAS',
+                        '-',
+                        '-',
+                        '-',
+                        '-',
+                        '-',
+                        '-',
+                        '-'
+                    ]);
+                } else {
+                    herramientasUsuario.forEach(h => {
+                        if (h.reportes && h.reportes.length > 0) {
+                            // Si tiene reportes, mostrar cada uno
+                            h.reportes.forEach((reporte, index) => {
+                                rows.push([
+                                    u.nombre,
+                                    h.nombre,
+                                    h.codigo || 'Sin código',
+                                    h.categoria || 'General',
+                                    h.estado || 'bueno',
+                                    h.presente ? 'Sí' : 'No',
+                                    reporte.timestamp || 'Desconocido',
+                                    reporte.detalle || 'No especificado',
+                                    reporte.tipo || 'incidencia'
+                                ]);
+                            });
+                        } else {
+                            // Herramienta sin reportes
+                            rows.push([
+                                u.nombre,
+                                h.nombre,
+                                h.codigo || 'Sin código',
+                                h.categoria || 'General',
+                                h.estado || 'bueno',
+                                h.presente ? 'Sí' : 'No',
+                                'Sin reportes',
+                                'Sin incidencias',
+                                '-'
+                            ]);
+                        }
+                    });
+                }
+            });
+            
+            // Crear CSV
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            // Descargar archivo
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `herramientas_usuario_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            mostrarToast(`✅ Exportadas ${rows.length} filas de herramientas por usuario`);
+        };
+
+        // ============================================
+        // NUEVAS FUNCIONES DE EXPORTACIÓN PARA HERRAMIENTAS
         // ============================================
         
         // EXPORTAR HERRAMIENTAS ROTAS
@@ -1458,7 +1651,7 @@
         };
 
         // ============================================
-        // GESTIÓN DE USUARIOS
+        // GESTIÓN DE USUARIOS (existente)
         // ============================================
         
         function actualizarUsuarios() {
@@ -1803,7 +1996,7 @@
         };
 
         // ============================================
-        // INCIDENCIAS
+        // INCIDENCIAS (existente)
         // ============================================
         
         function actualizarIncidencias() {
@@ -2038,11 +2231,19 @@
             const { outcome } = await deferredPrompt.userChoice;
             console.log(`Resultado instalación: ${outcome}`);
             deferredPrompt = null;
+            document.getElementById('installButton').style.display
+                    document.getElementById('installButton').addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Resultado instalación: ${outcome}`);
+            deferredPrompt = null;
             document.getElementById('installButton').style.display = 'none';
         });
     </script>
 </body>
 </html>
+
 
 
 
