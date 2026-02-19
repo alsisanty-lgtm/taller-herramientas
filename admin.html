@@ -755,11 +755,20 @@
                 <button class="btn btn-primary" onclick="crearHerramienta()">✅ Crear Herramienta</button>
             </div>
 
-            <!-- Lista de herramientas global -->
+            <!-- Lista de herramientas global - MODIFICADO CON NUEVOS BOTONES -->
             <div class="admin-section">
                 <div class="section-title">
                     <h2>🔧 LISTA DE HERRAMIENTAS</h2>
-                    <span class="badge-info" id="herramientasCount">0</span>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="badge-info" id="herramientasCount">0</span>
+                        <!-- NUEVOS BOTONES DE EXPORTACIÓN -->
+                        <button class="btn btn-warning btn-small" onclick="exportarHerramientasRotas()">
+                            ⚠️ Exportar Rotas
+                        </button>
+                        <button class="btn btn-info btn-small" onclick="exportarSolicitudesRepuestos()">
+                            🔧 Solicitudes Repuesto
+                        </button>
+                    </div>
                 </div>
                 <input type="text" id="buscarHerramientas" class="buscador" placeholder="🔍 Buscar herramienta...">
                 <table class="herramientas-table" id="herramientasTable">
@@ -812,13 +821,22 @@
         </div>
 
         <!-- ======================================== -->
-        <!-- PANEL DE INCIDENCIAS PENDIENTES -->
+        <!-- PANEL DE INCIDENCIAS PENDIENTES - MODIFICADO CON NUEVOS BOTONES -->
         <!-- ======================================== -->
         <div id="panelIncidencias" style="display: none;">
             <div class="admin-section">
                 <div class="section-title">
                     <h2>⚠️ INCIDENCIAS PENDIENTES</h2>
-                    <span class="badge" id="pendientesCount">0</span>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="badge" id="pendientesCount">0</span>
+                        <!-- NUEVOS BOTONES DE EXPORTACIÓN -->
+                        <button class="btn btn-warning btn-small" onclick="exportarIncidenciasPendientes()">
+                            📊 Exportar Pendientes
+                        </button>
+                        <button class="btn btn-info btn-small" onclick="exportarInformeCompleto()">
+                            📋 Informe Completo
+                        </button>
+                    </div>
                 </div>
                 <div id="incidenciasContainer" class="loading">
                     Cargando incidencias...
@@ -1039,7 +1057,7 @@
             });
             
             actualizarEstadisticas();
-            actualizarHerramientas(); // NUEVA FUNCIÓN
+            actualizarHerramientas();
             actualizarIncidencias();
             actualizarHistorial();
             
@@ -1120,7 +1138,7 @@
         }
 
         // ============================================
-        // GESTIÓN DE HERRAMIENTAS (NUEVA)
+        // GESTIÓN DE HERRAMIENTAS
         // ============================================
         
         function actualizarHerramientas() {
@@ -1245,6 +1263,198 @@
                 console.error("Error:", error);
                 mostrarToast('❌ Error al eliminar', 'error');
             }
+        };
+
+        // ============================================
+        // NUEVAS FUNCIONES DE EXPORTACIÓN
+        // ============================================
+        
+        // EXPORTAR HERRAMIENTAS ROTAS
+        window.exportarHerramientasRotas = function() {
+            // Filtrar herramientas rotas
+            const herramientasRotas = herramientas.filter(h => h.estado === 'roto');
+            
+            if (herramientasRotas.length === 0) {
+                alert('No hay herramientas rotas actualmente');
+                return;
+            }
+            
+            // Preparar datos para Excel
+            const headers = ['Fecha Reporte', 'Trabajador', 'Herramienta', 'Código', 'Problema', 'Estado'];
+            const rows = [];
+            
+            herramientasRotas.forEach(h => {
+                // Si tiene reportes, mostrar el último reporte
+                if (h.reportes && h.reportes.length > 0) {
+                    const ultimoReporte = h.reportes[h.reportes.length - 1];
+                    rows.push([
+                        ultimoReporte.timestamp || 'Desconocido',
+                        h.trabajadorNombre || 'Sin asignar',
+                        h.nombre,
+                        h.codigo || 'Sin código',
+                        ultimoReporte.detalle || 'No especificado',
+                        'ROTA'
+                    ]);
+                } else {
+                    rows.push([
+                        'Fecha desconocida',
+                        h.trabajadorNombre || 'Sin asignar',
+                        h.nombre,
+                        h.codigo || 'Sin código',
+                        'Estado: roto sin reporte',
+                        'ROTA'
+                    ]);
+                }
+            });
+            
+            // Crear CSV
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            // Descargar archivo
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `herramientas_rotas_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            mostrarToast(`✅ Exportadas ${herramientasRotas.length} herramientas rotas`);
+        };
+
+        // EXPORTAR SOLICITUDES DE REPUESTOS
+        window.exportarSolicitudesRepuestos = function() {
+            // Buscar todas las incidencias que son solicitudes de repuesto
+            const solicitudesRepuesto = todasLasIncidencias.filter(i => i.tipo === 'repuesto');
+            
+            // También buscar herramientas que puedan necesitar repuestos
+            const herramientasConProblemas = herramientas.filter(h => 
+                h.estado === 'roto' || 
+                (h.reportes && h.reportes.some(r => r.detalle?.toLowerCase().includes('repuesto') || 
+                                                      r.detalle?.toLowerCase().includes('falta') ||
+                                                      r.detalle?.toLowerCase().includes('necesita')))
+            );
+            
+            if (solicitudesRepuesto.length === 0 && herramientasConProblemas.length === 0) {
+                alert('No hay solicitudes de repuestos');
+                return;
+            }
+            
+            const headers = ['Fecha', 'Trabajador', 'Herramienta', 'Código', 'Descripción', 'Tipo'];
+            const rows = [];
+            
+            // Añadir solicitudes de repuesto explícitas
+            solicitudesRepuesto.forEach(s => {
+                rows.push([
+                    s.timestamp || 'Desconocido',
+                    s.trabajadorNombre || 'Desconocido',
+                    s.herramienta,
+                    s.codigo || 'Sin código',
+                    s.detalle || 'Solicitud de repuesto',
+                    'REPUESTO SOLICITADO'
+                ]);
+            });
+            
+            // Añadir herramientas rotas que podrían necesitar repuestos
+            herramientasConProblemas.forEach(h => {
+                if (!solicitudesRepuesto.some(s => s.herramientaId === h.id)) {
+                    const reportes = h.reportes || [];
+                    const ultimoReporte = reportes[reportes.length - 1];
+                    
+                    rows.push([
+                        ultimoReporte?.timestamp || 'Desconocido',
+                        h.trabajadorNombre || 'Sin asignar',
+                        h.nombre,
+                        h.codigo || 'Sin código',
+                        ultimoReporte?.detalle || 'Herramienta rota - necesita revisión',
+                        'NECESITA REPUESTO'
+                    ]);
+                }
+            });
+            
+            // Crear CSV
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            // Descargar archivo
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `solicitudes_repuestos_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            mostrarToast(`✅ Exportadas ${rows.length} solicitudes de repuesto`);
+        };
+
+        // EXPORTAR INCIDENCIAS PENDIENTES
+        window.exportarIncidenciasPendientes = function() {
+            const pendientes = todasLasIncidencias.filter(i => i.estado === 'pendiente' || !i.estado);
+            
+            if (pendientes.length === 0) {
+                alert('No hay incidencias pendientes');
+                return;
+            }
+            
+            const headers = ['Fecha', 'Trabajador', 'Herramienta', 'Código', 'Problema', 'Tipo', 'Urgencia'];
+            const rows = pendientes.map(i => [
+                i.timestamp || 'Desconocido',
+                i.trabajadorNombre || 'Desconocido',
+                i.herramienta,
+                i.codigo || 'Sin código',
+                i.detalle || 'No especificado',
+                i.tipo || 'incidencia',
+                i.urgencia || 'normal'
+            ]);
+            
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `incidencias_pendientes_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            mostrarToast(`✅ Exportadas ${pendientes.length} incidencias pendientes`);
+        };
+
+        // EXPORTAR INFORME COMPLETO DE INCIDENCIAS
+        window.exportarInformeCompleto = function() {
+            if (todasLasIncidencias.length === 0) {
+                alert('No hay datos para exportar');
+                return;
+            }
+            
+            const headers = ['Fecha', 'Trabajador', 'Herramienta', 'Código', 'Problema', 'Tipo', 'Estado', 'Fecha Resolución', 'Urgencia'];
+            const rows = todasLasIncidencias.map(i => [
+                i.timestamp || 'Desconocido',
+                i.trabajadorNombre || 'Desconocido',
+                i.herramienta,
+                i.codigo || 'Sin código',
+                i.detalle || 'No especificado',
+                i.tipo || 'incidencia',
+                i.estado || 'pendiente',
+                i.fechaResolucion || '-',
+                i.urgencia || 'normal'
+            ]);
+            
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `informe_incidencias_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            mostrarToast(`✅ Exportadas ${todasLasIncidencias.length} incidencias`);
         };
 
         // ============================================
@@ -1721,7 +1931,7 @@
         };
 
         // ============================================
-        // EXPORTAR
+        // EXPORTAR (funciones existentes)
         // ============================================
         
         window.exportarInventario = function() {
@@ -1833,6 +2043,7 @@
     </script>
 </body>
 </html>
+
 
 
 
