@@ -10,10 +10,14 @@ import {
   updateDoc, 
   doc, 
   deleteDoc, 
-  getDocs 
+  getDocs,
+  getDoc,
+  setDoc,
+  orderBy,
+  limit,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 🔴 TUS DATOS DE FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyDfNTl9SIDmpJWmrNfVyX7ptk1WRjxQ-LA",
   authDomain: "taller-herramientas-38bed.firebaseapp.com",
@@ -36,5 +40,10 @@ export {
   updateDoc, 
   doc, 
   deleteDoc, 
-  getDocs 
+  getDocs,
+  getDoc,
+  setDoc,
+  orderBy,
+  limit,
+  writeBatch
 };

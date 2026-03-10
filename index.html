@@ -3,182 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- ======================================== -->
-    <!-- NUEVO: Iconos y manifest para PWA -->
-    <!-- ======================================== -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192x192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
     <link rel="shortcut icon" href="favicon.ico">
-    
-    <!-- Meta tags para móvil -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#27ae60">
+    <meta name="theme-color" content="#1a2332">
     <meta name="mobile-web-app-capable" content="yes">
-    <!-- ======================================== -->
-    
-    <title>Acceso - Taller</title>
-    
-    <!-- RESTO DE TU CSS ORIGINAL SIN CAMBIOS -->
+    <title>Acceso - Taller Mecánico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+        :root {
+            --dark: #0d1117;
+            --panel: #161b22;
+            --border: #30363d;
+            --green: #2ea043;
+            --green-glow: rgba(46, 160, 67, 0.4);
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --accent: #58a6ff;
+            --red: #da3633;
         }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
         }
-        
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+        /* Fondo animado industrial */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 80%, rgba(46,160,67,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 20%, rgba(88,166,255,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .login-wrap {
+            position: relative;
+            z-index: 10;
             width: 90%;
-            max-width: 400px;
-            padding: 40px;
+            max-width: 420px;
         }
-        
-        .logo {
+
+        .brand {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
-        
-        .logo h1 {
-            color: #2c3e50;
-            font-size: 2em;
+
+        .brand-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--green), #1a7a2e);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 16px;
+            box-shadow: 0 0 30px var(--green-glow);
         }
-        
-        .logo p {
-            color: #7f8c8d;
-            margin-top: 10px;
+
+        .brand h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
-        
+
+        .brand p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
+            color: var(--muted);
+            font-size: 0.75rem;
             font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
         }
-        
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap span {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
         .form-group input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e9ecef;
+            padding: 14px 14px 14px 44px;
+            background: var(--dark);
+            border: 1.5px solid var(--border);
             border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            color: var(--text);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        
+
         .form-group input:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px var(--green-glow);
         }
-        
-        .btn {
+
+        .form-group input::placeholder { color: var(--muted); }
+
+        .btn-login {
             width: 100%;
             padding: 15px;
-            background: #27ae60;
+            background: var(--green);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .btn:hover {
-            background: #219a52;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+
+        .btn-login:hover:not(:disabled) {
+            background: #3fb950;
+            box-shadow: 0 4px 20px var(--green-glow);
+            transform: translateY(-1px);
         }
-        
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
-        
-        .info {
-            text-align: center;
-            margin-top: 20px;
-            color: #7f8c8d;
-            font-size: 14px;
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
+
+        .btn-login .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-box {
+            background: rgba(218, 54, 51, 0.1);
+            border: 1px solid rgba(218, 54, 51, 0.4);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ff7b7b;
+            font-size: 13px;
+            margin-top: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
         }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--muted);
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .admin-link a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+
+        .admin-link a:hover { color: var(--accent); }
+
+        /* Botón instalar */
+        #installButton {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            box-shadow: 0 4px 16px var(--green-glow);
+            display: none;
+            z-index: 1000;
+            transition: all 0.2s;
+        }
+
+        #installButton:hover { transform: translateY(-2px); }
     </style>
 </head>
 <body>
-    <!-- ======================================== -->
-    <!-- NUEVO: Botón de instalación (opcional) -->
-    <!-- ======================================== -->
-    <button id="installButton" style="position: fixed; bottom: 20px; right: 20px; background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 1000;">
-        📲 Instalar App
-    </button>
-    <!-- ======================================== -->
+    <div class="grid-bg"></div>
 
-    <div class="login-container">
-        <div class="logo">
-            <h1>🔧 TALLER MECÁNICO</h1>
-            <p>Acceso para trabajadores</p>
+    <button id="installButton">📲 Instalar App</button>
+
+    <div class="login-wrap">
+        <div class="brand">
+            <div class="brand-icon">🔧</div>
+            <h1>Taller Mecánico</h1>
+            <p>Control de Herramientas</p>
         </div>
-        
-        <div class="form-group">
-            <label>👤 Tu nombre</label>
-            <input type="text" id="nombreInput" placeholder="Ej: Juan Pérez" autocomplete="off">
+
+        <div class="card">
+            <div class="form-group">
+                <label>Tu nombre completo</label>
+                <div class="input-wrap">
+                    <span>👤</span>
+                    <input type="text" id="nombreInput" placeholder="Ej: Juan Pérez"
+                           autocomplete="off" autocapitalize="words"
+                           onkeydown="if(event.key==='Enter') acceder()">
+                </div>
+            </div>
+
+            <button class="btn-login" id="btnLogin" onclick="acceder()">
+                Entrar al taller
+            </button>
+
+            <div class="error-box" id="errorMensaje">
+                <span>⚠️</span>
+                <span id="errorTexto">Usuario no encontrado</span>
+            </div>
         </div>
-        
-        <button class="btn" onclick="acceder()">✅ Acceder al taller</button>
-        
-        <div class="error" id="errorMensaje">
-            Usuario no encontrado o inactivo
-        </div>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 10px;">Verificando...</p>
-        </div>
-        
-        <div class="info">
-            Solo personal autorizado
-        </div>
+
+        <div class="footer-note">Solo personal autorizado</div>
+        <div class="admin-link"><a href="admin.html">⚙️ Panel de administración</a></div>
     </div>
 
     <script type="module">
@@ -186,79 +301,87 @@
 
         window.acceder = async function() {
             const nombre = document.getElementById('nombreInput').value.trim();
-            
+            const btn = document.getElementById('btnLogin');
+            const errorBox = document.getElementById('errorMensaje');
+
+            errorBox.style.display = 'none';
+
             if (!nombre || nombre.length < 3) {
-                alert('Por favor, introduce tu nombre completo');
+                document.getElementById('errorTexto').textContent = 'Introduce tu nombre completo (mínimo 3 caracteres)';
+                errorBox.style.display = 'flex';
                 return;
             }
-            
-            // Mostrar loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('errorMensaje').style.display = 'none';
-            
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>Verificando...';
+
             try {
-                // Buscar usuario en Firebase
                 const q = query(collection(db, "usuarios_taller"), where("nombre", "==", nombre));
-                const querySnapshot = await getDocs(q);
-                
-                if (querySnapshot.empty) {
-                    // Usuario no encontrado
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('errorMensaje').style.display = 'block';
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    // Intentar búsqueda sin mayúsculas exactas
+                    const qAll = await getDocs(collection(db, "usuarios_taller"));
+                    let encontrado = null;
+                    qAll.forEach(d => {
+                        if (d.data().nombre.toLowerCase() === nombre.toLowerCase()) {
+                            encontrado = { id: d.id, ...d.data() };
+                        }
+                    });
+
+                    if (!encontrado) {
+                        document.getElementById('errorTexto').textContent = 'Usuario no encontrado. Contacta al administrador.';
+                        errorBox.style.display = 'flex';
+                        btn.disabled = false;
+                        btn.innerHTML = 'Entrar al taller';
+                        return;
+                    }
+
+                    if (encontrado.activo === false) {
+                        document.getElementById('errorTexto').textContent = 'Tu cuenta está desactivada. Contacta al administrador.';
+                        errorBox.style.display = 'flex';
+                        btn.disabled = false;
+                        btn.innerHTML = 'Entrar al taller';
+                        return;
+                    }
+
+                    localStorage.setItem('taller_usuario', JSON.stringify({ id: encontrado.id, nombre: encontrado.nombre }));
+                    window.location.href = 'mis-herramientas.html';
                     return;
                 }
-                
-                // Usuario encontrado
-                const usuario = {
-                    id: querySnapshot.docs[0].id,
-                    ...querySnapshot.docs[0].data()
-                };
-                
+
+                const usuario = { id: snap.docs[0].id, ...snap.docs[0].data() };
+
                 if (usuario.activo === false) {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('errorMensaje').textContent = 'Usuario desactivado. Contacta al administrador.';
-                    document.getElementById('errorMensaje').style.display = 'block';
+                    document.getElementById('errorTexto').textContent = 'Tu cuenta está desactivada. Contacta al administrador.';
+                    errorBox.style.display = 'flex';
+                    btn.disabled = false;
+                    btn.innerHTML = 'Entrar al taller';
                     return;
                 }
-                
-                // Guardar sesión
-                localStorage.setItem('taller_usuario', JSON.stringify({
-                    id: usuario.id,
-                    nombre: usuario.nombre
-                }));
-                
-                // Redirigir a la app
+
+                localStorage.setItem('taller_usuario', JSON.stringify({ id: usuario.id, nombre: usuario.nombre }));
                 window.location.href = 'mis-herramientas.html';
-                
+
             } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('errorMensaje').textContent = 'Error de conexión';
-                document.getElementById('errorMensaje').style.display = 'block';
+                console.error(error);
+                document.getElementById('errorTexto').textContent = 'Error de conexión. Comprueba tu red.';
+                errorBox.style.display = 'flex';
+                btn.disabled = false;
+                btn.innerHTML = 'Entrar al taller';
             }
         };
     </script>
 
-    <!-- ======================================== -->
-    <!-- NUEVO: Script para Service Worker y PWA -->
-    <!-- ======================================== -->
     <script>
-        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registrado correctamente');
-                    })
-                    .catch(error => {
-                        console.log('Error registrando ServiceWorker:', error);
-                    });
+                navigator.serviceWorker.register('./service-worker.js').catch(e => console.warn('SW error:', e));
             });
         }
 
-        // Botón de instalación
         let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
+        window.addEventListener('beforeinstallprompt', e => {
             e.preventDefault();
             deferredPrompt = e;
             document.getElementById('installButton').style.display = 'block';
@@ -267,25 +390,10 @@
         document.getElementById('installButton').addEventListener('click', async () => {
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Resultado instalación: ${outcome}`);
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
             document.getElementById('installButton').style.display = 'none';
         });
     </script>
-    <!-- ======================================== -->
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
