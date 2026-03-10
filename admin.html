@@ -534,6 +534,7 @@
                     <div class="section-title">📦 Catálogo de Herramientas</div>
                     <div class="section-actions">
                         <button class="btn btn-sm btn-info" onclick="exportarCatalogoCSV()">📊 Exportar CSV</button>
+                        <button class="btn btn-sm btn-purple" onclick="generarPDFCatalogo()">📄 Exportar PDF</button>
                     </div>
                 </div>
                 <div class="form-row">
@@ -1495,6 +1496,13 @@
             generarPDF('Pedido de Compra', `${items.length} herramientas a reponer — Fecha: ${new Date().toLocaleDateString('es-ES')}`,
                 ['Herramienta', 'Código', 'Categoría', 'Cantidad', 'Trabajador', 'Motivo'], rows,
                 '.badge-compra { background:#2ea043; color:white; padding:2px 8px; border-radius:4px; font-size:11px; }');
+        };
+
+        window.generarPDFCatalogo = function() {
+            if (catalogo.length === 0) { toast('ℹ️ El catálogo está vacío', 'err'); return; }
+            const rows = catalogo.map(h => [h.nombre, h.codigo || '—']);
+            generarPDF('Catálogo de Herramientas', `${catalogo.length} herramientas en el catálogo`,
+                ['Nombre', 'Código'], rows);
         };
 
         function hoy() { return new Date().toLocaleDateString('es-ES').replace(/\//g, '-'); }
