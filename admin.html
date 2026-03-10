@@ -1521,5 +1521,127 @@
             document.getElementById('installButton').style.display = 'none';
         });
     </script>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- PROTECCIÓN CON CONTRASEÑA              -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="loginOverlay" style="
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: #0d1117;
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Inter', sans-serif;
+    ">
+        <div style="
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 40px 36px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+        ">
+            <div style="text-align:center; margin-bottom: 28px;">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">🔐</div>
+                <div style="font-family:'Rajdhani',sans-serif; font-size:1.4rem; font-weight:700; color:#e6edf3; letter-spacing:2px; text-transform:uppercase;">Área Restringida</div>
+                <div style="color:#8b949e; font-size:13px; margin-top:6px;">Solo administradores</div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; color:#8b949e; font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Contraseña</label>
+                <div style="position:relative;">
+                    <input type="password" id="adminPass"
+                        placeholder="Introduce la contraseña"
+                        onkeydown="if(event.key==='Enter') verificarAdmin()"
+                        style="
+                            width: 100%;
+                            padding: 13px 44px 13px 14px;
+                            background: #0d1117;
+                            border: 1.5px solid #30363d;
+                            border-radius: 10px;
+                            color: #e6edf3;
+                            font-size: 15px;
+                            font-family: 'Inter', sans-serif;
+                            transition: border-color 0.2s;
+                            outline: none;
+                        "
+                        onfocus="this.style.borderColor='#2ea043'"
+                        onblur="this.style.borderColor='#30363d'"
+                    >
+                    <span id="togglePass" onclick="toggleVerContraseña()"
+                        style="position:absolute; right:14px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1rem; user-select:none;">
+                        👁️
+                    </span>
+                </div>
+            </div>
+
+            <div id="loginError" style="
+                display: none;
+                background: rgba(218,54,51,0.1);
+                border: 1px solid rgba(218,54,51,0.4);
+                border-radius: 8px;
+                padding: 10px 14px;
+                color: #ff7b7b;
+                font-size: 13px;
+                margin-bottom: 16px;
+            ">⚠️ Contraseña incorrecta</div>
+
+            <button onclick="verificarAdmin()" style="
+                width: 100%;
+                padding: 14px;
+                background: #2ea043;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: 700;
+                font-family: 'Rajdhani', sans-serif;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: background 0.2s;
+            "
+            onmouseover="this.style.background='#3fb950'"
+            onmouseout="this.style.background='#2ea043'">
+                Entrar
+            </button>
+
+            <div style="text-align:center; margin-top:20px;">
+                <a href="index.html" style="color:#8b949e; font-size:12px; text-decoration:none;">← Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASS = 'Alsi2026';
+
+        // Si ya estaba autenticado en esta sesión, mostrar directamente
+        if (sessionStorage.getItem('admin_ok') === '1') {
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+
+        function verificarAdmin() {
+            const input = document.getElementById('adminPass').value;
+            if (input === ADMIN_PASS) {
+                sessionStorage.setItem('admin_ok', '1');
+                document.getElementById('loginOverlay').style.display = 'none';
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('adminPass').value = '';
+                document.getElementById('adminPass').style.borderColor = '#da3633';
+                setTimeout(() => {
+                    document.getElementById('adminPass').style.borderColor = '#30363d';
+                }, 2000);
+            }
+        }
+
+        function toggleVerContraseña() {
+            const input = document.getElementById('adminPass');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    </script>
 </body>
 </html>
