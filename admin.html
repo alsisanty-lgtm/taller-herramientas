@@ -668,6 +668,25 @@
 
     <div id="toast" class="toast"></div>
 
+    <!-- Modal incidencias por mecánico -->
+    <div class="modal-overlay" id="modalIncidenciasMecanico">
+        <div class="modal-lg">
+            <div class="inc-mec-header">
+                <div>
+                    <div class="inc-mec-title" id="incMecTitle">⚠️ Incidencias</div>
+                    <div id="incMecSubtitle" style="color:var(--muted);font-size:13px;margin-top:3px;"></div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="cerrarModal('modalIncidenciasMecanico')">✕ Cerrar</button>
+            </div>
+            <div class="inc-mec-tabs">
+                <button class="inc-mec-tab tab-pendiente active" id="incTabPendiente" onclick="filtrarIncMec('pendiente')">🔴 Pendientes <span id="incCntPendiente" class="badge-num">0</span></button>
+                <button class="inc-mec-tab tab-reparacion" id="incTabReparacion" onclick="filtrarIncMec('reparacion')">🟠 En reparación <span id="incCntReparacion" class="badge-num" style="background:var(--orange)">0</span></button>
+                <button class="inc-mec-tab tab-resueltas" id="incTabResueltas" onclick="filtrarIncMec('reparado')">✅ Resueltas</button>
+            </div>
+            <div id="incMecContainer">Cargando...</div>
+        </div>
+    </div>
+
     <!-- Modal herramientas de usuario -->
     <div class="modal-overlay" id="modalVerHerramientas">
         <div class="modal">
@@ -785,6 +804,15 @@
             renderIncidencias();
             renderPedidos();
             renderHistorial();
+            // Si el modal de incidencias por mecánico está abierto, actualizarlo
+            if (incMecUid && document.getElementById('modalIncidenciasMecanico').classList.contains('show')) {
+                renderIncMec();
+                const hU = herramientas.filter(h => h.trabajadorId === incMecUid);
+                const todas2 = [];
+                hU.forEach(h2 => { (h2.reportes||[]).forEach(r2 => todas2.push({...r2})); });
+                document.getElementById('incCntPendiente').textContent = todas2.filter(i=>!i.estado||i.estado==='pendiente').length;
+                document.getElementById('incCntReparacion').textContent = todas2.filter(i=>i.estado==='reparacion').length;
+            }
         });
 
         onSnapshot(collection(db, "herramientas"), snap => {
@@ -879,6 +907,9 @@
                     </div>
                     <div class="user-actions">
                         <button class="btn btn-sm btn-info" onclick="verHerramientas('${u.id}')">🔧 Ver herramientas</button>
+                        <button class="btn btn-sm btn-danger" onclick="verIncidenciasMecanico('${u.id}')" id="btnInc_${u.id}" style="position:relative;">
+                            ⚠️ Incidencias${todasIncidencias.filter(i=>i.trabajadorId===u.id&&(!i.estado||i.estado==='pendiente')).length>0?` <span class="badge-num">${todasIncidencias.filter(i=>i.trabajadorId===u.id&&(!i.estado||i.estado==='pendiente')).length}</span>`:''}
+                        </button>
                         <button class="btn btn-sm btn-purple" onclick="generarPDFMecanico('${u.id}')">📄 Informe</button>
                         <button class="btn btn-sm btn-secondary" onclick="abrirModalAñadir('${u.id}', '${u.nombre.replace(/'/g,"\\'")}')">➕ Añadir</button>
                         <button class="btn btn-sm ${u.activo !== false ? 'btn-warning' : 'btn-primary'}" onclick="toggleActivo('${u.id}', ${u.activo !== false})">${u.activo !== false ? '🔒 Desactivar' : '✅ Activar'}</button>
@@ -1334,6 +1365,123 @@
                     </div>
                 </div>`).join('');
         }
+
+        // ══════════════════════════════════════════
+        // INCIDENCIAS POR MECÁNICO
+        // ══════════════════════════════════════════
+        let incMecUid = null;
+        let incMecFiltro = 'pendiente';
+
+        window.verIncidenciasMecanico = function(uid) {
+            incMecUid = uid;
+            incMecFiltro = 'pendiente';
+            const u = usuarios.find(x => x.id === uid);
+            const hUsuario = herramientas.filter(h => h.trabajadorId === uid);
+            const todas = [];
+            hUsuario.forEach(h => {
+                (h.reportes || []).forEach(r => {
+                    todas.push({ ...r, herramientaId: h.id, herramienta: h.nombre, codigo: h.codigo });
+                });
+            });
+            const pendCnt = todas.filter(i => !i.estado || i.estado === 'pendiente').length;
+            const repCnt = todas.filter(i => i.estado === 'reparacion').length;
+            document.getElementById('incMecTitle').textContent = `⚠️ Incidencias — ${u?.nombre || ''}`;
+            document.getElementById('incMecSubtitle').textContent = `${todas.length} incidencia(s) en total · ${pendCnt} pendiente(s)`;
+            document.getElementById('incCntPendiente').textContent = pendCnt;
+            document.getElementById('incCntReparacion').textContent = repCnt;
+            document.querySelectorAll('.inc-mec-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('incTabPendiente').classList.add('active');
+            renderIncMec();
+            document.getElementById('modalIncidenciasMecanico').classList.add('show');
+        };
+
+        window.filtrarIncMec = function(filtro) {
+            incMecFiltro = filtro;
+            document.querySelectorAll('.inc-mec-tab').forEach(t => t.classList.remove('active'));
+            const tabMap = { pendiente: 'incTabPendiente', reparacion: 'incTabReparacion', reparado: 'incTabResueltas' };
+            document.getElementById(tabMap[filtro]).classList.add('active');
+            renderIncMec();
+        };
+
+        function renderIncMec() {
+            if (!incMecUid) return;
+            const hUsuario = herramientas.filter(h => h.trabajadorId === incMecUid);
+            const todas = [];
+            hUsuario.forEach(h => {
+                (h.reportes || []).forEach(r => {
+                    todas.push({ ...r, herramientaId: h.id, herramienta: h.nombre, codigo: h.codigo });
+                });
+            });
+
+            let lista;
+            if (incMecFiltro === 'pendiente') {
+                lista = todas.filter(i => !i.estado || i.estado === 'pendiente');
+            } else if (incMecFiltro === 'reparacion') {
+                lista = todas.filter(i => i.estado === 'reparacion');
+            } else {
+                lista = todas.filter(i => i.estado === 'reparado');
+            }
+
+            lista.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            if (lista.length === 0) {
+                const msgs = {
+                    pendiente: '✅ No hay incidencias pendientes para este mecánico',
+                    reparacion: 'ℹ️ No hay herramientas en reparación actualmente',
+                    reparado: 'ℹ️ No hay incidencias resueltas registradas'
+                };
+                document.getElementById('incMecContainer').innerHTML = `<div class="loading" style="padding:32px 0;">${msgs[incMecFiltro]}</div>`;
+                return;
+            }
+
+            document.getElementById('incMecContainer').innerHTML = lista.map(i => {
+                const esPendiente = !i.estado || i.estado === 'pendiente';
+                const esReparacion = i.estado === 'reparacion';
+                const esReparado = i.estado === 'reparado';
+                const colorBorde = esPendiente ? 'var(--red)' : esReparacion ? 'var(--orange)' : 'var(--green)';
+                const badgeClass = i.tipo === 'repuesto' ? 'badge-orange' : esPendiente ? 'badge-red' : esReparacion ? 'badge-orange' : 'badge-active';
+                const badgeTxt = i.tipo === 'repuesto' ? 'Repuesto' : esPendiente ? 'Rotura' : esReparacion ? 'En reparación' : 'Resuelto';
+                const acciones = esPendiente ? `
+                    <button class="btn btn-sm btn-warning" onclick="marcarEnReparacionMec('${i.herramientaId}','${i.timestamp}')">🔧 Enviar a reparación</button>
+                    <button class="btn btn-sm btn-primary" onclick="cerrarIncidenciaMec('${i.herramientaId}','${i.timestamp}')">✅ Cerrar incidencia</button>` :
+                    esReparacion ? `
+                    <button class="btn btn-sm btn-primary" onclick="cerrarIncidenciaMec('${i.herramientaId}','${i.timestamp}')">✅ Marcar como reparada</button>` :
+                    `<span style="color:var(--green-light);font-size:12px;font-weight:600;">✅ Resuelta el ${formatDate(i.fechaResolucion || i.timestamp)}</span>`;
+
+                return `<div class="incidencia-card" style="border-left-color:${colorBorde};margin-bottom:12px;">
+                    <div class="inc-header">
+                        <div>
+                            <div class="inc-tool">🔧 ${i.herramienta}${i.codigo ? ` <span style="color:var(--muted);font-size:11px;">(${i.codigo})</span>` : ''}</div>
+                            <div style="color:var(--muted);font-size:12px;margin-top:3px;">${formatDate(i.timestamp)}</div>
+                        </div>
+                        <span class="badge ${badgeClass}">${badgeTxt}</span>
+                    </div>
+                    <div class="inc-body" style="margin-top:8px;">${i.detalle || '—'}</div>
+                    <div class="inc-actions" style="margin-top:12px;">${acciones}</div>
+                </div>`;
+            }).join('');
+        }
+
+        window.marcarEnReparacionMec = async function(hId, ts) {
+            try {
+                const h = herramientas.find(x => x.id === hId);
+                const reportes = (h?.reportes || []).map(r => r.timestamp === ts ? { ...r, estado: 'reparacion', fechaEnvio: new Date().toISOString() } : r);
+                await updateDoc(doc(db, "herramientas_usuarios", hId), { estado: 'reparacion', reportes });
+                toast('✅ Enviada a reparación');
+                // Refresh modal
+                const cnt = document.getElementById('incCntReparacion');
+                // renderIncMec will be triggered by onSnapshot
+            } catch (e) { toast('❌ Error', 'err'); }
+        };
+
+        window.cerrarIncidenciaMec = async function(hId, ts) {
+            try {
+                const h = herramientas.find(x => x.id === hId);
+                const reportes = (h?.reportes || []).map(r => r.timestamp === ts ? { ...r, estado: 'reparado', fechaResolucion: new Date().toISOString() } : r);
+                await updateDoc(doc(db, "herramientas_usuarios", hId), { estado: 'bueno', presente: true, reportes, necesitaRepuesto: false });
+                toast('✅ Incidencia cerrada');
+            } catch (e) { toast('❌ Error', 'err'); }
+        };
 
         // ══════════════════════════════════════════
         // PEDIDOS DE COMPRA
